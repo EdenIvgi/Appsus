@@ -1,6 +1,6 @@
 // note service
-import { storageService } from '../../services/async-storage.service.js'
-import { utilService } from '../../services/util.service.js'
+import { storageService } from '../../../services/async-storage.service.js'
+import { utilService } from '../../../services/util.service.js'
 
 const STORAGE_KEY = 'notesDB'
 
@@ -56,9 +56,9 @@ function query(filterBy = {}) {
             if (filterBy.txt) {
                 const regex = new RegExp(filterBy.txt, 'i')
                 notes = notes.filter(note => 
-                    note.info.txt?.includes(filterBy.txt) ||
-                    note.info.title?.includes(filterBy.txt) ||
-                    note.info.todos?.some(todo => todo.txt.includes(filterBy.txt))
+                    (note.info.txt && note.info.txt.includes(filterBy.txt)) ||
+                    (note.info.title && note.info.title.includes(filterBy.txt)) ||
+                    (note.info.todos && note.info.todos.some(todo => todo.txt.includes(filterBy.txt)))
                 )
             }
             if (filterBy.type) {
@@ -132,9 +132,9 @@ function getDefaultFilter() {
 }
 
 function _createNotes() {
-    let notesFromStorage = storageService.loadFromStorage(STORAGE_KEY)
+    let notesFromStorage = utilService.loadFromStorage(STORAGE_KEY)
     if (!notesFromStorage || !notesFromStorage.length) {
         notesFromStorage = notes
-        storageService.saveToStorage(STORAGE_KEY, notesFromStorage)
+        utilService.saveToStorage(STORAGE_KEY, notesFromStorage)
     }
 }
