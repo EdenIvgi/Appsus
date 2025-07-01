@@ -20,6 +20,8 @@ export const mailService = {
     getLoggedinUser
 }
 
+
+
 function query(filterBy = {}) {
     return storageService.query(MAIL_KEY)
         .then(mails => {
@@ -63,6 +65,7 @@ function get(mailId) {
 function remove(mailId) {
     return storageService.remove(MAIL_KEY, mailId)
 }
+
 
 function save(mail) {
     if (mail.id) {
