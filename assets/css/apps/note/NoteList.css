@@ -1,1 +1,111 @@
- /* note list */
+/* note list */
+.note-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.note-list.empty {
+    grid-template-columns: 1fr;
+    text-align: center;
+    color: #666;
+    font-size: 1.2rem;
+    padding: 40px;
+}
+
+/* Note Preview */
+.note-preview {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+    position: relative;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+}
+
+.note-preview:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
+
+.note-content {
+    flex: 1;
+    margin-bottom: 16px;
+}
+
+.note-txt p {
+    margin: 0;
+    line-height: 1.5;
+    color: #333;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Note Actions */
+.note-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.note-preview:hover .note-actions {
+    opacity: 1;
+}
+
+.btn-pin {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.btn-pin:hover {
+    background-color: rgba(0,0,0,0.1);
+}
+
+.btn-pin.pinned {
+    color: #ff9800;
+}
+
+.color-palette {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+}
+
+.color-btn {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.2);
+    transition: transform 0.1s ease;
+}
+
+.color-btn:hover {
+    transform: scale(1.2);
+}
+
+.btn-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.btn-remove:hover {
+    background-color: rgba(255,0,0,0.1);
+}

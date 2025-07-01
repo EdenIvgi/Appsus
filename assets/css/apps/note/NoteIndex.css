@@ -1,1 +1,13 @@
- /* note index */
+/* note index */
+.note-index {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.note-index h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 2.5rem;
+}
