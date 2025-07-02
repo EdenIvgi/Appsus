@@ -1,111 +1,232 @@
 /* note list */
 .note-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    padding: 20px 0;
+    columns: 1;
+    column-gap: 16px;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0;
+}
+
+@media (min-width: 600px) {
+    .note-list {
+        columns: 2;
+    }
+}
+
+@media (min-width: 900px) {
+    .note-list {
+        columns: 3;
+    }
+}
+
+@media (min-width: 1200px) {
+    .note-list {
+        columns: 4;
+    }
+}
+
+@media (min-width: 1500px) {
+    .note-list {
+        columns: 5;
+    }
 }
 
 .note-list.empty {
-    grid-template-columns: 1fr;
+    columns: 1;
     text-align: center;
-    color: #666;
-    font-size: 1.2rem;
-    padding: 40px;
+    color: #5f6368;
+    font-size: 1.1rem;
+    font-family: 'Google Sans', 'Roboto', sans-serif;
+    padding: 60px 20px;
+    background: none;
 }
 
-/* Note Preview */
+/* Note Preview - Google Keep Style */
 .note-preview {
-    border: 1px solid #ddd;
+    background: #fff;
+    border: 1px solid #e0e0e0;
     border-radius: 8px;
-    padding: 16px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: all 0.2s ease;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    break-inside: avoid;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
     position: relative;
-    min-height: 120px;
-    display: flex;
-    flex-direction: column;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
 }
 
 .note-preview:hover {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    border-color: #d0d0d0;
 }
 
 .note-content {
-    flex: 1;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
 }
 
 .note-txt p {
     margin: 0;
     line-height: 1.5;
-    color: #333;
+    color: #202124;
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
     white-space: pre-wrap;
     word-wrap: break-word;
+    letter-spacing: 0.01428571em;
 }
 
-/* Note Actions */
+/* Note Actions - Google Keep Style */
 .note-actions {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: flex-start;
+    gap: 4px;
     opacity: 0;
     transition: opacity 0.2s ease;
+    margin-top: 8px;
+    padding: 4px 0;
 }
 
 .note-preview:hover .note-actions {
     opacity: 1;
 }
 
-.btn-pin {
+/* Action Buttons */
+.btn-pin, .btn-remove {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 16px;
-    padding: 4px;
-    border-radius: 4px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: background-color 0.2s ease;
+    color: #5f6368;
 }
 
-.btn-pin:hover {
-    background-color: rgba(0,0,0,0.1);
+.btn-pin:hover, .btn-remove:hover {
+    background-color: rgba(95, 99, 104, 0.08);
 }
 
 .btn-pin.pinned {
-    color: #ff9800;
-}
-
-.color-palette {
-    display: flex;
-    gap: 4px;
-    margin-left: auto;
-}
-
-.color-btn {
-    width: 20px;
-    height: 20px;
-    border: 2px solid #fff;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 0 0 1px rgba(0,0,0,0.2);
-    transition: transform 0.1s ease;
-}
-
-.color-btn:hover {
-    transform: scale(1.2);
-}
-
-.btn-remove {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    padding: 4px;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
+    color: #1a73e8;
 }
 
 .btn-remove:hover {
-    background-color: rgba(255,0,0,0.1);
+    background-color: rgba(219, 68, 55, 0.08);
+    color: #db4437;
+}
+
+.btn-pin .material-icons, .btn-remove .material-icons {
+    font-size: 18px;
+}
+
+/* Color Palette - Google Keep Colors */
+.color-palette {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+    align-items: center;
+}
+
+.color-btn {
+    width: 24px;
+    height: 24px;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.color-btn:hover {
+    transform: scale(1.1);
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+.color-btn:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: inherit;
+}
+
+/* Google Keep Color Variables */
+.note-preview[style*="rgb(255, 255, 255)"], 
+.note-preview[style*="#ffffff"] {
+    background: #fff !important;
+}
+
+.note-preview[style*="rgb(255, 235, 59)"], 
+.note-preview[style*="#ffeb3b"] {
+    background: #fff475 !important;
+    border-color: #fff475;
+}
+
+.note-preview[style*="rgb(255, 152, 0)"], 
+.note-preview[style*="#ff9800"] {
+    background: #ffcc02 !important;
+    border-color: #ffcc02;
+}
+
+.note-preview[style*="rgb(244, 67, 54)"], 
+.note-preview[style*="#f44336"] {
+    background: #f28b82 !important;
+    border-color: #f28b82;
+}
+
+.note-preview[style*="rgb(233, 30, 99)"], 
+.note-preview[style*="#e91e63"] {
+    background: #fdcfe8 !important;
+    border-color: #fdcfe8;
+}
+
+.note-preview[style*="rgb(156, 39, 176)"], 
+.note-preview[style*="#9c27b0"] {
+    background: #d7aefb !important;
+    border-color: #d7aefb;
+}
+
+.note-preview[style*="rgb(103, 58, 183)"], 
+.note-preview[style*="#673ab7"] {
+    background: #cbf0f8 !important;
+    border-color: #cbf0f8;
+}
+
+.note-preview[style*="rgb(63, 81, 181)"], 
+.note-preview[style*="#3f51b5"] {
+    background: #aecbfa !important;
+    border-color: #aecbfa;
+}
+
+.note-preview[style*="rgb(33, 150, 243)"], 
+.note-preview[style*="#2196f3"] {
+    background: #a7ffeb !important;
+    border-color: #a7ffeb;
+}
+
+.note-preview[style*="rgb(0, 188, 212)"], 
+.note-preview[style*="#00bcd4"] {
+    background: #ccff90 !important;
+    border-color: #ccff90;
+}
+
+.note-preview[style*="rgb(0, 150, 136)"], 
+.note-preview[style*="#009688"] {
+    background: #e6c9a8 !important;
+    border-color: #e6c9a8;
+}
+
+.note-preview[style*="rgb(76, 175, 80)"], 
+.note-preview[style*="#4caf50"] {
+    background: #e8eaed !important;
+    border-color: #e8eaed;
 }

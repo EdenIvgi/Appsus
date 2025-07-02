@@ -20,7 +20,21 @@ export function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor
         onChangeNoteColor(note.id, color)
     }
 
-    const colors = ['#ffffff', '#ffeb3b', '#ff9800', '#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#00bcd4', '#009688', '#4caf50']
+    // Google Keep inspired color palette
+    const colors = [
+        '#ffffff', // Default white
+        '#fff475', // Yellow
+        '#ffcc02', // Orange
+        '#f28b82', // Red/Coral
+        '#fdcfe8', // Pink
+        '#d7aefb', // Purple
+        '#cbf0f8', // Light Blue
+        '#aecbfa', // Blue
+        '#a7ffeb', // Teal
+        '#ccff90', // Green
+        '#e6c9a8', // Brown
+        '#e8eaed'  // Gray
+    ]
 
     return (
         <article 
@@ -37,7 +51,7 @@ export function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor
                     onClick={() => onTogglePin(note.id)}
                     title={note.isPinned ? 'Unpin note' : 'Pin note'}
                 >
-                    📌
+                    <span className="material-icons">push_pin</span>
                 </button>
                 
                 <div className="color-palette">
@@ -57,7 +71,7 @@ export function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor
                     onClick={() => onRemoveNote(note.id)}
                     title="Delete note"
                 >
-                    🗑️
+                    <span className="material-icons">delete</span>
                 </button>
             </div>
         </article>
