@@ -1,6 +1,6 @@
 const { useState, useEffect } = React
-
 import { mailService } from '../services/mail.service.js'
+import { MailList } from '../cmps/MailList.jsx'
 
 export function MailIndex() {
     const [mails, setMails] = useState(null)
@@ -25,7 +25,7 @@ export function MailIndex() {
     return (
         <section className="mail-index">
             <h2>Inbox</h2>
-            <p>Loaded {mails.length} mails</p>
+            <MailList mails={mails} />
         </section>
     )
 }
