@@ -1,21 +1,19 @@
- /* mail list */
-
- .mail-list {
+.mail-list {
     list-style: none;
     padding: 0;
     margin: 0;
+    background-color:#edeff9;
 }
 
 .mail-preview {
     display: flex;
     align-items: center;
-    padding: 8px 16px;
     border-bottom: 1px solid #e0e0e0;
     font-family: Arial, sans-serif;
-    height: 52px;
     cursor: pointer;
     transition: background-color 0.2s ease;
     position: relative;
+    padding: 12px 20px;
 }
 
 .mail-preview:hover {
@@ -45,21 +43,22 @@
     flex: 1;
     overflow: hidden;
     white-space: nowrap;
+    gap: 6px;
 }
 
 .mail-from {
     min-width: 120px;
-    max-width: 150px;
+    max-width: 160px;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-right: 16px;
+    margin-right: 10px;
 }
 
 .mail-subject {
     flex-shrink: 0;
-    margin-right: 6px;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-weight: 500;
 }
 
 .mail-body {
@@ -69,28 +68,46 @@
     flex: 1;
 }
 
-.mail-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-width: 80px;
-}
-
 .mail-date {
     font-size: 0.9em;
     color: #666;
     white-space: nowrap;
+    margin-left: auto;
+    padding-left: 8px;
 }
 
-.btn-delete {
-    display: none;
+/* Actions (appear on hover) */
+.mail-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    position: absolute;
+    right: 12px;
+}
+
+.mail-preview:hover .mail-actions {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.btn-mail-action {
     background: transparent;
     border: none;
     cursor: pointer;
-    font-size: 14px;
+    padding: 4px;
+    font-size: 18px;
     color: #666;
+    transition: color 0.2s ease;
 }
 
-.mail-preview:hover .btn-delete {
-    display: inline;
+.btn-mail-action:hover {
+    color: #000;
+}
+
+.material-icons {
+    font-size: 20px;
+    vertical-align: middle;
 }
