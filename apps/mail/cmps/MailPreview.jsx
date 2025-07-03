@@ -1,6 +1,4 @@
-import { mailService } from '../services/mail.service.js'
-
-export function MailPreview({ mail, onUpdate }) {
+export function MailPreview({ mail, onUpdate, onRemove }) {
     const sentAt = new Date(mail.sentAt).toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
@@ -9,35 +7,34 @@ export function MailPreview({ mail, onUpdate }) {
     function onMarkAsRead() {
         if (mail.isRead) return
         const updatedMail = { ...mail, isRead: true }
-        mailService.save(updatedMail).then(() => {
-            onUpdate()
-        })
+        onUpdate(updatedMail)
     }
 
     function onDelete(ev) {
         ev.stopPropagation()
-        mailService.remove(mail.id).then(() => {
-            onUpdate()
-        })
+        onRemove(mail.id)
     }
 
     function onToggleRead(ev) {
         ev.stopPropagation()
         const updatedMail = { ...mail, isRead: !mail.isRead }
-        mailService.save(updatedMail).then(() => {
-            onUpdate()
-        })
+        onUpdate(updatedMail)
+    }
+
+    function onToggleStar(ev) {
+        ev.stopPropagation()
+        const updatedMail = { ...mail, isStarred: !mail.isStarred }
+        onUpdate(updatedMail)
     }
 
     function onExpand(ev) {
         ev.stopPropagation()
-        // Logic for expanding mail preview (navigate or open modal)
         console.log('Expand mail', mail.id)
     }
 
     return (
         <div className={`mail-preview ${mail.isRead ? 'read' : 'unread'}`} onClick={onMarkAsRead}>
-            <span className="mail-star">☆</span>
+            <span className={`mail-star ${mail.isStarred ? 'starred' : ''}`} onClick={onToggleStar}>★</span>
 
             <div className="mail-content">
                 <span className="mail-from">{mail.from}</span>
@@ -63,4 +60,3 @@ export function MailPreview({ mail, onUpdate }) {
         </div>
     )
 }
-
