@@ -1,27 +1,90 @@
 import { NoteTxt } from './NoteTxt.jsx'
+import { NoteImg } from './NoteImg.jsx'
+import { NoteTodos } from './NoteTodos.jsx'
+import { imageUploadService } from '../../../services/image-upload.service.js'
+
+const { useState, useEffect, useRef } = React
 
 export function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor, onEditNote }) {
-    console.log('NotePreview rendering note:', note)
+    const [showColorPicker, setShowColorPicker] = useState(false)
+    const colorPickerRef = useRef(null)
+    const imageInputRef = useRef(null)
+    
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (colorPickerRef.current && !colorPickerRef.current.contains(event.target)) {
+                setShowColorPicker(false)
+            }
+        }
+
+        if (showColorPicker) {
+            document.addEventListener('mousedown', handleClickOutside)
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+    }, [showColorPicker])
     
     function DynamicNoteComponent({ note }) {
-        console.log('DynamicNoteComponent note type:', note.type)
-        console.log('DynamicNoteComponent note info:', note.info)
-        
         switch (note.type) {
             case 'NoteTxt':
                 return <NoteTxt info={note.info} />
+            case 'NoteImg':
+                return <NoteImg info={note.info} />
+            case 'NoteTodos':
+                return <NoteTodos info={note.info} />
             default:
-                console.log('Unknown note type:', note.type)
                 return <div>Unknown note type</div>
         }
     }
 
     function onColorChange(color) {
         onChangeNoteColor(note.id, color)
+        setShowColorPicker(false)
     }
 
     function handleNoteClick() {
         onEditNote(note)
+    }
+
+    function toggleColorPicker(e) {
+        e.stopPropagation()
+        setShowColorPicker(!showColorPicker)
+    }
+
+    function handleAddImage(e) {
+        e.stopPropagation()
+        if (imageInputRef.current) {
+            imageInputRef.current.click()
+        }
+    }
+
+    function handleImageUpload(event) {
+        const file = event.target.files[0]
+        if (!file) return
+
+        imageUploadService.uploadImage(file)
+            .then(imageData => {
+                const updatedNote = {
+                    ...note,
+                    type: 'NoteImg',
+                    info: {
+                        ...note.info,
+                        url: imageData.url,
+                        title: note.info.title || ''
+                    }
+                }
+                // Edit the note with the new image
+                onEditNote(updatedNote)
+            })
+            .catch(error => {
+                console.error('Error uploading image:', error)
+                alert('Error uploading image: ' + error)
+            })
+
+        // Reset the input
+        event.target.value = ''
     }
 
     // Google Keep inspired color palette
@@ -60,21 +123,63 @@ export function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor
                 >
                     <span className="material-icons">push_pin</span>
                 </button>
-                
-                <div className="color-palette">
-                    {colors.map(color => (
-                        <button
-                            key={color}
-                            className="color-btn"
-                            style={{ backgroundColor: color }}
-                            onClick={(e) => {
-                                e.stopPropagation()
-                                onColorChange(color)
-                            }}
-                            title="Change color"
-                        />
-                    ))}
+
+                <button 
+                    className="action-btn"
+                    onClick={handleAddImage}
+                    title="Add image"
+                >
+                    <span className="material-icons">image</span>
+                </button>
+
+                <button 
+                    className="action-btn"
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        // Add archive functionality later
+                    }}
+                    title="Archive"
+                >
+                    <span className="material-icons">archive</span>
+                </button>
+
+                <div ref={colorPickerRef} className="color-picker-container">
+                    <button 
+                        className="action-btn"
+                        onClick={toggleColorPicker}
+                        title="Background options"
+                    >
+                        <span className="material-icons">palette</span>
+                    </button>
+
+                    {showColorPicker && (
+                        <div className="color-picker-popup">
+                            {colors.map(color => (
+                                <button
+                                    key={color}
+                                    className="color-btn-popup"
+                                    style={{ backgroundColor: color }}
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        onColorChange(color)
+                                    }}
+                                    title="Change color"
+                                />
+                            ))}
+                        </div>
+                    )}
                 </div>
+
+                <button 
+                    className="action-btn"
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        // Add more options functionality later
+                    }}
+                    title="More"
+                >
+                    <span className="material-icons">more_vert</span>
+                </button>
                 
                 <button 
                     className="btn-remove"
@@ -87,6 +192,15 @@ export function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor
                     <span className="material-icons">delete</span>
                 </button>
             </div>
+
+            {/* Hidden file input for image uploads */}
+            <input
+                ref={imageInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                style={{ display: 'none' }}
+            />
         </article>
     )
 } 

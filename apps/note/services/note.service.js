@@ -19,7 +19,7 @@ const notes = [
         createdAt: 1112223,
         type: 'NoteImg',
         isPinned: false,
-        info: { url: 'http://some-img/me', title: 'Bobi and Me' },
+        info: { url: '/assets/img/test.jpg', title: 'Cute Puppy' },
         style: { backgroundColor: '#00d' }
     },
     {
@@ -136,5 +136,13 @@ function _createNotes() {
     if (!notesFromStorage || !notesFromStorage.length) {
         notesFromStorage = notes
         utilService.saveToStorage(STORAGE_KEY, notesFromStorage)
+    } else {
+        // Update the image note if it has the old broken URL
+        const imageNote = notesFromStorage.find(note => note.id === 'n102')
+        if (imageNote && imageNote.info.url === 'http://some-img/me') {
+            imageNote.info.url = '/assets/img/test.jpg'
+            imageNote.info.title = 'Cute Puppy'
+            utilService.saveToStorage(STORAGE_KEY, notesFromStorage)
+        }
     }
 }

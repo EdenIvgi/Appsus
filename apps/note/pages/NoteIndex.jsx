@@ -1,6 +1,7 @@
 const { useState, useEffect, useRef } = React
 
 import { noteService } from '../services/note.service.js'
+import { imageUploadService } from '../../../services/image-upload.service.js'
 import { NoteList } from '../cmps/NoteList.jsx'
 import { NoteEdit } from '../cmps/NoteEdit.jsx'
 
@@ -14,6 +15,7 @@ export function NoteIndex() {
     const [searchTerm, setSearchTerm] = useState('')
     const editRef = useRef(null)
     const sidebarRef = useRef(null)
+    const imageInputRef = useRef(null)
 
     useEffect(() => {
         loadNotes()
@@ -54,7 +56,7 @@ export function NoteIndex() {
             .then(notes => {
                 setNotes(notes)
             })
-            .catch(err => console.log('Error loading notes:', err))
+            .catch(err => console.error('Error loading notes:', err))
     }
 
     function onCreateNote() {
@@ -69,30 +71,15 @@ export function NoteIndex() {
             return
         }
 
-        console.log('Saving note:', noteToSave)
-        console.log('noteToSave.id:', noteToSave.id)
-        console.log('Is new note (!noteToSave.id):', !noteToSave.id)
-        
         // Store the new note flag before the service call
         const isNewNote = !noteToSave.id
 
         noteService.save(noteToSave)
             .then(savedNote => {
-                console.log('Saved note received:', savedNote)
-                console.log('isNewNote variable:', isNewNote)
-                
                 if (isNewNote) {
-                    console.log('Adding new note to list')
                     // Add new note to the beginning of the list
-                    setNotes(prevNotes => {
-                        console.log('Previous notes count:', prevNotes.length)
-                        const newNotes = [savedNote, ...prevNotes]
-                        console.log('New notes count:', newNotes.length)
-                        console.log('New notes array:', newNotes)
-                        return newNotes
-                    })
+                    setNotes(prevNotes => [savedNote, ...prevNotes])
                 } else {
-                    console.log('Updating existing note')
                     // Update existing note
                     setNotes(prevNotes => 
                         prevNotes.map(note => 
@@ -105,7 +92,7 @@ export function NoteIndex() {
                 setEditingNote(null)
                 setCurrentEditNote(null)
             })
-            .catch(err => console.log('Error saving note:', err))
+            .catch(err => console.error('Error saving note:', err))
     }
 
     function onCancelEdit() {
@@ -128,7 +115,7 @@ export function NoteIndex() {
             .then(() => {
                 setNotes(prevNotes => prevNotes.filter(note => note.id !== noteId))
             })
-            .catch(err => console.log('Error removing note:', err))
+            .catch(err => console.error('Error removing note:', err))
     }
 
     function onUpdateNote(noteToUpdate) {
@@ -140,7 +127,7 @@ export function NoteIndex() {
                     )
                 )
             })
-            .catch(err => console.log('Error updating note:', err))
+            .catch(err => console.error('Error updating note:', err))
     }
 
     function onTogglePin(noteId) {
@@ -171,7 +158,37 @@ export function NoteIndex() {
         // You can implement search functionality here
     }
 
-    console.log('Current notes count in render:', notes.length)
+    function onCreateImageNote() {
+        if (imageInputRef.current) {
+            imageInputRef.current.click()
+        }
+    }
+
+    function handleImageUpload(event) {
+        const file = event.target.files[0]
+        if (!file) return
+
+        imageUploadService.uploadImage(file)
+            .then(imageData => {
+                const newNote = {
+                    ...noteService.getEmptyNote('NoteImg'),
+                    info: {
+                        url: imageData.url,
+                        title: '',
+                        txt: ''
+                    }
+                }
+                setCurrentEditNote(newNote)
+                setIsCreating(true)
+            })
+            .catch(error => {
+                console.error('Error uploading image:', error)
+                alert('Error uploading image: ' + error)
+            })
+
+        // Reset the input
+        event.target.value = ''
+    }
 
     return (
         <section className="note-index">
@@ -273,7 +290,11 @@ export function NoteIndex() {
                         <div className="note-input" onClick={onCreateNote}>
                             <span className="input-placeholder">Take a note...</span>
                             <div className="input-actions">
-                                <button className="input-action-btn" title="New note with image">
+                                <button 
+                                    className="input-action-btn" 
+                                    title="New note with image"
+                                    onClick={onCreateImageNote}
+                                >
                                     <span className="material-icons">add_a_photo</span>
                                 </button>
                                 <button className="input-action-btn" title="New note with drawing">
@@ -311,6 +332,15 @@ export function NoteIndex() {
             <button className="fab" onClick={onCreateNote}>
                 <span className="material-icons">add</span>
             </button>
+
+            {/* Hidden file input for image uploads */}
+            <input
+                ref={imageInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                style={{ display: 'none' }}
+            />
         </section>
     )
 }
