@@ -1,28 +1,34 @@
 /* note list */
 .note-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: 1fr;
     gap: 16px;
     width: 100%;
     margin: 0 auto;
     padding: 0;
 }
 
-@media (min-width: 600px) {
+/* Mobile: Single column */
+@media (min-width: 480px) {
     .note-list {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        max-width: 600px;
     }
 }
 
-@media (min-width: 900px) {
+/* Tablet: Multiple columns */
+@media (min-width: 768px) {
     .note-list {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        max-width: 800px;
     }
 }
 
-@media (min-width: 1200px) {
+/* Desktop: More columns */
+@media (min-width: 1024px) {
     .note-list {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        max-width: none;
     }
 }
 
@@ -55,6 +61,7 @@
     cursor: pointer;
     font-family: 'Roboto', sans-serif;
     height: fit-content;
+    break-inside: avoid; /* Prevent breaking in masonry layouts */
 }
 
 .note-preview:hover {
@@ -87,6 +94,13 @@
     transition: opacity 0.2s ease;
     margin-top: 8px;
     padding: 4px 0;
+}
+
+/* Always show actions on mobile for better UX */
+@media (max-width: 767px) {
+    .note-actions {
+        opacity: 1;
+    }
 }
 
 .note-preview:hover .note-actions {
@@ -206,13 +220,12 @@
 
 .note-edit-tools {
     display: flex;
-    align-items: center;
     gap: 8px;
+    align-items: center;
 }
 
 .note-edit-buttons {
-    display: flex;
-    gap: 8px;
+    margin-left: auto;
 }
 
 .btn-cancel, .btn-save {
@@ -221,11 +234,10 @@
     cursor: pointer;
     padding: 8px 16px;
     border-radius: 4px;
-    font-family: 'Google Sans', 'Roboto', sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-size: 14px;
     font-weight: 500;
     transition: background-color 0.2s ease;
-    color: #5f6368;
 }
 
 .btn-cancel:hover {
@@ -240,74 +252,74 @@
     background-color: rgba(26, 115, 232, 0.08);
 }
 
-/* Google Keep Color Variables */
+/* Color background styles for notes */
 .note-preview[style*="rgb(255, 255, 255)"], 
 .note-preview[style*="#ffffff"] {
-    background: #fff !important;
+    background-color: #fff !important;
 }
 
 .note-preview[style*="rgb(255, 235, 59)"], 
 .note-preview[style*="#ffeb3b"] {
-    background: #fff475 !important;
-    border-color: #fff475;
+    background-color: #ffeb3b !important;
+    border-color: #f9a825;
 }
 
 .note-preview[style*="rgb(255, 152, 0)"], 
 .note-preview[style*="#ff9800"] {
-    background: #ffcc02 !important;
-    border-color: #ffcc02;
+    background-color: #ff9800 !important;
+    border-color: #f57c00;
 }
 
 .note-preview[style*="rgb(244, 67, 54)"], 
 .note-preview[style*="#f44336"] {
-    background: #f28b82 !important;
-    border-color: #f28b82;
+    background-color: #f44336 !important;
+    border-color: #d32f2f;
 }
 
 .note-preview[style*="rgb(233, 30, 99)"], 
 .note-preview[style*="#e91e63"] {
-    background: #fdcfe8 !important;
-    border-color: #fdcfe8;
+    background-color: #e91e63 !important;
+    border-color: #c2185b;
 }
 
 .note-preview[style*="rgb(156, 39, 176)"], 
 .note-preview[style*="#9c27b0"] {
-    background: #d7aefb !important;
-    border-color: #d7aefb;
+    background-color: #9c27b0 !important;
+    border-color: #7b1fa2;
 }
 
 .note-preview[style*="rgb(103, 58, 183)"], 
 .note-preview[style*="#673ab7"] {
-    background: #cbf0f8 !important;
-    border-color: #cbf0f8;
+    background-color: #673ab7 !important;
+    border-color: #512da8;
 }
 
 .note-preview[style*="rgb(63, 81, 181)"], 
 .note-preview[style*="#3f51b5"] {
-    background: #aecbfa !important;
-    border-color: #aecbfa;
+    background-color: #3f51b5 !important;
+    border-color: #303f9f;
 }
 
 .note-preview[style*="rgb(33, 150, 243)"], 
 .note-preview[style*="#2196f3"] {
-    background: #a7ffeb !important;
-    border-color: #a7ffeb;
+    background-color: #2196f3 !important;
+    border-color: #1976d2;
 }
 
 .note-preview[style*="rgb(0, 188, 212)"], 
 .note-preview[style*="#00bcd4"] {
-    background: #ccff90 !important;
-    border-color: #ccff90;
+    background-color: #00bcd4 !important;
+    border-color: #0097a7;
 }
 
 .note-preview[style*="rgb(0, 150, 136)"], 
 .note-preview[style*="#009688"] {
-    background: #e6c9a8 !important;
-    border-color: #e6c9a8;
+    background-color: #009688 !important;
+    border-color: #00695c;
 }
 
 .note-preview[style*="rgb(76, 175, 80)"], 
 .note-preview[style*="#4caf50"] {
-    background: #e8eaed !important;
-    border-color: #e8eaed;
+    background-color: #4caf50 !important;
+    border-color: #388e3c;
 }

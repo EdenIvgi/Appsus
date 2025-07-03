@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500&family=Roboto:wght@300;400;500&display=swap');
+
 @import './basics/vars.css';
 @import './basics/base.css';
 @import './basics/helpers.css';
