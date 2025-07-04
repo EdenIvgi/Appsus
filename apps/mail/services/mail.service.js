@@ -17,10 +17,9 @@ export const mailService = {
     getEmptyMail,
     getDefaultFilter,
     getFilterFromSearchParams,
+    createMail,
     getLoggedinUser
 }
-
-
 
 function query(filterBy = {}) {
     return storageService.query(MAIL_KEY)
@@ -66,14 +65,12 @@ function remove(mailId) {
     return storageService.remove(MAIL_KEY, mailId)
 }
 
-
 function save(mail) {
-    if (mail.id) {
-        return storageService.put(MAIL_KEY, mail)
+    if (!mail.id) {
+        const newMail = createMail(mail)
+        return storageService.post(MAIL_KEY, newMail)
     } else {
-        mail.id = utilService.makeId()
-        mail.sentAt = Date.now()
-        return storageService.post(MAIL_KEY, mail)
+        return storageService.put(MAIL_KEY, mail)
     }
 }
 
@@ -105,50 +102,66 @@ function getLoggedinUser() {
     return loggedinUser
 }
 
-function _createMails() {
-    let mails = utilService.loadFromStorage(MAIL_KEY)
-    if (!mails || !mails.length) {
-        mails = [
-            {
-                id: utilService.makeId(),
-                subject: 'Project update',
-                body: 'The team meeting is postponed to next week.',
-                isRead: false,
-                sentAt: Date.now() - 10000000,
-                removedAt: null,
-                from: 'team@company.com',
-                to: loggedinUser.email,
-                isStarred: false,
-                isDraft: false
-            },
-            {
-                id: utilService.makeId(),
-                subject: 'Invitation to event',
-                body: 'Join us for the launch of our new product.',
-                isRead: true,
-                sentAt: Date.now() - 5000000,
-                removedAt: null,
-                from: 'events@service.com',
-                to: loggedinUser.email,
-                isStarred: true,
-                isDraft: false
-            },
-            {
-                id: utilService.makeId(),
-                subject: 'Hey there!',
-                body: 'Just wanted to say hi. Long time no see!',
-                isRead: false,
-                sentAt: Date.now() - 15000000,
-                removedAt: null,
-                from: loggedinUser.email,
-                to: 'friend@example.com',
-                isStarred: false,
-                isDraft: false
-            }
-        ]
-        utilService.saveToStorage(MAIL_KEY, mails)
+function createMail({ to, subject, body }) {
+    return {
+        id: utilService.makeId(),
+        from: loggedinUser.email,
+        to,
+        subject,
+        body,
+        sentAt: Date.now(),
+        isRead: false,
+        isStarred: false,
+        removedAt: null,
+        isDraft: false
     }
 }
+
+function _createMails() {
+    const mails = utilService.loadFromStorage(MAIL_KEY)
+    if (mails && mails.length) return
+    const demoMails = [
+        {
+            id: utilService.makeId(),
+            subject: 'Project update',
+            body: 'The team meeting is postponed to next week.',
+            isRead: false,
+            sentAt: Date.now() - 10000000,
+            removedAt: null,
+            from: 'team@company.com',
+            to: loggedinUser.email,
+            isStarred: false,
+            isDraft: false
+        },
+        {
+            id: utilService.makeId(),
+            subject: 'Invitation to event',
+            body: 'Join us for the launch of our new product.',
+            isRead: true,
+            sentAt: Date.now() - 5000000,
+            removedAt: null,
+            from: 'events@service.com',
+            to: loggedinUser.email,
+            isStarred: true,
+            isDraft: false
+        },
+        {
+            id: utilService.makeId(),
+            subject: 'Hey there!',
+            body: 'Just wanted to say hi. Long time no see!',
+            isRead: false,
+            sentAt: Date.now() - 15000000,
+            removedAt: null,
+            from: loggedinUser.email,
+            to: 'friend@example.com',
+            isStarred: false,
+            isDraft: false
+        }
+    ]
+
+    utilService.saveToStorage(MAIL_KEY, demoMails)
+}
+
 
 function _setNextPrevMailId(mail) {
     return query().then(mails => {

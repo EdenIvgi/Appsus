@@ -1,9 +1,8 @@
-
-import { MailCompose } from '../cmps/MailCompose.jsx'
-import { MailList } from '../cmps/MailList.jsx'
-import { mailService } from '../services/mail.service.js'
-
 const { useState, useEffect } = React
+
+import { mailService } from '../services/mail.service.js'
+import { MailList } from '../cmps/MailList.jsx'
+import { MailCompose } from '../cmps/MailCompose.jsx'
 
 export function MailIndex() {
     const [isComposing, setIsComposing] = useState(false)
@@ -39,13 +38,23 @@ export function MailIndex() {
         mailService.remove(mailId)
     }
 
+    function addMail(newMail) {
+        setMails(prev => [newMail, ...prev])
+        const mails = JSON.parse(localStorage.getItem('mailDB')) || []
+        mails.push(newMail)
+        localStorage.setItem('mailDB', JSON.stringify(mails))
+    }
+    
+    
+    
+
     return (
         <section className="mail-index">
             <aside className="mail-sidebar">
-            <button className="btn-compose" onClick={() => setIsComposing(true)}>
-    <span className="material-icons">edit</span>
-    Compose
-</button>
+                <button className="btn-compose" onClick={() => setIsComposing(true)}>
+                    <span className="material-icons">edit</span>
+                    Compose
+                </button>
 
                 <nav className="sidebar-nav">
                     <div className="nav-item active">
@@ -90,12 +99,15 @@ export function MailIndex() {
                         <button className={`filter-btn ${filterBy === 'unread' ? 'active' : ''}`} onClick={() => setFilterBy('unread')}>Unread</button>
                     </div>
                 </div>
+
                 {isComposing && (
-    <MailCompose onClose={() => setIsComposing(false)} />
-)}
+                    <MailCompose
+                        onClose={() => setIsComposing(false)}
+                        onSend={addMail}
+                    />
+                )}
 
                 <MailList mails={filteredMails} onUpdate={updateMail} onRemove={removeMail} />
-                
             </main>
         </section>
     )

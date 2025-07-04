@@ -1,6 +1,6 @@
 const { useState } = React
 
-export function MailCompose({ onClose }) {
+export function MailCompose({ onClose, onSend }) {
     const [mail, setMail] = useState({
         to: '',
         subject: '',
@@ -12,22 +12,22 @@ export function MailCompose({ onClose }) {
         setMail(prev => ({ ...prev, [name]: value }))
     }
 
-    function onSend(ev) {
+    function onFormSubmit(ev) {
         ev.preventDefault()
-        console.log('Sending mail:', mail)
+        onSend(mail)
         onClose()
     }
 
     return (
         <section className="mail-compose">
-            <div className="compose-header">
+            <header className="compose-header">
                 <span>New Message</span>
-                <button className="btn-close" onClick={onClose}>
+                <button onClick={onClose} className="btn-close">
                     <span className="material-icons">close</span>
                 </button>
-            </div>
+            </header>
 
-            <form onSubmit={onSend}>
+            <form onSubmit={onFormSubmit} className="compose-form">
                 <input
                     type="email"
                     name="to"
@@ -45,14 +45,16 @@ export function MailCompose({ onClose }) {
                 />
                 <textarea
                     name="body"
-                    placeholder="Message..."
+                    placeholder=""
                     value={mail.body}
                     onChange={handleChange}
                 ></textarea>
 
-                <div className="compose-actions">
-                    <button type="submit" className="btn-send">Send</button>
-                </div>
+                <footer className="compose-actions">
+                    <button type="submit" className="btn-send">
+                        Send
+                    </button>
+                </footer>
             </form>
         </section>
     )
