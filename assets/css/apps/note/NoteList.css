@@ -88,10 +88,19 @@
 .note-preview:hover {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     border-color: #d0d0d0;
+    transform: translateY(-1px);
 }
 
 .note-content {
     margin-bottom: 8px;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+    padding: 4px 0;
+    margin: 0 -4px 8px -4px;
+}
+
+.note-preview:hover .note-content {
+    background-color: rgba(0, 0, 0, 0.02);
 }
 
 .note-txt p {
@@ -212,20 +221,30 @@
     justify-content: flex-start;
     gap: 4px;
     opacity: 0;
-    transition: opacity 0.2s ease;
+    transform: translateY(4px);
+    transition: all 0.2s ease;
     margin-top: 8px;
     padding: 4px 0;
+}
+
+/* Show actions on hover with smooth animation */
+.note-preview:hover .note-actions {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Always show pin button for pinned notes */
+.note-actions .btn-pin.pinned {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* Always show actions on mobile for better UX */
 @media (max-width: 767px) {
     .note-actions {
         opacity: 1;
+        transform: translateY(0);
     }
-}
-
-.note-preview:hover .note-actions {
-    opacity: 1;
 }
 
 /* Action Buttons */
@@ -239,21 +258,29 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
     color: #5f6368;
+    transform: scale(1);
 }
 
 .btn-pin:hover, .btn-remove:hover, .action-btn:hover {
     background-color: rgba(95, 99, 104, 0.08);
+    transform: scale(1.1);
 }
 
 .btn-pin.pinned {
     color: #1a73e8;
+    background-color: rgba(26, 115, 232, 0.08);
+}
+
+.btn-pin.pinned:hover {
+    background-color: rgba(26, 115, 232, 0.12);
 }
 
 .btn-remove:hover {
     background-color: rgba(219, 68, 55, 0.08);
     color: #db4437;
+    transform: scale(1.1);
 }
 
 .btn-pin .material-icons, .btn-remove .material-icons, .action-btn .material-icons {
