@@ -1,4 +1,5 @@
 const { useState, useEffect, useRef } = React
+const { NavLink } = ReactRouterDOM
 
 import { noteService } from '../services/note.service.js'
 import { imageUploadService } from '../../../services/image-upload.service.js'
@@ -211,6 +212,20 @@ export function NoteIndex() {
                         onChange={onSearchChange}
                     />
                 </div>
+                <nav className="header-nav">
+                    <NavLink to="/" className="nav-btn">
+                        <span className="material-icons">home</span>
+                        <span className="nav-text">Home</span>
+                    </NavLink>
+                    <NavLink to="/about" className="nav-btn">
+                        <span className="material-icons">info</span>
+                        <span className="nav-text">About</span>
+                    </NavLink>
+                    <NavLink to="/mail" className="nav-btn">
+                        <span className="material-icons">mail</span>
+                        <span className="nav-text">Mail</span>
+                    </NavLink>
+                </nav>
             </header>
 
             {/* Icon Sidebar - Always Visible */}
@@ -241,13 +256,40 @@ export function NoteIndex() {
                     <span className="app-title">Misskeep</span>
                 </div>
                 <nav className="sidebar-nav">
-                    <div className="nav-item active">
-                        <span className="material-icons nav-icon">lightbulb_outline</span>
-                        <span className="nav-text">Notes</span>
+                    {/* App Navigation */}
+                    <div className="nav-section">
+                        <div className="section-title">APPSUS</div>
+                        <NavLink to="/" className="nav-item">
+                            <span className="material-icons nav-icon">home</span>
+                            <span className="nav-text">Home</span>
+                        </NavLink>
+                        <NavLink to="/about" className="nav-item">
+                            <span className="material-icons nav-icon">info</span>
+                            <span className="nav-text">About</span>
+                        </NavLink>
+                        <NavLink to="/mail" className="nav-item">
+                            <span className="material-icons nav-icon">mail</span>
+                            <span className="nav-text">Mail</span>
+                        </NavLink>
+                        <NavLink to="/note" className="nav-item active">
+                            <span className="material-icons nav-icon">lightbulb_outline</span>
+                            <span className="nav-text">Notes</span>
+                        </NavLink>
                     </div>
-                    <div className="nav-item">
-                        <span className="material-icons nav-icon">notifications</span>
-                        <span className="nav-text">Reminders</span>
+                    
+                    <div className="nav-divider"></div>
+                    
+                    {/* Notes-specific Navigation */}
+                    <div className="nav-section">
+                        <div className="section-title">NOTES</div>
+                        <div className="nav-item active">
+                            <span className="material-icons nav-icon">lightbulb_outline</span>
+                            <span className="nav-text">All Notes</span>
+                        </div>
+                        <div className="nav-item">
+                            <span className="material-icons nav-icon">notifications</span>
+                            <span className="nav-text">Reminders</span>
+                        </div>
                     </div>
                     
                     <div className="nav-section">

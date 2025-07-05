@@ -91,6 +91,68 @@
     color: #5f6368;
 }
 
+/* Header Navigation */
+.header-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 16px;
+}
+
+.nav-btn {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    color: #5f6368;
+    text-decoration: none;
+    font-family: 'Google Sans', 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 80px;
+    justify-content: center;
+}
+
+.nav-btn:hover {
+    background-color: rgba(95, 99, 104, 0.08);
+    color: #1a73e8;
+}
+
+.nav-btn.active {
+    background-color: #e8f0fe;
+    color: #1a73e8;
+}
+
+.nav-btn .material-icons {
+    font-size: 20px;
+    margin-right: 4px;
+}
+
+.nav-btn .nav-text {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Hide nav text on smaller screens */
+@media (max-width: 768px) {
+    .nav-btn {
+        min-width: 48px;
+        padding: 8px;
+    }
+    
+    .nav-btn .nav-text {
+        display: none;
+    }
+    
+    .nav-btn .material-icons {
+        margin-right: 0;
+    }
+}
+
 .view-toggle {
     background: none;
     border: none;
@@ -243,13 +305,15 @@
     font-size: 14px;
     font-weight: 500;
     min-height: 48px;
+    text-decoration: none;
 }
 
 .nav-item:hover {
     background-color: rgba(26, 115, 232, 0.08);
 }
 
-.nav-item.active {
+.nav-item.active,
+.nav-item[aria-current="page"] {
     background-color: #e8f0fe;
     color: #1a73e8;
     border-radius: 0 24px 24px 0;
