@@ -5,6 +5,7 @@ import { noteService } from '../services/note.service.js'
 import { imageUploadService } from '../../../services/image-upload.service.js'
 import { NoteList } from '../cmps/NoteList.jsx'
 import { NoteEdit } from '../cmps/NoteEdit.jsx'
+import { VideoUrlInput } from '../cmps/VideoUrlInput.jsx'
 
 export function NoteIndex() {
     const [notes, setNotes] = useState([])
@@ -15,6 +16,7 @@ export function NoteIndex() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
     const [searchTerm, setSearchTerm] = useState('')
     const [activeTypeFilter, setActiveTypeFilter] = useState('all')
+    const [showVideoUrlInput, setShowVideoUrlInput] = useState(false)
     const editRef = useRef(null)
     const sidebarRef = useRef(null)
     const imageInputRef = useRef(null)
@@ -190,6 +192,28 @@ export function NoteIndex() {
         }
     }
 
+    function onCreateVideoNote() {
+        setShowVideoUrlInput(true)
+    }
+
+    function onVideoUrlSave(videoData) {
+        const newVideoNote = {
+            ...noteService.getEmptyNote('NoteVideo'),
+            info: {
+                url: videoData.url,
+                title: videoData.title,
+                txt: ''
+            }
+        }
+        setCurrentEditNote(newVideoNote)
+        setIsCreating(true)
+        setShowVideoUrlInput(false)
+    }
+
+    function onVideoUrlCancel() {
+        setShowVideoUrlInput(false)
+    }
+
     function handleImageUpload(event) {
         const file = event.target.files[0]
         if (!file) return
@@ -359,6 +383,13 @@ export function NoteIndex() {
                             <span className="material-icons nav-icon">check_box</span>
                             <span className="nav-text">Todo Notes</span>
                         </div>
+                        <div 
+                            className={`nav-item ${activeTypeFilter === 'NoteVideo' ? 'active' : ''}`}
+                            onClick={() => onTypeFilterChange('NoteVideo')}
+                        >
+                            <span className="material-icons nav-icon">videocam</span>
+                            <span className="nav-text">Video Notes</span>
+                        </div>
                     </div>
                     
                     <div className="nav-section">
@@ -408,6 +439,13 @@ export function NoteIndex() {
                                 >
                                     <span className="material-icons">add_a_photo</span>
                                 </button>
+                                <button 
+                                    className="input-action-btn" 
+                                    title="New note with video"
+                                    onClick={onCreateVideoNote}
+                                >
+                                    <span className="material-icons">videocam</span>
+                                </button>
                                 <button className="input-action-btn" title="New note with drawing">
                                     <span className="material-icons">brush</span>
                                 </button>
@@ -438,8 +476,8 @@ export function NoteIndex() {
                         <h3>No notes found</h3>
                         <p>
                             {searchTerm 
-                                ? `No notes match "${searchTerm}"${activeTypeFilter !== 'all' ? ` in ${activeTypeFilter === 'NoteTxt' ? 'text notes' : activeTypeFilter === 'NoteImg' ? 'image notes' : 'todo notes'}` : ''}`
-                                : `No ${activeTypeFilter === 'NoteTxt' ? 'text notes' : activeTypeFilter === 'NoteImg' ? 'image notes' : 'todo notes'} found`
+                                ? `No notes match "${searchTerm}"${activeTypeFilter !== 'all' ? ` in ${activeTypeFilter === 'NoteTxt' ? 'text notes' : activeTypeFilter === 'NoteImg' ? 'image notes' : activeTypeFilter === 'NoteVideo' ? 'video notes' : 'todo notes'}` : ''}`
+                                : `No ${activeTypeFilter === 'NoteTxt' ? 'text notes' : activeTypeFilter === 'NoteImg' ? 'image notes' : activeTypeFilter === 'NoteVideo' ? 'video notes' : 'todo notes'} found`
                             }
                         </p>
                         <button className="clear-search-btn" onClick={onClearSearch}>
@@ -454,6 +492,7 @@ export function NoteIndex() {
                         onTogglePin={onTogglePin}
                         onChangeNoteColor={onChangeNoteColor}
                         onEditNote={onEditNote}
+                        onAddVideo={onCreateVideoNote}
                     />
                 )}
             </main>
@@ -462,6 +501,14 @@ export function NoteIndex() {
             <button className="fab" onClick={onCreateNote}>
                 <span className="material-icons">add</span>
             </button>
+
+            {/* Video URL Input Modal */}
+            {showVideoUrlInput && (
+                <VideoUrlInput 
+                    onSave={onVideoUrlSave}
+                    onCancel={onVideoUrlCancel}
+                />
+            )}
 
             {/* Hidden file input for image uploads */}
             <input

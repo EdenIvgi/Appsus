@@ -1,11 +1,12 @@
 import { NoteTxt } from './NoteTxt.jsx'
 import { NoteImg } from './NoteImg.jsx'
 import { NoteTodos } from './NoteTodos.jsx'
+import { NoteVideo } from './NoteVideo.jsx'
 import { imageUploadService } from '../../../services/image-upload.service.js'
 
 const { useState, useEffect, useRef } = React
 
-export function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor, onEditNote }) {
+export function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor, onEditNote, onAddVideo }) {
     const [showColorPicker, setShowColorPicker] = useState(false)
     const colorPickerRef = useRef(null)
     const imageInputRef = useRef(null)
@@ -34,6 +35,8 @@ export function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor
                 return <NoteImg info={note.info} />
             case 'NoteTodos':
                 return <NoteTodos info={note.info} />
+            case 'NoteVideo':
+                return <NoteVideo info={note.info} />
             default:
                 return <div>Unknown note type</div>
         }
@@ -130,6 +133,17 @@ export function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor
                     title="Add image"
                 >
                     <span className="material-icons">image</span>
+                </button>
+
+                <button 
+                    className="action-btn"
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        onAddVideo()
+                    }}
+                    title="Add video"
+                >
+                    <span className="material-icons">videocam</span>
                 </button>
 
                 <button 

@@ -34,6 +34,18 @@ const notes = [
                 { txt: 'Coding power', doneAt: 187111111 }
             ]
         }
+    },
+    {
+        id: 'n104',
+        createdAt: 1112225,
+        type: 'NoteVideo',
+        isPinned: false,
+        info: {
+            url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+            title: 'Sample Video Note',
+            txt: 'This is a sample video note with YouTube content'
+        },
+        style: { backgroundColor: '#ffffff' }
     }
 ]
 

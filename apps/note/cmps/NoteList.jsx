@@ -1,6 +1,6 @@
 import { NotePreview } from './NotePreview.jsx'
 
-export function NoteList({ notes, onRemoveNote, onTogglePin, onChangeNoteColor, onEditNote }) {
+export function NoteList({ notes, onRemoveNote, onTogglePin, onChangeNoteColor, onEditNote, onAddVideo }) {
     if (!notes || notes.length === 0) {
         return <div className="note-list empty">No notes to display</div>
     }
@@ -24,6 +24,7 @@ export function NoteList({ notes, onRemoveNote, onTogglePin, onChangeNoteColor, 
                                 onTogglePin={onTogglePin}
                                 onChangeNoteColor={onChangeNoteColor}
                                 onEditNote={onEditNote}
+                                onAddVideo={onAddVideo}
                             />
                         ))}
                     </div>
@@ -43,6 +44,7 @@ export function NoteList({ notes, onRemoveNote, onTogglePin, onChangeNoteColor, 
                                 onTogglePin={onTogglePin}
                                 onChangeNoteColor={onChangeNoteColor}
                                 onEditNote={onEditNote}
+                                onAddVideo={onAddVideo}
                             />
                         ))}
                     </div>

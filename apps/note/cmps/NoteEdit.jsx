@@ -1,4 +1,5 @@
 import { imageUploadService } from '../../../services/image-upload.service.js'
+import { NoteVideo } from './NoteVideo.jsx'
 
 const { useState, useEffect, useRef } = React
 
@@ -46,6 +47,12 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
     function handleSave() {
         // For image notes, save even without text
         if (noteToEdit.type === 'NoteImg' && noteToEdit.info.url) {
+            onSave(noteToEdit)
+            return
+        }
+        
+        // For video notes, save even without text if there's a URL
+        if (noteToEdit.type === 'NoteVideo' && noteToEdit.info.url) {
             onSave(noteToEdit)
             return
         }
@@ -183,13 +190,38 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
                             />
                         </div>
                     )}
+
+                    {/* Video URL input for video notes */}
+                    {noteToEdit.type === 'NoteVideo' && (
+                        <div className="note-edit-video-container">
+                            <input
+                                className="note-video-url-input"
+                                placeholder="Enter video URL..."
+                                value={noteToEdit.info.url || ''}
+                                onChange={(e) => setNoteToEdit({
+                                    ...noteToEdit,
+                                    info: { ...noteToEdit.info, url: e.target.value }
+                                })}
+                                autoFocus
+                            />
+                            {noteToEdit.info.url && (
+                                <div className="note-edit-video-preview">
+                                    <NoteVideo info={noteToEdit.info} />
+                                </div>
+                            )}
+                        </div>
+                    )}
                     
                     <textarea
                         className="note-edit-textarea"
-                        placeholder={noteToEdit.type === 'NoteImg' ? 'Add a description...' : 'Take a note...'}
+                        placeholder={
+                            noteToEdit.type === 'NoteImg' ? 'Add a description...' : 
+                            noteToEdit.type === 'NoteVideo' ? 'Add a description...' : 
+                            'Take a note...'
+                        }
                         value={noteToEdit.info.txt || ''}
                         onChange={handleTxtChange}
-                        autoFocus={noteToEdit.type !== 'NoteImg'}
+                        autoFocus={noteToEdit.type !== 'NoteImg' && noteToEdit.type !== 'NoteVideo'}
                     />
 
                     {/* Edit timestamp */}

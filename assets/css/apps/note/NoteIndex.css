@@ -659,3 +659,331 @@
     margin: 0 0 40px 0;
     letter-spacing: -0.01em;
 }
+
+/* Video Note Styles */
+.note-video {
+    width: 100%;
+}
+
+.note-video h3 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #202124;
+}
+
+.note-video p {
+    margin: 8px 0 0 0;
+    font-size: 14px;
+    color: #202124;
+    line-height: 1.4;
+}
+
+.note-video-container {
+    margin: 8px 0;
+}
+
+.video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #f8f9fa;
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+}
+
+.video-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    color: #5f6368;
+    font-size: 14px;
+}
+
+.video-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    color: #5f6368;
+    text-align: center;
+}
+
+.video-error .material-icons {
+    font-size: 48px;
+    margin-bottom: 8px;
+    color: #dadce0;
+}
+
+.video-error span:not(.material-icons) {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.video-url-display {
+    font-size: 12px;
+    color: #80868b;
+    word-break: break-all;
+    max-width: 200px;
+}
+
+/* Video Note Edit Styles */
+.note-edit-video-container {
+    margin: 16px 0;
+}
+
+.note-video-url-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #202124;
+    background: transparent;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.note-video-url-input:focus {
+    border-color: #1a73e8;
+}
+
+.note-video-url-input::placeholder {
+    color: #5f6368;
+}
+
+.note-edit-video-preview {
+    margin-top: 16px;
+}
+
+/* Video URL Input Modal Styles */
+.video-url-input-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+.video-url-input-modal {
+    background: #fff;
+    border-radius: 8px;
+    max-width: 480px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.24);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.video-url-input-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 16px 24px;
+    border-bottom: 1px solid #e8eaed;
+}
+
+.video-url-input-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 500;
+    color: #202124;
+    font-family: 'Google Sans', 'Roboto', sans-serif;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #5f6368;
+    transition: background-color 0.2s ease;
+}
+
+.close-btn:hover {
+    background-color: rgba(95, 99, 104, 0.08);
+}
+
+.video-url-input-content {
+    padding: 24px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #202124;
+    font-family: 'Google Sans', 'Roboto', sans-serif;
+}
+
+.video-title-input,
+.video-url-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #202124;
+    background: #fff;
+    outline: none;
+    transition: border-color 0.2s ease;
+    font-family: 'Roboto', sans-serif;
+}
+
+.video-title-input:focus,
+.video-url-input:focus {
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 1px #1a73e8;
+}
+
+.video-url-input.valid {
+    border-color: #34a853;
+}
+
+.video-url-input.valid:focus {
+    border-color: #34a853;
+    box-shadow: 0 0 0 1px #34a853;
+}
+
+.video-url-input.error {
+    border-color: #ea4335;
+}
+
+.video-url-input.error:focus {
+    border-color: #ea4335;
+    box-shadow: 0 0 0 1px #ea4335;
+}
+
+.error-message {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+    color: #ea4335;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.success-message {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+    color: #34a853;
+    font-size: 12px;
+    font-weight: 400;
+    gap: 4px;
+}
+
+.success-message .material-icons {
+    font-size: 16px;
+}
+
+.url-examples {
+    margin-top: 16px;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e8eaed;
+}
+
+.examples-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #5f6368;
+    margin-bottom: 8px;
+}
+
+.example-url {
+    font-size: 12px;
+    color: #5f6368;
+    font-family: 'Roboto Mono', monospace;
+    margin-bottom: 4px;
+}
+
+.video-url-input-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 16px 24px 24px 24px;
+    border-top: 1px solid #e8eaed;
+}
+
+.btn-cancel,
+.btn-save {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Google Sans', 'Roboto', sans-serif;
+}
+
+.btn-cancel {
+    background: none;
+    color: #1a73e8;
+    border: 1px solid transparent;
+}
+
+.btn-cancel:hover {
+    background: rgba(26, 115, 232, 0.04);
+}
+
+.btn-save {
+    background: #1a73e8;
+    color: #fff;
+}
+
+.btn-save:hover:not(:disabled) {
+    background: #1557b0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.16);
+}
+
+.btn-save:disabled {
+    background: #dadce0;
+    color: #80868b;
+    cursor: not-allowed;
+}
