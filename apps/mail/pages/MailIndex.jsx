@@ -9,6 +9,7 @@ export function MailIndex() {
     const [mails, setMails] = useState([])
     const [filterBy, setFilterBy] = useState('all')
     const [searchTerm, setSearchTerm] = useState('')
+    const [expandedMailId, setExpandedMailId] = useState(null)
 
     useEffect(() => {
         mailService.query().then(setMails)
@@ -39,14 +40,14 @@ export function MailIndex() {
     }
 
     function addMail(newMail) {
-        setMails(prev => [newMail, ...prev])
-        const mails = JSON.parse(localStorage.getItem('mailDB')) || []
-        mails.push(newMail)
-        localStorage.setItem('mailDB', JSON.stringify(mails))
+        mailService.save(newMail).then((saved) => {
+            setMails(prev => [saved, ...prev])
+        })
     }
-    
-    
-    
+
+    function onExpand(mail) {
+        setExpandedMailId(prevId => (prevId === mail.id ? null : mail.id))
+    }
 
     return (
         <section className="mail-index">
@@ -107,7 +108,13 @@ export function MailIndex() {
                     />
                 )}
 
-                <MailList mails={filteredMails} onUpdate={updateMail} onRemove={removeMail} />
+                <MailList
+                    mails={filteredMails}
+                    onUpdate={updateMail}
+                    onRemove={removeMail}
+                    onExpand={onExpand}
+                    expandedMailId={expandedMailId}
+                />
             </main>
         </section>
     )

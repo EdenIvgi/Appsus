@@ -80,3 +80,23 @@
     font-size: 20px;
     color: #5f6368;
 }
+
+
+.mail-preview.expanded {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.mail-preview.expanded .mail-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.mail-expanded-body {
+    max-width: 900px;      
+    line-height: 1.6;     
+    padding-left: 150px;     
+  }
+  
