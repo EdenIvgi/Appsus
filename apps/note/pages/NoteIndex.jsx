@@ -14,6 +14,7 @@ export function NoteIndex() {
     const [currentEditNote, setCurrentEditNote] = useState(null)
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
     const [searchTerm, setSearchTerm] = useState('')
+    const [activeTypeFilter, setActiveTypeFilter] = useState('all')
     const editRef = useRef(null)
     const sidebarRef = useRef(null)
     const imageInputRef = useRef(null)
@@ -155,8 +156,32 @@ export function NoteIndex() {
     }
 
     function onSearchChange(event) {
-        setSearchTerm(event.target.value)
-        // You can implement search functionality here
+        const term = event.target.value
+        setSearchTerm(term)
+        
+        // Update filter and reload notes
+        const newFilter = {
+            ...filterBy,
+            txt: term
+        }
+        setFilterBy(newFilter)
+    }
+
+    function onTypeFilterChange(type) {
+        setActiveTypeFilter(type)
+        
+        // Update filter and reload notes
+        const newFilter = {
+            ...filterBy,
+            type: type === 'all' ? '' : type
+        }
+        setFilterBy(newFilter)
+    }
+
+    function onClearSearch() {
+        setSearchTerm('')
+        setActiveTypeFilter('all')
+        setFilterBy(noteService.getDefaultFilter())
     }
 
     function onCreateImageNote() {
@@ -211,6 +236,15 @@ export function NoteIndex() {
                         value={searchTerm}
                         onChange={onSearchChange}
                     />
+                    {searchTerm && (
+                        <button 
+                            className="search-clear-btn"
+                            onClick={onClearSearch}
+                            title="Clear search"
+                        >
+                            <span className="material-icons">close</span>
+                        </button>
+                    )}
                 </div>
                 <nav className="header-nav">
                     <NavLink to="/" className="nav-btn">
@@ -282,13 +316,49 @@ export function NoteIndex() {
                     {/* Notes-specific Navigation */}
                     <div className="nav-section">
                         <div className="section-title">NOTES</div>
-                        <div className="nav-item active">
+                        <div 
+                            className={`nav-item ${activeTypeFilter === 'all' ? 'active' : ''}`}
+                            onClick={() => onTypeFilterChange('all')}
+                        >
                             <span className="material-icons nav-icon">lightbulb_outline</span>
                             <span className="nav-text">All Notes</span>
                         </div>
                         <div className="nav-item">
                             <span className="material-icons nav-icon">notifications</span>
                             <span className="nav-text">Reminders</span>
+                        </div>
+                    </div>
+
+                    {/* Type Filtering */}
+                    <div className="nav-section">
+                        <div className="section-title">FILTER BY TYPE</div>
+                        <div 
+                            className={`nav-item ${activeTypeFilter === 'all' ? 'active' : ''}`}
+                            onClick={() => onTypeFilterChange('all')}
+                        >
+                            <span className="material-icons nav-icon">select_all</span>
+                            <span className="nav-text">All Types</span>
+                        </div>
+                        <div 
+                            className={`nav-item ${activeTypeFilter === 'NoteTxt' ? 'active' : ''}`}
+                            onClick={() => onTypeFilterChange('NoteTxt')}
+                        >
+                            <span className="material-icons nav-icon">text_fields</span>
+                            <span className="nav-text">Text Notes</span>
+                        </div>
+                        <div 
+                            className={`nav-item ${activeTypeFilter === 'NoteImg' ? 'active' : ''}`}
+                            onClick={() => onTypeFilterChange('NoteImg')}
+                        >
+                            <span className="material-icons nav-icon">image</span>
+                            <span className="nav-text">Image Notes</span>
+                        </div>
+                        <div 
+                            className={`nav-item ${activeTypeFilter === 'NoteTodos' ? 'active' : ''}`}
+                            onClick={() => onTypeFilterChange('NoteTodos')}
+                        >
+                            <span className="material-icons nav-icon">check_box</span>
+                            <span className="nav-text">Todo Notes</span>
                         </div>
                     </div>
                     
@@ -361,13 +431,32 @@ export function NoteIndex() {
                     </div>
                 )}
                 
-                <NoteList 
-                    notes={notes}
-                    onRemoveNote={onRemoveNote}
-                    onTogglePin={onTogglePin}
-                    onChangeNoteColor={onChangeNoteColor}
-                    onEditNote={onEditNote}
-                />
+                {notes.length === 0 && (searchTerm || activeTypeFilter !== 'all') ? (
+                    <div className="no-results">
+                        <div className="no-results-icon">
+                            <span className="material-icons">search_off</span>
+                        </div>
+                        <h3>No notes found</h3>
+                        <p>
+                            {searchTerm 
+                                ? `No notes match "${searchTerm}"${activeTypeFilter !== 'all' ? ` in ${activeTypeFilter === 'NoteTxt' ? 'text notes' : activeTypeFilter === 'NoteImg' ? 'image notes' : 'todo notes'}` : ''}`
+                                : `No ${activeTypeFilter === 'NoteTxt' ? 'text notes' : activeTypeFilter === 'NoteImg' ? 'image notes' : 'todo notes'} found`
+                            }
+                        </p>
+                        <button className="clear-search-btn" onClick={onClearSearch}>
+                            <span className="material-icons">clear_all</span>
+                            Clear filters
+                        </button>
+                    </div>
+                ) : (
+                    <NoteList 
+                        notes={notes}
+                        onRemoveNote={onRemoveNote}
+                        onTogglePin={onTogglePin}
+                        onChangeNoteColor={onChangeNoteColor}
+                        onEditNote={onEditNote}
+                    />
+                )}
             </main>
 
             {/* Floating Action Button */}

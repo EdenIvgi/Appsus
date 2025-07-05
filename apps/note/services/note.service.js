@@ -54,12 +54,7 @@ function query(filterBy = {}) {
     return storageService.query(STORAGE_KEY)
         .then(notes => {
             if (filterBy.txt) {
-                const regex = new RegExp(filterBy.txt, 'i')
-                notes = notes.filter(note => 
-                    (note.info.txt && note.info.txt.includes(filterBy.txt)) ||
-                    (note.info.title && note.info.title.includes(filterBy.txt)) ||
-                    (note.info.todos && note.info.todos.some(todo => todo.txt.includes(filterBy.txt)))
-                )
+                notes = notes.filter(note => _searchInNote(note, filterBy.txt))
             }
             if (filterBy.type) {
                 notes = notes.filter(note => note.type === filterBy.type)
@@ -69,6 +64,45 @@ function query(filterBy = {}) {
             }
             return notes
         })
+}
+
+function _searchInNote(note, searchTerm) {
+    if (!searchTerm) return true
+    
+    // Split search term into individual words and clean them
+    const searchWords = searchTerm.toLowerCase()
+        .split(/\s+/)
+        .filter(word => word.length > 0)
+    
+    if (searchWords.length === 0) return true
+    
+    // Collect all searchable text from the note
+    const searchableTexts = []
+    
+    // Add note text content
+    if (note.info.txt) {
+        searchableTexts.push(note.info.txt.toLowerCase())
+    }
+    
+    // Add note title
+    if (note.info.title) {
+        searchableTexts.push(note.info.title.toLowerCase())
+    }
+    
+    // Add todos text
+    if (note.info.todos && Array.isArray(note.info.todos)) {
+        note.info.todos.forEach(todo => {
+            if (todo.txt) {
+                searchableTexts.push(todo.txt.toLowerCase())
+            }
+        })
+    }
+    
+    // Combine all text into one string
+    const allText = searchableTexts.join(' ')
+    
+    // Check if ALL search words are found somewhere in the note
+    return searchWords.every(word => allText.includes(word))
 }
 
 function getById(noteId) {
