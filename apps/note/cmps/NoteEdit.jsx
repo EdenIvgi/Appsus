@@ -16,7 +16,7 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
         if (onChange) {
             onChange(noteToEdit)
         }
-    }, [noteToEdit, onChange])
+    }, [noteToEdit])
 
     useEffect(() => {
         function handleClickOutside(event) {

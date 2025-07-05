@@ -393,8 +393,34 @@
 }
 
 .input-actions {
-    display: none; /* Hide on mobile */
+    display: flex; /* Show on mobile */
+    gap: 4px;
+    margin-left: 8px;
 }
+
+.input-action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+    color: #5f6368;
+}
+
+.input-action-btn:hover {
+    background-color: rgba(95, 99, 104, 0.08);
+}
+
+.input-action-btn .material-icons {
+    font-size: 18px;
+}
+
+
 
 /* Floating Action Button */
 .fab {
@@ -442,21 +468,8 @@
     }
     
     .input-action-btn {
-        background: none;
-        border: none;
-        cursor: pointer;
         width: 32px;
         height: 32px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background-color 0.2s ease;
-        color: #5f6368;
-    }
-    
-    .input-action-btn:hover {
-        background-color: rgba(95, 99, 104, 0.08);
     }
     
     .input-action-btn .material-icons {
