@@ -70,7 +70,16 @@ export function NoteIndex() {
     }
 
     function onSaveNote(noteToSave) {
-        if (!noteToSave.info.txt || !noteToSave.info.txt.trim()) {
+        // For image notes, save even without text if there's a URL
+        if (noteToSave.type === 'NoteImg' && noteToSave.info.url) {
+            // Allow saving
+        }
+        // For video notes, save even without text if there's a URL
+        else if (noteToSave.type === 'NoteVideo' && noteToSave.info.url) {
+            // Allow saving
+        }
+        // For other notes, require text content
+        else if (!noteToSave.info.txt || !noteToSave.info.txt.trim()) {
             onCancelEdit()
             return
         }

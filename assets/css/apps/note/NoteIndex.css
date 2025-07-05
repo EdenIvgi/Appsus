@@ -742,6 +742,28 @@
     max-width: 200px;
 }
 
+.video-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    color: #5f6368;
+    text-align: center;
+}
+
+.video-placeholder .material-icons {
+    font-size: 48px;
+    margin-bottom: 8px;
+    color: #dadce0;
+}
+
+.video-placeholder span:not(.material-icons) {
+    font-size: 14px;
+}
+
 /* Video Note Edit Styles */
 .note-edit-video-container {
     margin: 16px 0;

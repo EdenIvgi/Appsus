@@ -61,7 +61,7 @@ export function VideoUrlInput({ onSave, onCancel }) {
 
         onSave({
             url: url.trim(),
-            title: title.trim() || 'Video Note'
+            title: title.trim() || ''
         })
     }
 

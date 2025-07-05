@@ -12,6 +12,7 @@ export function NoteVideo({ info }) {
             
             // Convert YouTube URL to embed format
             const convertedUrl = convertToEmbedUrl(info.url)
+            
             if (convertedUrl) {
                 setEmbedUrl(convertedUrl)
                 setVideoLoading(false)
@@ -19,6 +20,11 @@ export function NoteVideo({ info }) {
                 setVideoError(true)
                 setVideoLoading(false)
             }
+        } else {
+            // If no URL, show error
+            setVideoError(false)
+            setVideoLoading(false)
+            setEmbedUrl('')
         }
     }, [info.url])
 
@@ -60,7 +66,7 @@ export function NoteVideo({ info }) {
         <div className="note-video">
             {info.title && <h3>{info.title}</h3>}
             
-            {info.url && (
+            {info.url ? (
                 <div className="note-video-container">
                     {videoLoading && !videoError && (
                         <div className="video-loading">Loading video...</div>
@@ -72,20 +78,28 @@ export function NoteVideo({ info }) {
                             <span>Invalid YouTube URL</span>
                             <div className="video-url-display">{info.url}</div>
                         </div>
-                    ) : embedUrl && (
+                    ) : embedUrl ? (
                         <div className="video-wrapper">
                             <iframe
                                 src={embedUrl}
                                 title={info.title || 'YouTube video'}
                                 frameBorder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                 allowFullScreen
+                                referrerPolicy="strict-origin-when-cross-origin"
                                 onError={handleVideoError}
                                 onLoad={handleVideoLoad}
                                 style={{ display: videoLoading ? 'none' : 'block' }}
                             />
                         </div>
+                    ) : (
+                        <div className="video-loading">Processing video URL...</div>
                     )}
+                </div>
+            ) : (
+                <div className="video-placeholder">
+                    <span className="material-icons">videocam</span>
+                    <span>Video note without URL</span>
                 </div>
             )}
             
