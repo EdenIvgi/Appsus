@@ -228,7 +228,6 @@ export function NoteIndex() {
                     <span className="logo-text">Misskeep</span>
                 </div>
                 <div className="search-container">
-                    <span className="material-icons search-icon">search</span>
                     <input 
                         type="text" 
                         placeholder="Search your notes" 

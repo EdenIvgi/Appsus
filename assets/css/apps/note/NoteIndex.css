@@ -21,6 +21,7 @@
     padding: 0 16px;
     z-index: 1200; /* Higher than sidebar */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    gap: 8px;
 }
 
 .hamburger-menu {
@@ -34,13 +35,15 @@
     align-items: center;
     justify-content: center;
     color: #5f6368;
-    margin-right: 8px;
     transition: background-color 0.2s ease;
+    flex-shrink: 0;
 }
 
 .hamburger-menu:hover {
     background-color: rgba(95, 99, 104, 0.08);
 }
+
+
 
 .app-logo {
     display: flex;
@@ -66,16 +69,19 @@
     display: flex;
     align-items: center;
     background: #f1f3f4;
-    border-radius: 8px;
+    border-radius: 24px;
     padding: 0 16px;
     height: 48px;
-    margin: 0 8px;
+    max-width: none;
+    transition: all 0.2s ease;
 }
 
-.search-icon {
-    color: #5f6368;
-    margin-right: 12px;
+.search-container:focus-within {
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
+
+
 
 .search-input {
     flex: 1;
@@ -160,19 +166,33 @@
     font-weight: 500;
 }
 
-/* Hide nav text on smaller screens */
+
+
+/* Mobile Header Adjustments */
 @media (max-width: 768px) {
-    .nav-btn {
-        min-width: 48px;
-        padding: 8px;
+    .app-logo {
+        display: none; /* Hide logo on mobile like Google Keep */
     }
     
-    .nav-btn .nav-text {
-        display: none;
+    .search-container {
+        margin: 0; /* Remove all margins */
+        flex: 1; /* Take remaining space */
     }
     
-    .nav-btn .material-icons {
-        margin-right: 0;
+    .header-nav {
+        display: none; /* Hide nav buttons on mobile */
+    }
+    
+    .note-header {
+        padding: 0 16px; /* Proper padding for mobile */
+        gap: 8px; /* Small gap between elements */
+        display: flex;
+        align-items: center;
+    }
+    
+    .hamburger-menu {
+        margin-right: 0; /* Remove margin, gap handles spacing */
+        flex-shrink: 0; /* Don't shrink */
     }
 }
 
