@@ -11,9 +11,13 @@ export function MailIndex() {
     const [searchTerm, setSearchTerm] = useState('')
     const [expandedMailId, setExpandedMailId] = useState(null)
 
+
     useEffect(() => {
-        mailService.query().then(setMails)
-    }, [])
+        mailService.query({ status: 'inbox' }).then(mails => {
+            setMails(mails)
+            console.log('Loaded mails:', mails)
+        })
+    }, [filterBy])
 
     const filteredMails = mails.filter((mail) => {
         const matchesSearch =
