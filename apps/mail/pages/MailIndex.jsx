@@ -57,29 +57,36 @@ export function MailIndex() {
         <section className="mail-index">
             <aside className="mail-sidebar">
                 <button className="btn-compose" onClick={() => setIsComposing(true)}>
-                    <span className="material-icons">edit</span>
-                    Compose
+<span class="material-symbols-outlined">
+edit
+</span>                    Compose
                 </button>
 
                 <nav className="sidebar-nav">
                     <div className="nav-item active">
-                        <span className="material-icons nav-icon">inbox</span>
-                        <span>Inbox</span>
+                    <span class="material-symbols-outlined">
+inbox
+</span>                        <span>Inbox</span>
                     </div>
                     <div className="nav-item">
-                        <span className="material-icons nav-icon">star</span>
-                        <span>Starred</span>
+                    <span class="material-symbols-outlined">
+star
+</span>                        <span>Starred</span>
                     </div>
                     <div className="nav-item">
-                        <span className="material-icons nav-icon">send</span>
-                        <span>Sent</span>
+                    <span class="material-symbols-outlined">
+send
+</span>                        <span>Sent</span>
                     </div>
                     <div className="nav-item">
-                        <span className="material-icons nav-icon">drafts</span>
-                        <span>Draft</span>
+                    <span class="material-symbols-outlined">
+draft
+</span>                        <span>Draft</span>
                     </div>
                     <div className="nav-item">
-                        <span className="material-icons nav-icon">delete</span>
+                    <span class="material-symbols-outlined">
+delete
+</span>
                         <span>Trash</span>
                     </div>
                 </nav>
@@ -88,8 +95,9 @@ export function MailIndex() {
             <main className="mail-main">
                 <div className="mail-controls">
                     <div className="search-wrapper">
-                        <span className="material-icons search-icon">search</span>
-                        <input
+                    <span class="material-symbols-outlined">
+search
+</span>                        <input
                             className="search-input"
                             type="text"
                             placeholder="Search mail"
