@@ -69,10 +69,11 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
         onCancel()
     }
 
-    function handleColorChange(color) {
+    function handleColorChange(colorValue) {
+        const actualColor = colorValue === 'default' ? '#ffffff' : colorValue
         const updatedNote = {
             ...noteToEdit,
-            style: { ...noteToEdit.style, backgroundColor: color }
+            style: { ...(noteToEdit.style || {}), backgroundColor: actualColor }
         }
         setNoteToEdit(updatedNote)
         setShowColorPicker(false)
@@ -96,20 +97,20 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
         }
     }
 
-    // Google Keep inspired color palette
+    // Google Keep exact color palette with names
     const colors = [
-        '#ffffff', // Default white
-        '#fff475', // Yellow
-        '#ffcc02', // Orange
-        '#f28b82', // Red/Coral
-        '#fdcfe8', // Pink
-        '#d7aefb', // Purple
-        '#cbf0f8', // Light Blue
-        '#aecbfa', // Blue
-        '#a7ffeb', // Teal
-        '#ccff90', // Green
-        '#e6c9a8', // Brown
-        '#e8eaed'  // Gray
+        { value: 'default', name: 'Default' },
+        { value: '#faafa9', name: 'Coral' },
+        { value: '#f29f75', name: 'Peach' },
+        { value: '#fff8b9', name: 'Sand' },
+        { value: '#e2f6d3', name: 'Mint' },
+        { value: '#b4ded4', name: 'Sage' },
+        { value: '#d3e4ec', name: 'Fog' },
+        { value: '#afccdc', name: 'Storm' },
+        { value: '#d3bedb', name: 'Dusk' },
+        { value: '#f5e2dc', name: 'Blossom' },
+        { value: '#e9e3d3', name: 'Clay' },
+        { value: '#efeff1', name: 'Chalk' }
     ]
 
     function handleAddImage() {
@@ -238,13 +239,14 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
                                 </button>
                                 {showColorPicker && (
                                     <div className="color-picker-modal-popup">
-                                        {colors.map(color => (
+                                        {colors.map(colorObj => (
                                             <button
-                                                key={color}
-                                                className="color-btn-modal-popup"
-                                                style={{ backgroundColor: color }}
-                                                onClick={() => handleColorChange(color)}
-                                                title="Change color"
+                                                key={colorObj.value}
+                                                type="button"
+                                                className={`color-btn-modal-popup ${colorObj.value === 'default' ? 'default-color' : ''}`}
+                                                style={{ backgroundColor: colorObj.value === 'default' ? '#ffffff' : colorObj.value }}
+                                                onClick={() => handleColorChange(colorObj.value)}
+                                                title={colorObj.name}
                                             />
                                         ))}
                                     </div>

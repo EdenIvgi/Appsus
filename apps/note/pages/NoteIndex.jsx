@@ -156,7 +156,7 @@ export function NoteIndex() {
         if (noteToUpdate) {
             const updatedNote = { 
                 ...noteToUpdate, 
-                style: { ...noteToUpdate.style, backgroundColor } 
+                style: { ...(noteToUpdate.style || {}), backgroundColor } 
             }
             onUpdateNote(updatedNote)
         }

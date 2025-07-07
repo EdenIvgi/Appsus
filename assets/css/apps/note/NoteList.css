@@ -77,12 +77,13 @@
     border-radius: 8px;
     padding: 12px 16px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-    transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1), background-color 0.4s ease;
     position: relative;
     cursor: pointer;
     font-family: 'Roboto', sans-serif;
     height: fit-content;
     break-inside: avoid; /* Prevent breaking in masonry layouts */
+    overflow: visible;
 }
 
 .note-preview:hover {
@@ -227,7 +228,7 @@
     margin-top: 8px;
     padding: 4px 0;
     max-width: 100%;
-    overflow: hidden;
+    overflow: visible;
 }
 
 /* Show actions on hover with smooth animation */
@@ -298,7 +299,7 @@
 
 .color-picker-popup {
     position: absolute;
-    bottom: 40px;
+    top: 40px;
     left: 50%;
     transform: translateX(-50%);
     background: #fff;
@@ -307,21 +308,21 @@
     padding: 8px;
     display: flex;
     gap: 6px;
-    z-index: 1000;
+    z-index: 1500;
     white-space: nowrap;
 }
 
 .color-picker-popup::before {
     content: '';
     position: absolute;
-    bottom: -8px;
+    top: -8px;
     left: 50%;
     transform: translateX(-50%);
     width: 0;
     height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-top: 8px solid #fff;
+    border-bottom: 8px solid #fff;
 }
 
 .color-btn-popup {
@@ -344,6 +345,48 @@
 }
 
 .color-btn-popup[style*="#ffffff"]:hover {
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Default color button with diagonal line */
+.color-btn-popup.default-color {
+    border-color: #e0e0e0;
+    background: linear-gradient(
+        45deg,
+        transparent 40%,
+        #9aa0a6 40%,
+        #9aa0a6 60%,
+        transparent 60%
+    );
+    background-size: 100% 100%;
+    position: relative;
+}
+
+.color-btn-popup.default-color::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    background: #ffffff;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.color-btn-popup.default-color::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 14px;
+    height: 1px;
+    background: #9aa0a6;
+    transform: translate(-50%, -50%) rotate(45deg);
+    z-index: 2;
+}
+
+.color-btn-popup.default-color:hover {
     border-color: rgba(0, 0, 0, 0.2);
 }
 
@@ -530,7 +573,7 @@
 
 .color-picker-modal-popup {
     position: absolute;
-    bottom: 40px;
+    top: 40px;
     left: 50%;
     transform: translateX(-50%);
     background: #fff;
@@ -546,14 +589,14 @@
 .color-picker-modal-popup::before {
     content: '';
     position: absolute;
-    bottom: -8px;
+    top: -8px;
     left: 50%;
     transform: translateX(-50%);
     width: 0;
     height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-top: 8px solid #fff;
+    border-bottom: 8px solid #fff;
 }
 
 .color-btn-modal-popup {
@@ -576,6 +619,48 @@
 }
 
 .color-btn-modal-popup[style*="#ffffff"]:hover {
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Default color button with diagonal line - Modal version */
+.color-btn-modal-popup.default-color {
+    border-color: #e0e0e0;
+    background: linear-gradient(
+        45deg,
+        transparent 40%,
+        #9aa0a6 40%,
+        #9aa0a6 60%,
+        transparent 60%
+    );
+    background-size: 100% 100%;
+    position: relative;
+}
+
+.color-btn-modal-popup.default-color::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    background: #ffffff;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.color-btn-modal-popup.default-color::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 14px;
+    height: 1px;
+    background: #9aa0a6;
+    transform: translate(-50%, -50%) rotate(45deg);
+    z-index: 2;
+}
+
+.color-btn-modal-popup.default-color:hover {
     border-color: rgba(0, 0, 0, 0.2);
 }
 
