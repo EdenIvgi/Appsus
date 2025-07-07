@@ -81,7 +81,7 @@ export function VideoUrlInput({ onSave, onCancel }) {
                 <div className="video-url-input-header">
                     <h3>Add YouTube Video</h3>
                     <button className="close-btn" onClick={handleCancel}>
-                        <span className="material-icons">close</span>
+                        <span className="material-symbols-outlined">close</span>
                     </button>
                 </div>
                 
@@ -112,7 +112,7 @@ export function VideoUrlInput({ onSave, onCancel }) {
                         {error && <div className="error-message">{error}</div>}
                         {isValidUrl && (
                             <div className="success-message">
-                                <span className="material-icons">check_circle</span>
+                                <span className="material-symbols-outlined">check_circle</span>
                                 Valid YouTube URL
                             </div>
                         )}

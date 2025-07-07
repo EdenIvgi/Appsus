@@ -124,7 +124,7 @@ export function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor
                     }}
                     title={note.isPinned ? 'Unpin note' : 'Pin note'}
                 >
-                    <span className="material-icons">push_pin</span>
+                    <span className="material-symbols-outlined">push_pin</span>
                 </button>
 
                 <button 
@@ -132,7 +132,7 @@ export function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor
                     onClick={handleAddImage}
                     title="Add image"
                 >
-                    <span className="material-icons">image</span>
+                    <span className="material-symbols-outlined">image</span>
                 </button>
 
                 <button 
@@ -143,7 +143,7 @@ export function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor
                     }}
                     title="Add video"
                 >
-                    <span className="material-icons">videocam</span>
+                    <span className="material-symbols-outlined">videocam</span>
                 </button>
 
                 <button 
@@ -154,7 +154,7 @@ export function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor
                     }}
                     title="Archive"
                 >
-                    <span className="material-icons">archive</span>
+                    <span className="material-symbols-outlined">archive</span>
                 </button>
 
                 <div ref={colorPickerRef} className="color-picker-container">
@@ -163,7 +163,7 @@ export function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor
                         onClick={toggleColorPicker}
                         title="Background options"
                     >
-                        <span className="material-icons">palette</span>
+                        <span className="material-symbols-outlined">palette</span>
                     </button>
 
                     {showColorPicker && (
@@ -192,7 +192,7 @@ export function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor
                     }}
                     title="More"
                 >
-                    <span className="material-icons">more_vert</span>
+                    <span className="material-symbols-outlined">more_vert</span>
                 </button>
                 
                 <button 
@@ -203,7 +203,7 @@ export function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor
                     }}
                     title="Delete note"
                 >
-                    <span className="material-icons">delete</span>
+                    <span className="material-symbols-outlined">delete</span>
                 </button>
             </div>
 

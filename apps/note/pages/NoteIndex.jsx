@@ -254,7 +254,7 @@ export function NoteIndex() {
             {/* Mobile Header */}
             <header className="note-header">
                 <button className="hamburger-menu" onClick={onToggleSidebar}>
-                    <span className="material-icons">menu</span>
+                    <span className="material-symbols-outlined">menu</span>
                 </button>
                 <div className="app-logo">
                     <span className="logo-icon">📝</span>
@@ -274,21 +274,21 @@ export function NoteIndex() {
                             onClick={onClearSearch}
                             title="Clear search"
                         >
-                            <span className="material-icons">close</span>
+                            <span className="material-symbols-outlined">close</span>
                         </button>
                     )}
                 </div>
                 <nav className="header-nav">
                     <NavLink to="/" className="nav-btn">
-                        <span className="material-icons">home</span>
+                        <span className="material-symbols-outlined">home</span>
                         <span className="nav-text">Home</span>
                     </NavLink>
                     <NavLink to="/about" className="nav-btn">
-                        <span className="material-icons">info</span>
+                        <span className="material-symbols-outlined">info</span>
                         <span className="nav-text">About</span>
                     </NavLink>
                     <NavLink to="/mail" className="nav-btn">
-                        <span className="material-icons">mail</span>
+                        <span className="material-symbols-outlined">mail</span>
                         <span className="nav-text">Mail</span>
                     </NavLink>
                 </nav>
@@ -299,16 +299,16 @@ export function NoteIndex() {
                 <div className="icon-spacer"></div>
                 <nav className="icon-nav">
                     <div className="icon-nav-item active">
-                        <span className="material-icons">lightbulb_outline</span>
+                        <span className="material-symbols-outlined">lightbulb</span>
                     </div>
                     <div className="icon-nav-item">
-                        <span className="material-icons">notifications</span>
+                        <span className="material-symbols-outlined">notifications</span>
                     </div>
                     <div className="icon-nav-item">
-                        <span className="material-icons">archive</span>
+                        <span className="material-symbols-outlined">archive</span>
                     </div>
                     <div className="icon-nav-item">
-                        <span className="material-icons">delete</span>
+                        <span className="material-symbols-outlined">delete</span>
                     </div>
                 </nav>
             </aside>
@@ -326,19 +326,19 @@ export function NoteIndex() {
                     <div className="nav-section">
                         <div className="section-title">APPSUS</div>
                         <NavLink to="/" className="nav-item">
-                            <span className="material-icons nav-icon">home</span>
+                            <span className="material-symbols-outlined nav-icon">home</span>
                             <span className="nav-text">Home</span>
                         </NavLink>
                         <NavLink to="/about" className="nav-item">
-                            <span className="material-icons nav-icon">info</span>
+                            <span className="material-symbols-outlined nav-icon">info</span>
                             <span className="nav-text">About</span>
                         </NavLink>
                         <NavLink to="/mail" className="nav-item">
-                            <span className="material-icons nav-icon">mail</span>
+                            <span className="material-symbols-outlined nav-icon">mail</span>
                             <span className="nav-text">Mail</span>
                         </NavLink>
                         <NavLink to="/note" className="nav-item active">
-                            <span className="material-icons nav-icon">lightbulb_outline</span>
+                            <span className="material-symbols-outlined nav-icon">lightbulb</span>
                             <span className="nav-text">Notes</span>
                         </NavLink>
                     </div>
@@ -352,11 +352,11 @@ export function NoteIndex() {
                             className={`nav-item ${activeTypeFilter === 'all' ? 'active' : ''}`}
                             onClick={() => onTypeFilterChange('all')}
                         >
-                            <span className="material-icons nav-icon">lightbulb_outline</span>
+                            <span className="material-symbols-outlined nav-icon">lightbulb</span>
                             <span className="nav-text">All Notes</span>
                         </div>
                         <div className="nav-item">
-                            <span className="material-icons nav-icon">notifications</span>
+                            <span className="material-symbols-outlined nav-icon">notifications</span>
                             <span className="nav-text">Reminders</span>
                         </div>
                     </div>
@@ -368,35 +368,35 @@ export function NoteIndex() {
                             className={`nav-item ${activeTypeFilter === 'all' ? 'active' : ''}`}
                             onClick={() => onTypeFilterChange('all')}
                         >
-                            <span className="material-icons nav-icon">select_all</span>
+                            <span className="material-symbols-outlined nav-icon">select_all</span>
                             <span className="nav-text">All Types</span>
                         </div>
                         <div 
                             className={`nav-item ${activeTypeFilter === 'NoteTxt' ? 'active' : ''}`}
                             onClick={() => onTypeFilterChange('NoteTxt')}
                         >
-                            <span className="material-icons nav-icon">text_fields</span>
+                            <span className="material-symbols-outlined nav-icon">text_fields</span>
                             <span className="nav-text">Text Notes</span>
                         </div>
                         <div 
                             className={`nav-item ${activeTypeFilter === 'NoteImg' ? 'active' : ''}`}
                             onClick={() => onTypeFilterChange('NoteImg')}
                         >
-                            <span className="material-icons nav-icon">image</span>
+                            <span className="material-symbols-outlined nav-icon">image</span>
                             <span className="nav-text">Image Notes</span>
                         </div>
                         <div 
                             className={`nav-item ${activeTypeFilter === 'NoteTodos' ? 'active' : ''}`}
                             onClick={() => onTypeFilterChange('NoteTodos')}
                         >
-                            <span className="material-icons nav-icon">check_box</span>
+                            <span className="material-symbols-outlined nav-icon">check_box</span>
                             <span className="nav-text">Todo Notes</span>
                         </div>
                         <div 
                             className={`nav-item ${activeTypeFilter === 'NoteVideo' ? 'active' : ''}`}
                             onClick={() => onTypeFilterChange('NoteVideo')}
                         >
-                            <span className="material-icons nav-icon">videocam</span>
+                            <span className="material-symbols-outlined nav-icon">videocam</span>
                             <span className="nav-text">Video Notes</span>
                         </div>
                     </div>
@@ -404,32 +404,32 @@ export function NoteIndex() {
                     <div className="nav-section">
                         <div className="section-title">LABELS</div>
                         <div className="nav-item">
-                            <span className="material-icons nav-icon">add</span>
+                            <span className="material-symbols-outlined nav-icon">add</span>
                             <span className="nav-text">Create new label</span>
                         </div>
                     </div>
                     
                     <div className="nav-item">
-                        <span className="material-icons nav-icon">archive</span>
+                        <span className="material-symbols-outlined nav-icon">archive</span>
                         <span className="nav-text">Archive</span>
                     </div>
                     <div className="nav-item">
-                        <span className="material-icons nav-icon">delete</span>
+                        <span className="material-symbols-outlined nav-icon">delete</span>
                         <span className="nav-text">Trash</span>
                     </div>
                     
                     <div className="nav-divider"></div>
                     
                     <div className="nav-item">
-                        <span className="material-icons nav-icon">settings</span>
+                        <span className="material-symbols-outlined nav-icon">settings</span>
                         <span className="nav-text">Settings</span>
                     </div>
                     <div className="nav-item">
-                        <span className="material-icons nav-icon">feedback</span>
+                        <span className="material-symbols-outlined nav-icon">feedback</span>
                         <span className="nav-text">Send app feedback</span>
                     </div>
                     <div className="nav-item">
-                        <span className="material-icons nav-icon">help</span>
+                        <span className="material-symbols-outlined nav-icon">help</span>
                         <span className="nav-text">Help</span>
                     </div>
                 </nav>
@@ -446,20 +446,20 @@ export function NoteIndex() {
                                     title="New note with image"
                                     onClick={onCreateImageNote}
                                 >
-                                    <span className="material-icons">add_a_photo</span>
+                                    <span className="material-symbols-outlined">add_a_photo</span>
                                 </button>
                                 <button 
                                     className="input-action-btn" 
                                     title="New note with video"
                                     onClick={onCreateVideoNote}
                                 >
-                                    <span className="material-icons">videocam</span>
+                                    <span className="material-symbols-outlined">videocam</span>
                                 </button>
                                 <button className="input-action-btn" title="New note with drawing">
-                                    <span className="material-icons">brush</span>
+                                    <span className="material-symbols-outlined">brush</span>
                                 </button>
                                 <button className="input-action-btn" title="More">
-                                    <span className="material-icons">more_vert</span>
+                                    <span className="material-symbols-outlined">more_vert</span>
                                 </button>
                             </div>
                         </div>
@@ -480,7 +480,7 @@ export function NoteIndex() {
                 {notes.length === 0 && (searchTerm || activeTypeFilter !== 'all') ? (
                     <div className="no-results">
                         <div className="no-results-icon">
-                            <span className="material-icons">search_off</span>
+                            <span className="material-symbols-outlined">search_off</span>
                         </div>
                         <h3>No notes found</h3>
                         <p>
@@ -490,7 +490,7 @@ export function NoteIndex() {
                             }
                         </p>
                         <button className="clear-search-btn" onClick={onClearSearch}>
-                            <span className="material-icons">clear_all</span>
+                            <span className="material-symbols-outlined">clear_all</span>
                             Clear filters
                         </button>
                     </div>
@@ -508,7 +508,7 @@ export function NoteIndex() {
 
             {/* Floating Action Button */}
             <button className="fab" onClick={onCreateNote}>
-                <span className="material-icons">add</span>
+                <span className="material-symbols-outlined">add</span>
             </button>
 
             {/* Video URL Input Modal */}

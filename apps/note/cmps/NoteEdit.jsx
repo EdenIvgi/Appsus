@@ -173,7 +173,7 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
                             onClick={handleTogglePin}
                             title={noteToEdit.isPinned ? 'Unpin note' : 'Pin note'}
                         >
-                            <span className="material-icons">push_pin</span>
+                            <span className="material-symbols-outlined">push_pin</span>
                         </button>
                     </div>
 
@@ -234,7 +234,7 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
                         <div className="note-edit-tools">
                             <div ref={colorPickerRef} className="color-picker-container-modal">
                                 <button className="tool-btn" onClick={toggleColorPicker} title="Background options">
-                                    <span className="material-icons">palette</span>
+                                    <span className="material-symbols-outlined">palette</span>
                                 </button>
                                 {showColorPicker && (
                                     <div className="color-picker-modal-popup">
@@ -251,19 +251,19 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
                                 )}
                             </div>
                             <button className="tool-btn" onClick={handleAddImage} title="Add image">
-                                <span className="material-icons">image</span>
+                                <span className="material-symbols-outlined">image</span>
                             </button>
                             <button className="tool-btn" title="Archive">
-                                <span className="material-icons">archive</span>
+                                <span className="material-symbols-outlined">archive</span>
                             </button>
                             <button className="tool-btn" title="More">
-                                <span className="material-icons">more_vert</span>
+                                <span className="material-symbols-outlined">more_vert</span>
                             </button>
                             <button className="tool-btn" title="Undo">
-                                <span className="material-icons">undo</span>
+                                <span className="material-symbols-outlined">undo</span>
                             </button>
                             <button className="tool-btn" title="Redo">
-                                <span className="material-icons">redo</span>
+                                <span className="material-symbols-outlined">redo</span>
                             </button>
                         </div>
                         
