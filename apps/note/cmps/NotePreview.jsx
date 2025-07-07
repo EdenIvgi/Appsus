@@ -6,7 +6,7 @@ import { imageUploadService } from '../../../services/image-upload.service.js'
 
 const { useState, useEffect, useRef, memo } = React
 
-export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor, onEditNote, onAddVideo }) {
+export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor, onEditNote, onAddVideo, onUpdateNote }) {
     const [showColorPicker, setShowColorPicker] = useState(false)
     const colorPickerRef = useRef(null)
     const imageInputRef = useRef(null)
@@ -41,6 +41,16 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
 
 
     
+    function handleTodoUpdate(todoInfo) {
+        if (onUpdateNote) {
+            const updatedNote = {
+                ...note,
+                info: { ...note.info, ...todoInfo }
+            }
+            onUpdateNote(updatedNote)
+        }
+    }
+
     function DynamicNoteComponent({ note }) {
         switch (note.type) {
             case 'NoteTxt':
@@ -48,7 +58,7 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
             case 'NoteImg':
                 return <NoteImg info={note.info} />
             case 'NoteTodos':
-                return <NoteTodos info={note.info} />
+                return <NoteTodos info={note.info} onUpdate={handleTodoUpdate} isEditable={false} />
             case 'NoteVideo':
                 return <NoteVideo info={note.info} />
             default:
@@ -136,6 +146,19 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
         { value: '#efeff1', name: 'Chalk' }
     ]
 
+    function handleConvertToList(e) {
+        e.stopPropagation()
+        const updatedNote = {
+            ...note,
+            type: 'NoteTodos',
+            info: {
+                title: note.info.title || '',
+                todos: note.info.txt ? [{ txt: note.info.txt, doneAt: null }] : []
+            }
+        }
+        onEditNote(updatedNote)
+    }
+
     return (
         <article 
             ref={notePreviewRef}
@@ -144,21 +167,23 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
             onMouseLeave={handleNoteMouseLeave}
             onMouseEnter={handleNoteMouseEnter}
         >
+            {/* Pin button in top-right corner */}
+            <button 
+                className={`btn-pin-corner ${note.isPinned ? 'pinned' : ''}`}
+                onClick={(e) => {
+                    e.stopPropagation()
+                    onTogglePin(note.id)
+                }}
+                title={note.isPinned ? 'Unpin note' : 'Pin note'}
+            >
+                <span className="material-symbols-outlined">push_pin</span>
+            </button>
+
             <div className="note-content" onClick={handleNoteClick}>
                 <DynamicNoteComponent note={note} />
             </div>
             
             <div className="note-actions">
-                <button 
-                    className={`btn-pin ${note.isPinned ? 'pinned' : ''}`}
-                    onClick={(e) => {
-                        e.stopPropagation()
-                        onTogglePin(note.id)
-                    }}
-                    title={note.isPinned ? 'Unpin note' : 'Pin note'}
-                >
-                    <span className="material-symbols-outlined">push_pin</span>
-                </button>
 
                 <button 
                     className="action-btn"
@@ -178,6 +203,17 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
                 >
                     <span className="material-symbols-outlined">videocam</span>
                 </button>
+
+                {/* Only show list button for non-todo notes */}
+                {note.type !== 'NoteTodos' && (
+                    <button 
+                        className="action-btn"
+                        onClick={handleConvertToList}
+                        title="Convert to list"
+                    >
+                        <span className="material-symbols-outlined">checklist</span>
+                    </button>
+                )}
 
                 <button 
                     className="action-btn"

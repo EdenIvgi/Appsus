@@ -207,13 +207,30 @@
     font-family: 'Roboto', sans-serif;
 }
 
-.note-todos ul {
+.todo-title-input {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    font-weight: 400;
+    color: #202124;
+    font-family: 'Roboto', sans-serif;
+    background: transparent;
+    margin-bottom: 8px;
+    padding: 0;
+}
+
+.todo-title-input::placeholder {
+    color: #9aa0a6;
+}
+
+.todo-list {
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
-.note-todos li {
+.todo-item {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -221,19 +238,198 @@
     font-size: 14px;
     color: #202124;
     font-family: 'Roboto', sans-serif;
+    position: relative;
 }
 
-.note-todos li.done {
+.todo-item.done {
     opacity: 0.6;
 }
 
-.note-todos li.done span {
+.todo-item.done .todo-text {
     text-decoration: line-through;
 }
 
-.note-todos input[type="checkbox"] {
+.todo-item.done .todo-text-input {
+    text-decoration: line-through;
+}
+
+.todo-checkbox {
     margin: 0;
     cursor: pointer;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.todo-text {
+    flex: 1;
+    word-wrap: break-word;
+}
+
+.todo-text-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    color: #202124;
+    font-family: 'Roboto', sans-serif;
+    padding: 2px 0;
+}
+
+.todo-text-input::placeholder {
+    color: #9aa0a6;
+}
+
+.todo-delete-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #5f6368;
+    opacity: 0;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.todo-item:hover .todo-delete-btn {
+    opacity: 1;
+}
+
+.todo-delete-btn:hover {
+    background-color: rgba(95, 99, 104, 0.08);
+    color: #d93025;
+}
+
+.todo-delete-btn .material-symbols-outlined {
+    font-size: 16px;
+}
+
+.add-todo-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 4px 0;
+}
+
+.add-icon {
+    font-size: 16px;
+    color: #5f6368;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+    padding: 2px;
+    border-radius: 50%;
+}
+
+.add-icon:hover {
+    color: #1a73e8;
+    background-color: rgba(26, 115, 232, 0.1);
+}
+
+.add-todo-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    color: #202124;
+    font-family: 'Roboto', sans-serif;
+    padding: 2px 0;
+}
+
+.add-todo-input::placeholder {
+    color: #9aa0a6;
+}
+
+/* Todo editing in modal styles */
+.note-edit-todos-container {
+    padding: 8px 0;
+}
+
+.note-edit-todos-container .note-todos {
+    width: 100%;
+}
+
+.note-edit-todos-container .todo-title-input {
+    font-size: 22px;
+    font-weight: 400;
+    margin-bottom: 16px;
+}
+
+.note-edit-todos-container .todo-item {
+    margin-bottom: 8px;
+    padding: 4px 0;
+}
+
+.note-edit-todos-container .add-todo-container {
+    margin-top: 12px;
+}
+
+/* Empty todo placeholder */
+.empty-todo-placeholder {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #9aa0a6;
+    font-size: 14px;
+    font-style: italic;
+    padding: 8px 0;
+}
+
+.empty-todo-placeholder .material-symbols-outlined {
+    font-size: 18px;
+}
+
+/* Pin button in corner - Google Keep Style */
+.btn-pin-corner {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #5f6368;
+    opacity: 0;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.note-preview:hover .btn-pin-corner {
+    opacity: 1;
+}
+
+.btn-pin-corner:hover {
+    background-color: rgba(95, 99, 104, 0.08);
+}
+
+.btn-pin-corner.pinned {
+    opacity: 1;
+    color: #137333;
+}
+
+.btn-pin-corner.pinned:hover {
+    background-color: rgba(19, 115, 51, 0.08);
+}
+
+.btn-pin-corner .material-symbols-outlined {
+    font-size: 18px;
+    transform: rotate(45deg);
+}
+
+.btn-pin-corner.pinned .material-symbols-outlined {
+    transform: rotate(0deg);
 }
 
 /* Note Actions - Google Keep Style */

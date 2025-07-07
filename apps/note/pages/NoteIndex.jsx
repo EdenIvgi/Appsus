@@ -96,12 +96,17 @@ export function NoteIndex() {
     }, [notes, searchTerm, activeTypeFilter])
 
     const onCreateNote = useCallback(() => {
+        console.log('⚡ REGULAR CREATE NOTE CLICKED - Creating text note')
         const emptyNote = noteService.getEmptyNote()
+        console.log('📝 Created empty note:', emptyNote)
         setCurrentEditNote(emptyNote)
         setIsCreating(true)
+        console.log('✅ Set creating to true and current edit note')
     }, [])
 
     const onSaveNote = useCallback((noteToSave) => {
+        console.log('💾 NoteIndex SAVING NOTE:', noteToSave)
+        
         // For image notes, save even without text if there's a URL
         if (noteToSave.type === 'NoteImg' && noteToSave.info.url) {
             // Allow saving
@@ -110,8 +115,14 @@ export function NoteIndex() {
         else if (noteToSave.type === 'NoteVideo' && noteToSave.info.url) {
             // Allow saving
         }
-        // For other notes, require text content
+        // For todo notes, always allow saving (they're handled in NoteEdit)
+        else if (noteToSave.type === 'NoteTodos') {
+            console.log('✅ Todo note - allowing save')
+            // Allow saving
+        }
+        // For text notes, require text content
         else if (!noteToSave.info.txt || !noteToSave.info.txt.trim()) {
+            console.log('❌ Text note has no content - canceling')
             setIsCreating(false)
             setEditingNote(null)
             setCurrentEditNote(null)
@@ -209,6 +220,19 @@ export function NoteIndex() {
         })
     }, [])
 
+    const onUpdateNote = useCallback((updatedNote) => {
+        setNotes(prevNotes => {
+            // Save to storage in background
+            noteService.save(updatedNote).catch(err => {
+                console.error('Error updating note:', err)
+            })
+            
+            return prevNotes.map(note => 
+                note.id === updatedNote.id ? updatedNote : note
+            )
+        })
+    }, [])
+
     const onToggleSidebar = useCallback(() => {
         setIsSidebarOpen(prev => !prev)
     }, [])
@@ -238,6 +262,15 @@ export function NoteIndex() {
 
     const onCreateVideoNote = useCallback(() => {
         setShowVideoUrlInput(true)
+    }, [])
+
+    const onCreateTodoNote = useCallback(() => {
+        console.log('🔥 TODO BUTTON CLICKED - Creating new todo note')
+        const newTodoNote = noteService.getEmptyNote('NoteTodos')
+        console.log('📝 Created empty todo note:', newTodoNote)
+        setCurrentEditNote(newTodoNote)
+        setIsCreating(true)
+        console.log('✅ Set creating to true and current edit note')
     }, [])
 
     const onVideoUrlSave = useCallback((videoData) => {
@@ -479,16 +512,32 @@ export function NoteIndex() {
                                 <button 
                                     className="input-action-btn" 
                                     title="New note with image"
-                                    onClick={onCreateImageNote}
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        onCreateImageNote()
+                                    }}
                                 >
                                     <span className="material-symbols-outlined">add_a_photo</span>
                                 </button>
                                 <button 
                                     className="input-action-btn" 
                                     title="New note with video"
-                                    onClick={onCreateVideoNote}
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        onCreateVideoNote()
+                                    }}
                                 >
                                     <span className="material-symbols-outlined">videocam</span>
+                                </button>
+                                <button 
+                                    className="input-action-btn" 
+                                    title="New list"
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        onCreateTodoNote()
+                                    }}
+                                >
+                                    <span className="material-symbols-outlined">check_box</span>
                                 </button>
                                 <button className="input-action-btn" title="New note with drawing">
                                     <span className="material-symbols-outlined">brush</span>
@@ -537,6 +586,7 @@ export function NoteIndex() {
                         onChangeNoteColor={onChangeNoteColor}
                         onEditNote={onEditNote}
                         onAddVideo={onCreateVideoNote}
+                        onUpdateNote={onUpdateNote}
                     />
                 )}
             </main>

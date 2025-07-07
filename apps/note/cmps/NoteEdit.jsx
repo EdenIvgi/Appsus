@@ -1,5 +1,6 @@
 import { imageUploadService } from '../../../services/image-upload.service.js'
 import { NoteVideo } from './NoteVideo.jsx'
+import { NoteTodos } from './NoteTodos.jsx'
 
 const { useState, useEffect, useRef } = React
 
@@ -10,6 +11,9 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
     const imageInputRef = useRef(null)
 
     useEffect(() => {
+        console.log('🎨 NOTE EDIT COMPONENT - Received note:', note)
+        console.log('📋 Note type:', note && note.type)
+        console.log('📝 Note info:', note && note.info)
         setNoteToEdit(note)
     }, [note])
 
@@ -57,6 +61,27 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
             return
         }
         
+        // For todo notes, always save (like Google Keep does)
+        if (noteToEdit.type === 'NoteTodos') {
+            console.log('💾 SAVING TODO NOTE:', noteToEdit)
+            console.log('📋 Todo info:', noteToEdit.info)
+            console.log('📝 Title:', noteToEdit.info.title)
+            console.log('✅ Todos:', noteToEdit.info.todos)
+            
+            // Ensure there's always at least an empty structure
+            let todoToSave = { ...noteToEdit }
+            if (!todoToSave.info.todos) {
+                todoToSave.info.todos = []
+            }
+            if (!todoToSave.info.title) {
+                todoToSave.info.title = ''
+            }
+            
+            console.log('✅ Saving todo note with structure:', todoToSave)
+            onSave(todoToSave)
+            return
+        }
+        
         // For text notes, require some content
         if (!noteToEdit.info.txt || !noteToEdit.info.txt.trim()) {
             onCancel()
@@ -87,6 +112,14 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
         const updatedNote = {
             ...noteToEdit,
             isPinned: !noteToEdit.isPinned
+        }
+        setNoteToEdit(updatedNote)
+    }
+
+    function handleTodoUpdate(todoInfo) {
+        const updatedNote = {
+            ...noteToEdit,
+            info: { ...noteToEdit.info, ...todoInfo }
         }
         setNoteToEdit(updatedNote)
     }
@@ -160,15 +193,18 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
                 >
                     {/* Header with pin button */}
                     <div className="note-edit-header">
-                        <input
-                            className="note-title-input"
-                            placeholder="Title"
-                            value={noteToEdit.info.title || ''}
-                            onChange={(e) => setNoteToEdit({
-                                ...noteToEdit,
-                                info: { ...noteToEdit.info, title: e.target.value }
-                            })}
-                        />
+                        {/* Only show title input for non-todo notes */}
+                        {noteToEdit.type !== 'NoteTodos' && (
+                            <input
+                                className="note-title-input"
+                                placeholder="Title"
+                                value={noteToEdit.info.title || ''}
+                                onChange={(e) => setNoteToEdit({
+                                    ...noteToEdit,
+                                    info: { ...noteToEdit.info, title: e.target.value }
+                                })}
+                            />
+                        )}
                         <button 
                             className={`btn-pin-modal ${noteToEdit.isPinned ? 'pinned' : ''}`}
                             onClick={handleTogglePin}
@@ -212,18 +248,32 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
                             )}
                         </div>
                     )}
+
+                    {/* Todo list for todo notes */}
+                    {noteToEdit.type === 'NoteTodos' && (
+                        <div className="note-edit-todos-container">
+                            <NoteTodos 
+                                info={noteToEdit.info} 
+                                onUpdate={handleTodoUpdate} 
+                                isEditable={true} 
+                            />
+                        </div>
+                    )}
                     
-                    <textarea
-                        className="note-edit-textarea"
-                        placeholder={
-                            noteToEdit.type === 'NoteImg' ? 'Add a description...' : 
-                            noteToEdit.type === 'NoteVideo' ? 'Add a description...' : 
-                            'Take a note...'
-                        }
-                        value={noteToEdit.info.txt || ''}
-                        onChange={handleTxtChange}
-                        autoFocus={noteToEdit.type !== 'NoteImg' && noteToEdit.type !== 'NoteVideo'}
-                    />
+                    {/* Only show textarea for non-todo notes */}
+                    {noteToEdit.type !== 'NoteTodos' && (
+                        <textarea
+                            className="note-edit-textarea"
+                            placeholder={
+                                noteToEdit.type === 'NoteImg' ? 'Add a description...' : 
+                                noteToEdit.type === 'NoteVideo' ? 'Add a description...' : 
+                                'Take a note...'
+                            }
+                            value={noteToEdit.info.txt || ''}
+                            onChange={handleTxtChange}
+                            autoFocus={noteToEdit.type !== 'NoteImg' && noteToEdit.type !== 'NoteVideo'}
+                        />
+                    )}
 
                     {/* Edit timestamp */}
                     <div className="note-edit-timestamp">
