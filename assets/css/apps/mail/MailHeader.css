@@ -13,7 +13,7 @@
 }
 
 .menu-icon {
-    font-size: 60px;
+    font-size: 90px;
     cursor: pointer;
     color: #5f6368;
 }
@@ -51,9 +51,13 @@
     border: none;
     outline: none;
     width: 100%;
-    font-size: 1rem;
+    font-size: 20px;
     background-color: transparent;
     color: #202124;
+}
+
+.icon-large {
+    font-size: 30px  !important;
 }
 
 @media (max-width: 600px) {

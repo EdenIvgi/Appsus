@@ -24,8 +24,9 @@ export function MailCompose({ onClose, onSend }) {
             <header className="compose-header">
                 <span>New Message</span>
                 <button onClick={onClose} className="btn-close">
-                    <span className="material-icons">close</span>
-                </button>
+                <span class="material-symbols-outlined">
+close
+</span>                </button>
             </header>
 
             <form onSubmit={onFormSubmit} className="compose-form">

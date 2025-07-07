@@ -1,7 +1,7 @@
 export function GmailHeader({ searchTerm, onSearch, onToggleSidebar }) {
     return (
         <header className="gmail-header">
-            <span className="material-symbols-outlined menu-icon" onClick={onToggleSidebar}>
+            <span className="material-symbols-outlined menu-icon icon-large" onClick={onToggleSidebar}>
                 menu
             </span>
 

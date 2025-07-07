@@ -30,25 +30,23 @@ function query(filterBy = {}) {
                     regExp.test(mail.subject) || regExp.test(mail.body)
                 )
             }
+
             if (filterBy.status) {
-                switch (filterBy.status) {
-                    case 'inbox':
-                        mails = mails.filter(mail => mail.to === loggedinUser.email && !mail.removedAt)
-                        break
-                    case 'sent':
-                        mails = mails.filter(mail => mail.from === loggedinUser.email && !mail.removedAt)
-                        break
-                    case 'trash':
-                        mails = mails.filter(mail => mail.removedAt)
-                        break
-                    case 'draft':
-                        mails = mails.filter(mail => mail.isDraft)
-                        break
+                if (filterBy.status === 'inbox') {
+                    mails = mails.filter(mail => mail.to === loggedinUser.email && !mail.removedAt)
+                } else if (filterBy.status === 'sent') {
+                    mails = mails.filter(mail => mail.from === loggedinUser.email && !mail.removedAt)
+                } else if (filterBy.status === 'trash') {
+                    mails = mails.filter(mail => mail.removedAt)
+                } else if (filterBy.status === 'draft') {
+                    mails = mails.filter(mail => mail.isDraft)
                 }
             }
+
             if (filterBy.isRead !== undefined) {
                 mails = mails.filter(mail => mail.isRead === filterBy.isRead)
             }
+
             if (filterBy.isStarred) {
                 mails = mails.filter(mail => mail.isStarred)
             }
@@ -67,8 +65,8 @@ function remove(mailId) {
 
 function save(mail) {
     if (!mail.id) {
-        const newMail = createMail(mail)
-        return storageService.post(MAIL_KEY, newMail)
+        mail = createMail(mail)
+        return storageService.post(MAIL_KEY, mail)
     } else {
         return storageService.put(MAIL_KEY, mail)
     }
@@ -120,6 +118,7 @@ function createMail({ to, subject, body }) {
 function _createMails() {
     const mails = utilService.loadFromStorage(MAIL_KEY)
     if (mails && mails.length) return
+
     const demoMails = [
         {
             id: utilService.makeId(),
@@ -147,27 +146,27 @@ function _createMails() {
         },
         {
             id: utilService.makeId(),
-            subject: 'Hey there!',
-            body: 'Just wanted to say hi. Long time no see!',
-            isRead: false,
-            sentAt: Date.now() - 15000000,
+            subject: 'event',
+            body: 'Join us for the launch of our new product.',
+            isRead: true,
+            sentAt: Date.now() - 5000000,
             removedAt: null,
-            from: loggedinUser.email,
-            to: 'friend@example.com',
-            isStarred: false,
+            from: 'events@service.com',
+            to: loggedinUser.email,
+            isStarred: true,
             isDraft: false
         }
+
     ]
 
     utilService.saveToStorage(MAIL_KEY, demoMails)
 }
 
-
 function _setNextPrevMailId(mail) {
     return query().then(mails => {
         const mailIdx = mails.findIndex(currMail => currMail.id === mail.id)
-        const nextMail = mails[mailIdx + 1] ? mails[mailIdx + 1] : mails[0]
-        const prevMail = mails[mailIdx - 1] ? mails[mailIdx - 1] : mails[mails.length - 1]
+        const nextMail = mails[mailIdx + 1] || mails[0]
+        const prevMail = mails[mailIdx - 1] || mails[mails.length - 1]
         mail.nextMailId = nextMail.id
         mail.prevMailId = prevMail.id
         return mail

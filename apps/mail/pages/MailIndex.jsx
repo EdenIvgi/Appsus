@@ -74,6 +74,17 @@ export function MailIndex() {
         setIsSidebarOpen(prev => !prev)
     }
 
+    function NavItem({ icon, label, selected, onClick }) {
+        return (
+            <div className={`nav-item ${selected ? 'active' : ''}`} onClick={onClick}>
+                <span className="icon-wrapper">
+                    <span className="material-symbols-outlined nav-icon">{icon}</span>
+                </span>
+                {isSidebarOpen && <span>{label}</span>}
+            </div>
+        )
+    }
+
     return (
         <section className={`mail-index ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
             <GmailHeader
@@ -85,45 +96,15 @@ export function MailIndex() {
             <aside className={`mail-sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
                 <button className="btn-compose" onClick={() => setIsComposing(true)}>
                     <span className="material-symbols-outlined">edit</span>
-                    {isSidebarOpen && <span>Compose</span>}
+                    {isSidebarOpen && <span> Compose</span>}
                 </button>
 
                 <nav className="sidebar-nav">
-                    <div
-                        className={`nav-item ${filterBy === 'all' ? 'active' : ''}`}
-                        onClick={() => setFilterBy('all')}
-                    >
-                        <span className="material-symbols-outlined nav-icon">inbox</span>
-                        {isSidebarOpen && <span>Inbox</span>}
-                    </div>
-                    <div
-                        className={`nav-item ${filterBy === 'starred' ? 'active' : ''}`}
-                        onClick={() => setFilterBy('starred')}
-                    >
-                        <span className="material-symbols-outlined nav-icon">star</span>
-                        {isSidebarOpen && <span>Starred</span>}
-                    </div>
-                    <div
-                        className={`nav-item ${filterBy === 'sent' ? 'active' : ''}`}
-                        onClick={() => setFilterBy('sent')}
-                    >
-                        <span className="material-symbols-outlined nav-icon">send</span>
-                        {isSidebarOpen && <span>Sent</span>}
-                    </div>
-                    <div
-                        className={`nav-item ${filterBy === 'draft' ? 'active' : ''}`}
-                        onClick={() => setFilterBy('draft')}
-                    >
-                        <span className="material-symbols-outlined nav-icon">draft</span>
-                        {isSidebarOpen && <span>Draft</span>}
-                    </div>
-                    <div
-                        className={`nav-item ${filterBy === 'trash' ? 'active' : ''}`}
-                        onClick={() => setFilterBy('trash')}
-                    >
-                        <span className="material-symbols-outlined nav-icon">delete</span>
-                        {isSidebarOpen && <span>Trash</span>}
-                    </div>
+                    <NavItem icon="inbox" label="Inbox" selected={filterBy === 'all'} onClick={() => setFilterBy('all')} />
+                    <NavItem icon="star" label="Starred" selected={filterBy === 'starred'} onClick={() => setFilterBy('starred')} />
+                    <NavItem icon="send" label="Sent" selected={filterBy === 'sent'} onClick={() => setFilterBy('sent')} />
+                    <NavItem icon="draft" label="Draft" selected={filterBy === 'draft'} onClick={() => setFilterBy('draft')} />
+                    <NavItem icon="delete" label="Trash" selected={filterBy === 'trash'} onClick={() => setFilterBy('trash')} />
                 </nav>
             </aside>
 
