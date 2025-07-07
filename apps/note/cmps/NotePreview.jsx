@@ -4,9 +4,9 @@ import { NoteTodos } from './NoteTodos.jsx'
 import { NoteVideo } from './NoteVideo.jsx'
 import { imageUploadService } from '../../../services/image-upload.service.js'
 
-const { useState, useEffect, useRef } = React
+const { useState, useEffect, useRef, memo } = React
 
-export function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor, onEditNote, onAddVideo }) {
+export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor, onEditNote, onAddVideo }) {
     const [showColorPicker, setShowColorPicker] = useState(false)
     const colorPickerRef = useRef(null)
     const imageInputRef = useRef(null)
@@ -219,4 +219,4 @@ export function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor
             />
         </article>
     )
-} 
+}) 

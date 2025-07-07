@@ -1,4 +1,4 @@
-const { useState, useEffect, useRef } = React
+const { useState, useEffect, useRef, useCallback, useMemo } = React
 const { NavLink } = ReactRouterDOM
 
 import { noteService } from '../services/note.service.js'
@@ -23,7 +23,7 @@ export function NoteIndex() {
 
     useEffect(() => {
         loadNotes()
-    }, [filterBy])
+    }, [])
 
     useEffect(() => {
         function handleClickOutside(event) {
@@ -56,20 +56,52 @@ export function NoteIndex() {
     }, [isCreating, editingNote, currentEditNote, isSidebarOpen])
 
     function loadNotes() {
-        noteService.query(filterBy)
+        noteService.query()
             .then(notes => {
                 setNotes(notes)
             })
             .catch(err => console.error('Error loading notes:', err))
     }
 
-    function onCreateNote() {
+    // Memoize filtered and sorted notes for better performance
+    const filteredNotes = useMemo(() => {
+        if (!notes || notes.length === 0) return []
+        
+        let filtered = [...notes]
+        
+        // Apply search filter
+        if (searchTerm) {
+            const searchTermLower = searchTerm.toLowerCase()
+            filtered = filtered.filter(note => {
+                const searchableText = [
+                    note.info.txt || '',
+                    note.info.title || '',
+                    ...(note.info.todos && note.info.todos.map ? note.info.todos.map(todo => todo.txt) : [])
+                ].join(' ').toLowerCase()
+                return searchableText.includes(searchTermLower)
+            })
+        }
+        
+        // Apply type filter
+        if (activeTypeFilter && activeTypeFilter !== 'all') {
+            filtered = filtered.filter(note => note.type === activeTypeFilter)
+        }
+        
+        // Sort: pinned notes first, then by creation date (newest first)
+        return filtered.sort((a, b) => {
+            if (a.isPinned && !b.isPinned) return -1
+            if (!a.isPinned && b.isPinned) return 1
+            return (b.createdAt || 0) - (a.createdAt || 0)
+        })
+    }, [notes, searchTerm, activeTypeFilter])
+
+    const onCreateNote = useCallback(() => {
         const emptyNote = noteService.getEmptyNote()
         setCurrentEditNote(emptyNote)
         setIsCreating(true)
-    }
+    }, [])
 
-    function onSaveNote(noteToSave) {
+    const onSaveNote = useCallback((noteToSave) => {
         // For image notes, save even without text if there's a URL
         if (noteToSave.type === 'NoteImg' && noteToSave.info.url) {
             // Allow saving
@@ -80,7 +112,9 @@ export function NoteIndex() {
         }
         // For other notes, require text content
         else if (!noteToSave.info.txt || !noteToSave.info.txt.trim()) {
-            onCancelEdit()
+            setIsCreating(false)
+            setEditingNote(null)
+            setCurrentEditNote(null)
             return
         }
 
@@ -106,106 +140,107 @@ export function NoteIndex() {
                 setCurrentEditNote(null)
             })
             .catch(err => console.error('Error saving note:', err))
-    }
+    }, [])
 
-    function onCancelEdit() {
+    const onCancelEdit = useCallback(() => {
         setIsCreating(false)
         setEditingNote(null)
         setCurrentEditNote(null)
-    }
+    }, [])
 
-    function onEditNote(note) {
+    const onEditNote = useCallback((note) => {
         setCurrentEditNote({...note})
         setEditingNote(note)
-    }
+    }, [])
 
-    function onNoteChange(updatedNote) {
+    const onNoteChange = useCallback((updatedNote) => {
         setCurrentEditNote(updatedNote)
-    }
+    }, [])
 
-    function onRemoveNote(noteId) {
+    const onRemoveNote = useCallback((noteId) => {
+        // Update state immediately for instant UI response
+        setNotes(prevNotes => prevNotes.filter(note => note.id !== noteId))
+        
+        // Remove from storage in background
         noteService.remove(noteId)
-            .then(() => {
-                setNotes(prevNotes => prevNotes.filter(note => note.id !== noteId))
+            .catch(err => {
+                console.error('Error removing note:', err)
+                // On error, reload notes to ensure consistency
+                loadNotes()
             })
-            .catch(err => console.error('Error removing note:', err))
-    }
+    }, [])
 
-    function onUpdateNote(noteToUpdate) {
-        noteService.save(noteToUpdate)
-            .then(savedNote => {
-                setNotes(prevNotes => 
-                    prevNotes.map(note => 
-                        note.id === savedNote.id ? savedNote : note
-                    )
-                )
-            })
-            .catch(err => console.error('Error updating note:', err))
-    }
-
-    function onTogglePin(noteId) {
-        const noteToUpdate = notes.find(note => note.id === noteId)
-        if (noteToUpdate) {
+    const onTogglePin = useCallback((noteId) => {
+        setNotes(prevNotes => {
+            const noteToUpdate = prevNotes.find(note => note.id === noteId)
+            if (!noteToUpdate) return prevNotes
+            
             const updatedNote = { ...noteToUpdate, isPinned: !noteToUpdate.isPinned }
-            onUpdateNote(updatedNote)
-        }
-    }
+            
+            // Save to storage in background
+            noteService.save(updatedNote).catch(err => {
+                console.error('Error updating note:', err)
+            })
+            
+            return prevNotes.map(note => 
+                note.id === noteId ? updatedNote : note
+            )
+        })
+    }, [])
 
-    function onChangeNoteColor(noteId, backgroundColor) {
-        const noteToUpdate = notes.find(note => note.id === noteId)
-        if (noteToUpdate) {
+    const onChangeNoteColor = useCallback((noteId, backgroundColor) => {
+        setNotes(prevNotes => {
+            const noteToUpdate = prevNotes.find(note => note.id === noteId)
+            if (!noteToUpdate) return prevNotes
+            
             const updatedNote = { 
                 ...noteToUpdate, 
                 style: { ...(noteToUpdate.style || {}), backgroundColor } 
             }
-            onUpdateNote(updatedNote)
-        }
-    }
+            
+            // Save to storage in background
+            noteService.save(updatedNote).catch(err => {
+                console.error('Error updating note:', err)
+            })
+            
+            return prevNotes.map(note => 
+                note.id === noteId ? updatedNote : note
+            )
+        })
+    }, [])
 
-    function onToggleSidebar() {
-        setIsSidebarOpen(!isSidebarOpen)
-    }
+    const onToggleSidebar = useCallback(() => {
+        setIsSidebarOpen(prev => !prev)
+    }, [])
 
-    function onSearchChange(event) {
+    const onSearchChange = useCallback((event) => {
         const term = event.target.value
         setSearchTerm(term)
-        
-        // Update filter and reload notes
-        const newFilter = {
-            ...filterBy,
-            txt: term
-        }
-        setFilterBy(newFilter)
-    }
+        // No need to reload notes - filtering happens client-side
+    }, [])
 
-    function onTypeFilterChange(type) {
+    const onTypeFilterChange = useCallback((type) => {
         setActiveTypeFilter(type)
-        
-        // Update filter and reload notes
-        const newFilter = {
-            ...filterBy,
-            type: type === 'all' ? '' : type
-        }
-        setFilterBy(newFilter)
-    }
+        // No need to reload notes - filtering happens client-side
+    }, [])
 
-    function onClearSearch() {
+    const onClearSearch = useCallback(() => {
         setSearchTerm('')
         setActiveTypeFilter('all')
-        setFilterBy(noteService.getDefaultFilter())
-    }
+        // No need to reload notes - filtering happens client-side
+    }, [])
 
-    function onCreateImageNote() {
+    const onCreateImageNote = useCallback(() => {
         if (imageInputRef.current) {
             imageInputRef.current.click()
         }
-    }
+    }, [])
 
-    function onCreateVideoNote() {
+    const onCreateVideoNote = useCallback(() => {
         setShowVideoUrlInput(true)
-    }
+    }, [])
 
-    function onVideoUrlSave(videoData) {
+    const onVideoUrlSave = useCallback((videoData) => {
         const newVideoNote = {
             ...noteService.getEmptyNote('NoteVideo'),
             info: {
@@ -217,13 +252,13 @@ export function NoteIndex() {
         setCurrentEditNote(newVideoNote)
         setIsCreating(true)
         setShowVideoUrlInput(false)
-    }
+    }, [])
 
-    function onVideoUrlCancel() {
+    const onVideoUrlCancel = useCallback(() => {
         setShowVideoUrlInput(false)
-    }
+    }, [])
 
-    function handleImageUpload(event) {
+    const handleImageUpload = useCallback((event) => {
         const file = event.target.files[0]
         if (!file) return
 
@@ -247,7 +282,7 @@ export function NoteIndex() {
 
         // Reset the input
         event.target.value = ''
-    }
+    }, [])
 
     return (
         <section className="note-index">
@@ -477,7 +512,7 @@ export function NoteIndex() {
                     </div>
                 )}
                 
-                {notes.length === 0 && (searchTerm || activeTypeFilter !== 'all') ? (
+                {filteredNotes.length === 0 && (searchTerm || activeTypeFilter !== 'all') ? (
                     <div className="no-results">
                         <div className="no-results-icon">
                             <span className="material-symbols-outlined">search_off</span>
@@ -496,7 +531,7 @@ export function NoteIndex() {
                     </div>
                 ) : (
                     <NoteList 
-                        notes={notes}
+                        notes={filteredNotes}
                         onRemoveNote={onRemoveNote}
                         onTogglePin={onTogglePin}
                         onChangeNoteColor={onChangeNoteColor}
