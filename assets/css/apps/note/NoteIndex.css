@@ -705,6 +705,11 @@
     background: #f8f9fa;
 }
 
+/* Allow overflow when color picker is active */
+.note-preview.color-picker-active .video-wrapper {
+    overflow: visible;
+}
+
 .video-wrapper iframe {
     position: absolute;
     top: 0;

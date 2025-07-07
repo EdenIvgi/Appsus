@@ -10,10 +10,13 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
     const [showColorPicker, setShowColorPicker] = useState(false)
     const colorPickerRef = useRef(null)
     const imageInputRef = useRef(null)
+    const notePreviewRef = useRef(null)
+    const mouseLeaveTimeoutRef = useRef(null)
     
     useEffect(() => {
         function handleClickOutside(event) {
-            if (colorPickerRef.current && !colorPickerRef.current.contains(event.target)) {
+            // Close color picker if clicking outside the entire note
+            if (notePreviewRef.current && !notePreviewRef.current.contains(event.target)) {
                 setShowColorPicker(false)
             }
         }
@@ -26,6 +29,17 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
             document.removeEventListener('mousedown', handleClickOutside)
         }
     }, [showColorPicker])
+
+    // Cleanup timeout on unmount
+    useEffect(() => {
+        return () => {
+            if (mouseLeaveTimeoutRef.current) {
+                clearTimeout(mouseLeaveTimeoutRef.current)
+            }
+        }
+    }, [])
+
+
     
     function DynamicNoteComponent({ note }) {
         switch (note.type) {
@@ -55,6 +69,21 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
     function toggleColorPicker(e) {
         e.stopPropagation()
         setShowColorPicker(!showColorPicker)
+    }
+
+    function handleNoteMouseLeave() {
+        // Delay closing to allow mouse to move to color picker
+        mouseLeaveTimeoutRef.current = setTimeout(() => {
+            setShowColorPicker(false)
+        }, 100)
+    }
+
+    function handleNoteMouseEnter() {
+        // Cancel any pending close when mouse re-enters
+        if (mouseLeaveTimeoutRef.current) {
+            clearTimeout(mouseLeaveTimeoutRef.current)
+            mouseLeaveTimeoutRef.current = null
+        }
     }
 
     function handleAddImage(e) {
@@ -109,8 +138,11 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
 
     return (
         <article 
-            className="note-preview" 
+            ref={notePreviewRef}
+            className={`note-preview ${showColorPicker ? 'color-picker-active' : ''}`}
             style={{ backgroundColor: (note.style && note.style.backgroundColor) || '#ffffff' }}
+            onMouseLeave={handleNoteMouseLeave}
+            onMouseEnter={handleNoteMouseEnter}
         >
             <div className="note-content" onClick={handleNoteClick}>
                 <DynamicNoteComponent note={note} />
@@ -168,7 +200,11 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
                     </button>
 
                     {showColorPicker && (
-                        <div className="color-picker-popup">
+                        <div 
+                            className="color-picker-popup"
+                            onMouseEnter={handleNoteMouseEnter}
+                            onMouseLeave={handleNoteMouseLeave}
+                        >
                             {colors.map(colorObj => (
                                 <button
                                     key={colorObj.value}

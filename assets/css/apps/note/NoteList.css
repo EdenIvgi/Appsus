@@ -84,6 +84,14 @@
     height: fit-content;
     break-inside: avoid; /* Prevent breaking in masonry layouts */
     overflow: visible;
+    z-index: 1;
+}
+
+/* Ensure note with open color picker appears above all others */
+.note-preview:has(.color-picker-popup),
+.note-preview.color-picker-active {
+    z-index: 100000;
+    position: relative;
 }
 
 .note-preview:hover {
@@ -133,6 +141,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* Ensure notes with color picker can overflow */
+.note-preview.color-picker-active {
+    overflow: visible !important;
+}
+
+.note-preview.color-picker-active .note-content {
+    overflow: visible !important;
+}
+
+.note-preview.color-picker-active .note-actions {
+    overflow: visible !important;
 }
 
 .note-img img {
@@ -295,6 +316,14 @@
 /* Color Picker */
 .color-picker-container {
     position: relative;
+    z-index: 1000000;
+}
+
+/* When color picker is active, ensure the container can overflow */
+.note-preview.color-picker-active .color-picker-container {
+    position: relative;
+    z-index: 1000000;
+    overflow: visible;
 }
 
 .color-picker-popup {
@@ -308,7 +337,7 @@
     padding: 8px;
     display: flex;
     gap: 6px;
-    z-index: 1500;
+    z-index: 999999;
     white-space: nowrap;
 }
 
@@ -582,7 +611,7 @@
     padding: 8px;
     display: flex;
     gap: 6px;
-    z-index: 3000;
+    z-index: 9999;
     white-space: nowrap;
 }
 
