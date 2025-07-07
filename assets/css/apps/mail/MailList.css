@@ -2,9 +2,6 @@
     list-style: none;
     padding: 0;
     margin: 0;
-    background-color:#f4f5f8;
-}
-.mail-preview.unread{
     background-color: #ffffff;
 }
 
@@ -12,7 +9,6 @@
     display: flex;
     align-items: center;
     border-bottom: 1px solid #e0e0e0;
-    font-family: Arial, sans-serif;
     cursor: pointer;
     transition: background-color 0.2s ease;
     position: relative;
@@ -23,10 +19,13 @@
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.18);
 }
 
+.mail-preview.unread {
+    background-color: #f4f5f8;
+}
+
 .mail-preview.unread .mail-from,
 .mail-preview.unread .mail-subject {
     font-weight: bold;
-  
 }
 
 .mail-star {
@@ -42,7 +41,6 @@
 .mail-star.starred {
     color: #fbbc04;
 }
-
 
 .mail-star:hover {
     color: #fbbc04;
@@ -89,7 +87,6 @@
     opacity: 0;
 }
 
-/* Actions (appear on hover) */
 .mail-actions {
     display: flex;
     align-items: center;
@@ -125,12 +122,7 @@
     color: #000;
 }
 
-
 .material-icons {
     font-size: 20px;
     vertical-align: middle;
 }
-
-
-
-
