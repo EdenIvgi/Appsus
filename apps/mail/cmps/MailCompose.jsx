@@ -14,6 +14,7 @@ export function MailCompose({ onClose, onSend }) {
 
     function onFormSubmit(ev) {
         ev.preventDefault()
+        if (!mail.to || !mail.subject) return
         onSend(mail)
         onClose()
     }
@@ -42,10 +43,11 @@ export function MailCompose({ onClose, onSend }) {
                     placeholder="Subject"
                     value={mail.subject}
                     onChange={handleChange}
+                    required
                 />
                 <textarea
                     name="body"
-                    placeholder=""
+                    placeholder="Body"
                     value={mail.body}
                     onChange={handleChange}
                 ></textarea>

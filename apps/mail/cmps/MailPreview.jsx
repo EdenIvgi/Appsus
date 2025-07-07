@@ -51,11 +51,11 @@ function getMailSnippet(body) {
 
             <div className="mail-actions">
                 <button className="btn-mail-action" onClick={onExpandClick}>
-                <span class="material-symbols-outlined">
+                <span className="material-symbols-outlined">
 crop_free
 </span>                </button>
                 <button className="btn-mail-action" onClick={onDelete}>
-                <span class="material-symbols-outlined">
+                <span className="material-symbols-outlined">
 delete
 </span>                </button>
                 <button className="btn-mail-action" onClick={onToggleRead}>

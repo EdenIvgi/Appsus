@@ -1,0 +1,67 @@
+.gmail-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 74px;
+    display: flex;
+    align-items: center;
+    background-color: #F9FAFE;
+    z-index: 1000;
+    padding: 0 16px;
+    gap: 12px;
+}
+
+.menu-icon {
+    font-size: 60px;
+    cursor: pointer;
+    color: #5f6368;
+}
+
+.gmail-logo {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+}
+
+.gmail-title {
+    font-size: 2rem;
+    font-weight: 500;
+    color: #5f6368;
+    margin-inline-end: 2rem;
+}
+
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: #eceef6;
+    border-radius: 24px;
+    padding: 1rem 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    flex-grow: 1;
+    max-width: 600px;
+}
+
+.search-wrapper .material-symbols-outlined {
+    margin-right: 0.5rem;
+    color: #5f6368;
+}
+
+.search-input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 1rem;
+    background-color: transparent;
+    color: #202124;
+}
+
+@media (max-width: 600px) {
+    .gmail-title {
+        display: none;
+    }
+
+    .search-wrapper {
+        max-width: 100%;
+    }
+}

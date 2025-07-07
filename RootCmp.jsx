@@ -1,4 +1,4 @@
-const { Route, Routes } = ReactRouterDOM
+const { Route, Routes, useLocation } = ReactRouterDOM
 const Router = ReactRouterDOM.HashRouter
 
 import { AppHeader } from './cmps/AppHeader.jsx'
@@ -8,10 +8,13 @@ import { Home } from './pages/Home.jsx'
 import { MailIndex } from './apps/mail/pages/MailIndex.jsx'
 import { NoteIndex } from './apps/note/pages/NoteIndex.jsx'
 
-export function RootCmp() {
-    return <Router>
+function AppRoutes() {
+    const location = ReactRouterDOM.useLocation()
+    const isMailRoute = location.pathname.startsWith('/mail')
+
+    return (
         <section className="root-cmp">
-            <AppHeader />
+            {!isMailRoute && <AppHeader />}
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
@@ -20,5 +23,13 @@ export function RootCmp() {
             </Routes>
             <UserMsg />
         </section>
-    </Router>
+    )
+}
+
+export function RootCmp() {
+    return (
+        <Router>
+            <AppRoutes />
+        </Router>
+    )
 }
