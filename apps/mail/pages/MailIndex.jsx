@@ -11,6 +11,8 @@ export function MailIndex() {
     const [searchTerm, setSearchTerm] = useState('')
     const [expandedMailId, setExpandedMailId] = useState(null)
     const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+    const [unreadCount, setUnreadCount] = useState(0)
+
 
     useEffect(() => {
         loadMails()
@@ -35,6 +37,9 @@ export function MailIndex() {
             })
 
             setMails(filtered)
+
+            const unread = mails.filter(mail => !mail.isRead)
+            setUnreadCount(unread.length)
         })
     }
 
@@ -113,7 +118,12 @@ export function MailIndex() {
                     <div className="mail-filters">
                         <button className={`filter-btn ${filterBy === 'all' ? 'active' : ''}`} onClick={() => setFilterBy('all')}>All</button>
                         <button className={`filter-btn ${filterBy === 'starred' ? 'active' : ''}`} onClick={() => setFilterBy('starred')}>Starred</button>
-                        <button className={`filter-btn ${filterBy === 'unread' ? 'active' : ''}`} onClick={() => setFilterBy('unread')}>Unread</button>
+                        <button
+    className={`filter-btn ${filterBy === 'unread' ? 'active' : ''}`}
+    onClick={() => setFilterBy('unread')}
+>
+    Unread ({unreadCount})
+</button>
                     </div>
                 </div>
 
