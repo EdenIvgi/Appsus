@@ -20,7 +20,7 @@ export function MailIndex() {
 
     function loadMails() {
         let status = filterBy
-        if (filterBy === 'all' || filterBy === 'starred' || filterBy === 'unread') {
+        if (filterBy === 'all' || filterBy === 'unread') {
             status = 'inbox'
         }
 
@@ -130,7 +130,6 @@ export function MailIndex() {
                 <div className="mail-controls">
                     <div className="mail-filters">
                         <button className={`filter-btn ${filterBy === 'all' ? 'active' : ''}`} onClick={() => setFilterBy('all')}>All</button>
-                        <button className={`filter-btn ${filterBy === 'starred' ? 'active' : ''}`} onClick={() => setFilterBy('starred')}>Starred</button>
                         <button
     className={`filter-btn ${filterBy === 'unread' ? 'active' : ''}`}
     onClick={() => setFilterBy('unread')}
