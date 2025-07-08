@@ -33,22 +33,36 @@ function query(filterBy = {}) {
 
             if (filterBy.status) {
                 if (filterBy.status === 'inbox') {
-                    mails = mails.filter(mail => mail.to === loggedinUser.email && !mail.removedAt)
+                    mails = mails.filter(mail =>
+                        mail.to === loggedinUser.email &&
+                        !mail.removedAt &&
+                        !mail.isDraft
+                    )
                 } else if (filterBy.status === 'sent') {
-                    mails = mails.filter(mail => mail.from === loggedinUser.email && !mail.removedAt)
+                    mails = mails.filter(mail =>
+                        mail.from === loggedinUser.email &&
+                        !mail.removedAt
+                    )
                 } else if (filterBy.status === 'trash') {
                     mails = mails.filter(mail => mail.removedAt)
                 } else if (filterBy.status === 'draft') {
-                    mails = mails.filter(mail => mail.isDraft)
+                    mails = mails.filter(mail =>
+                        mail.isDraft && !mail.removedAt
+                    )
                 }
             }
 
             if (filterBy.isRead !== undefined) {
-                mails = mails.filter(mail => mail.isRead === filterBy.isRead)
+                mails = mails.filter(mail =>
+                    mail.isRead === filterBy.isRead &&
+                    !mail.removedAt
+                )
             }
 
             if (filterBy.isStarred) {
-                mails = mails.filter(mail => mail.isStarred)
+                mails = mails.filter(mail =>
+                    mail.isStarred && !mail.removedAt
+                )
             }
 
             return mails

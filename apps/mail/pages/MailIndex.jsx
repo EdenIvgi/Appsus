@@ -42,19 +42,32 @@ export function MailIndex() {
             setUnreadCount(unread.length)
         })
     }
-
     function updateMail(updatedMail) {
-        setMails(prevMails =>
-            prevMails.map(mail =>
+        setMails(prevMails => {
+            const updatedMails = prevMails.map(mail =>
                 mail.id === updatedMail.id ? updatedMail : mail
             )
-        )
+    
+            const unread = updatedMails.filter(mail => !mail.isRead)
+            setUnreadCount(unread.length)
+    
+            return updatedMails
+        })
+    
         mailService.save(updatedMail)
     }
-
+    
     function removeMail(mailId) {
-        setMails(prevMails => prevMails.filter(mail => mail.id !== mailId))
-        mailService.remove(mailId)
+        mailService.get(mailId).then(mail => {
+            if (mail.removedAt) {
+                setMails(prev => prev.filter(mail => mail.id !== mailId))
+                mailService.remove(mailId)
+            } else {
+                const updatedMail = { ...mail, removedAt: Date.now() }
+                setMails(prev => prev.filter(mail => mail.id !== mailId))
+                mailService.save(updatedMail)
+            }
+        })
     }
 
     function addMail(newMail) {
