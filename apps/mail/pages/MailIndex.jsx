@@ -3,6 +3,7 @@ import { GmailHeader } from '../cmps/GmailHeader.jsx'
 import { mailService } from '../services/mail.service.js'
 import { MailList } from '../cmps/MailList.jsx'
 import { MailCompose } from '../cmps/MailCompose.jsx'
+import { MailFolderList } from '../cmps/MailFolderList.jsx'
 
 export function MailIndex() {
     const [isComposing, setIsComposing] = useState(false)
@@ -19,15 +20,13 @@ export function MailIndex() {
     }, [filterBy, searchTerm])
 
     function loadMails() {
-        mailService.query({ status: 'inbox' }).then(allInbox => {
-            setInboxCount(allInbox.length)
-        })
-
         let status = filterBy
-        if (filterBy === 'all' || filterBy === 'unread') status = 'inbox'
+        if (filterBy === 'all' || filterBy === 'unread') {
+            status = 'inbox'
+        }
 
-        mailService.query({ status }).then(mails => {
-            const filtered = mails.filter(mail => {
+        mailService.query({ status }).then(allMails => {
+            const filtered = allMails.filter(mail => {
                 const matchesSearch =
                     mail.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     mail.body.toLowerCase().includes(searchTerm.toLowerCase())
@@ -40,15 +39,12 @@ export function MailIndex() {
 
             setMails(filtered)
 
-            if (filterBy === 'all' || filterBy === 'unread') {
-                const unread = mails.filter(mail => !mail.isRead)
-                setUnreadCount(unread.length)
-            } else if (filterBy === 'starred') {
-                const unread = mails.filter(mail => mail.isStarred && !mail.isRead)
-                setUnreadCount(unread.length)
-            } else {
-                setUnreadCount(0)
-            }
+            const unread = filtered.filter(mail => !mail.isRead)
+            setUnreadCount(unread.length)
+
+            mailService.query({ status: 'inbox' }).then(inboxMails =>
+                setInboxCount(inboxMails.length)
+            )
         })
     }
 
@@ -100,25 +96,6 @@ export function MailIndex() {
         setIsSidebarOpen(prev => !prev)
     }
 
-    function NavItem({ icon, label, selected, onClick }) {
-        return (
-            <div className={`nav-item ${selected ? 'active' : ''}`} onClick={onClick}>
-                <span className="icon-wrapper">
-                    <span className="material-symbols-outlined nav-icon">{icon}</span>
-                </span>
-                {isSidebarOpen && (
-                    <div className="nav-label-wrapper">
-                        <span className="nav-label">{label}</span>
-                        {label === 'Inbox' && (
-                            <span className={`mail-count ${selected ? 'bold' : ''}`}>{inboxCount}</span>
-                        )}
-                    </div>
-                )}
-            </div>
-        )
-    }
-    
-
     return (
         <section className={`mail-index ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
             <GmailHeader
@@ -133,26 +110,19 @@ export function MailIndex() {
                     {isSidebarOpen && <span> Compose</span>}
                 </button>
 
-                <nav className="sidebar-nav">
-                    <NavItem icon="inbox" label="Inbox" selected={filterBy === 'all'} onClick={() => setFilterBy('all')} />
-                    <NavItem icon="star" label="Starred" selected={filterBy === 'starred'} onClick={() => setFilterBy('starred')} />
-                    <NavItem icon="send" label="Sent" selected={filterBy === 'sent'} onClick={() => setFilterBy('sent')} />
-                    <NavItem icon="draft" label="Draft" selected={filterBy === 'draft'} onClick={() => setFilterBy('draft')} />
-                    <NavItem icon="delete" label="Trash" selected={filterBy === 'trash'} onClick={() => setFilterBy('trash')} />
-                </nav>
+                <MailFolderList
+                    filterBy={filterBy}
+                    onSetFilter={val => setFilterBy(val)}
+                    isSidebarOpen={isSidebarOpen}
+                    inboxCount={inboxCount}
+                />
             </aside>
 
             <main className="mail-main">
                 <div className="mail-controls">
                     <div className="mail-filters">
-                        <button
-                            className={`filter-btn ${filterBy === 'all' ? 'active' : ''}`}
-                            onClick={() => setFilterBy('all')}
-                        >
-                            All
-                        </button>
-
-                        {(filterBy === 'all' || filterBy === 'unread' || filterBy === 'starred') && (
+                        <button className={`filter-btn ${filterBy === 'all' ? 'active' : ''}`} onClick={() => setFilterBy('all')}>All</button>
+                        {(filterBy !== 'sent' && filterBy !== 'draft') && (
                             <button
                                 className={`filter-btn ${filterBy === 'unread' ? 'active' : ''}`}
                                 onClick={() => setFilterBy('unread')}

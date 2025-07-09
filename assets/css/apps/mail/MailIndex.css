@@ -93,28 +93,28 @@
     font-size: 30px;
 }
 
-.nav-label-wrapper {
+.label-wrapper {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex: 1;
-    width: 100%;
+    padding-inline-end: 8px;
 }
 
-.nav-label {
-    flex-grow: 1;
+.folder-label {
+    white-space: nowrap;
 }
 
-.mail-count {
-    font-size: 0.8em;
-    color: #5f6368;
-    margin-left: 8px;
+.inbox-counter {
+    font-size: 0.75em;
+    font-weight: normal;
+    color: #100f0f;
 }
 
-.mail-count.bold {
+.nav-item.active .inbox-counter {
     font-weight: bold;
-    color: #202124;
 }
+
 
 .mail-sidebar.closed .nav-icon {
     display: inline-block;
