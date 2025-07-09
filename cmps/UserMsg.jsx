@@ -21,11 +21,16 @@ export function UserMsg() {
   function closeMsg() {
     setMsg(null)
   }
+  
   const className = (msg)? `${msg.type} open` : '' 
   return (
     <section className={`user-msg ${className}`}>
-      <button onClick={closeMsg}>x</button>
-      {msg && msg.txt}
+      <div className="user-msg-content">
+        {msg && msg.txt}
+      </div>
+      <button onClick={closeMsg} aria-label="Close notification">
+        ×
+      </button>
     </section>
   )
 }
