@@ -3,6 +3,7 @@ const { NavLink } = ReactRouterDOM
 
 import { noteService } from '../services/note.service.js'
 import { imageUploadService } from '../../../services/image-upload.service.js'
+import { showSuccessMsg } from '../../../services/event-bus.service.js'
 import { NoteList } from '../cmps/NoteList.jsx'
 import { NoteEdit } from '../cmps/NoteEdit.jsx'
 import { VideoUrlInput } from '../cmps/VideoUrlInput.jsx'
@@ -137,6 +138,7 @@ export function NoteIndex() {
                 if (isNewNote) {
                     // Add new note to the beginning of the list
                     setNotes(prevNotes => [savedNote, ...prevNotes])
+                    showSuccessMsg('Note added successfully!')
                 } else {
                     // Update existing note
                     setNotes(prevNotes => 
@@ -144,6 +146,7 @@ export function NoteIndex() {
                             note.id === savedNote.id ? savedNote : note
                         )
                     )
+                    showSuccessMsg('Note saved successfully!')
                 }
                 
                 setIsCreating(false)
@@ -174,6 +177,9 @@ export function NoteIndex() {
         
         // Remove from storage in background
         noteService.remove(noteId)
+            .then(() => {
+                showSuccessMsg('Note removed successfully!')
+            })
             .catch(err => {
                 console.error('Error removing note:', err)
                 // On error, reload notes to ensure consistency
