@@ -49,7 +49,7 @@
     overflow: hidden;
     white-space: nowrap;
     gap: 6px;
-    padding-right: 60px;
+    padding-right: 80px;
 }
 
 .mail-from {
@@ -59,7 +59,6 @@
 }
 
 .mail-subject {
-    flex-shrink: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     font-weight: 500;
@@ -72,6 +71,8 @@
     flex: 1;
     max-width: 600px;
 }
+
+
 
 .mail-date {
     font-size: 0.9em;

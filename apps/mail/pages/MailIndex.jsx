@@ -4,6 +4,7 @@ import { mailService } from '../services/mail.service.js'
 import { MailList } from '../cmps/MailList.jsx'
 import { MailCompose } from '../cmps/MailCompose.jsx'
 import { MailFolderList } from '../cmps/MailFolderList.jsx'
+import { MailFilter } from '../cmps/MailFilter.jsx'
 
 export function MailIndex() {
     const [isComposing, setIsComposing] = useState(false)
@@ -96,6 +97,11 @@ export function MailIndex() {
         setIsSidebarOpen(prev => !prev)
     }
 
+    function handleFilterChange(newFilter, term) {
+        setFilterBy(newFilter)
+        setSearchTerm(term)
+    }
+
     return (
         <section className={`mail-index ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
             <GmailHeader
@@ -120,17 +126,11 @@ export function MailIndex() {
 
             <main className="mail-main">
                 <div className="mail-controls">
-                    <div className="mail-filters">
-                        <button className={`filter-btn ${filterBy === 'all' ? 'active' : ''}`} onClick={() => setFilterBy('all')}>All</button>
-                        {(filterBy !== 'sent' && filterBy !== 'draft') && (
-                            <button
-                                className={`filter-btn ${filterBy === 'unread' ? 'active' : ''}`}
-                                onClick={() => setFilterBy('unread')}
-                            >
-                                Unread ({unreadCount})
-                            </button>
-                        )}
-                    </div>
+                    <MailFilter
+                        filterBy={filterBy}
+                        onSetFilter={handleFilterChange}
+                        unreadCount={unreadCount}
+                    />
                 </div>
 
                 {isComposing && (
