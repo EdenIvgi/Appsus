@@ -12,17 +12,19 @@ export function MailIndex() {
     const [expandedMailId, setExpandedMailId] = useState(null)
     const [isSidebarOpen, setIsSidebarOpen] = useState(true)
     const [unreadCount, setUnreadCount] = useState(0)
-
+    const [inboxCount, setInboxCount] = useState(0)
 
     useEffect(() => {
         loadMails()
     }, [filterBy, searchTerm])
 
     function loadMails() {
+        mailService.query({ status: 'inbox' }).then(allInbox => {
+            setInboxCount(allInbox.length)
+        })
+
         let status = filterBy
-        if (filterBy === 'all' || filterBy === 'unread') {
-            status = 'inbox'
-        }
+        if (filterBy === 'all' || filterBy === 'unread') status = 'inbox'
 
         mailService.query({ status }).then(mails => {
             const filtered = mails.filter(mail => {
@@ -38,25 +40,31 @@ export function MailIndex() {
 
             setMails(filtered)
 
-            const unread = mails.filter(mail => !mail.isRead)
-            setUnreadCount(unread.length)
+            if (filterBy === 'all' || filterBy === 'unread') {
+                const unread = mails.filter(mail => !mail.isRead)
+                setUnreadCount(unread.length)
+            } else if (filterBy === 'starred') {
+                const unread = mails.filter(mail => mail.isStarred && !mail.isRead)
+                setUnreadCount(unread.length)
+            } else {
+                setUnreadCount(0)
+            }
         })
     }
+
     function updateMail(updatedMail) {
         setMails(prevMails => {
             const updatedMails = prevMails.map(mail =>
                 mail.id === updatedMail.id ? updatedMail : mail
             )
-    
             const unread = updatedMails.filter(mail => !mail.isRead)
             setUnreadCount(unread.length)
-    
             return updatedMails
         })
-    
+
         mailService.save(updatedMail)
     }
-    
+
     function removeMail(mailId) {
         mailService.get(mailId).then(mail => {
             if (mail.removedAt) {
@@ -98,10 +106,18 @@ export function MailIndex() {
                 <span className="icon-wrapper">
                     <span className="material-symbols-outlined nav-icon">{icon}</span>
                 </span>
-                {isSidebarOpen && <span>{label}</span>}
+                {isSidebarOpen && (
+                    <div className="nav-label-wrapper">
+                        <span className="nav-label">{label}</span>
+                        {label === 'Inbox' && (
+                            <span className={`mail-count ${selected ? 'bold' : ''}`}>{inboxCount}</span>
+                        )}
+                    </div>
+                )}
             </div>
         )
     }
+    
 
     return (
         <section className={`mail-index ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
@@ -129,13 +145,21 @@ export function MailIndex() {
             <main className="mail-main">
                 <div className="mail-controls">
                     <div className="mail-filters">
-                        <button className={`filter-btn ${filterBy === 'all' ? 'active' : ''}`} onClick={() => setFilterBy('all')}>All</button>
                         <button
-    className={`filter-btn ${filterBy === 'unread' ? 'active' : ''}`}
-    onClick={() => setFilterBy('unread')}
->
-    Unread ({unreadCount})
-</button>
+                            className={`filter-btn ${filterBy === 'all' ? 'active' : ''}`}
+                            onClick={() => setFilterBy('all')}
+                        >
+                            All
+                        </button>
+
+                        {(filterBy === 'all' || filterBy === 'unread' || filterBy === 'starred') && (
+                            <button
+                                className={`filter-btn ${filterBy === 'unread' ? 'active' : ''}`}
+                                onClick={() => setFilterBy('unread')}
+                            >
+                                Unread ({unreadCount})
+                            </button>
+                        )}
                     </div>
                 </div>
 
