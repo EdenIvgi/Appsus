@@ -2,7 +2,7 @@ import { NotePreview } from './NotePreview.jsx'
 
 const { memo } = React
 
-export const NoteList = memo(function NoteList({ notes, onRemoveNote, onTogglePin, onChangeNoteColor, onEditNote, onAddVideo, onUpdateNote }) {
+export const NoteList = memo(function NoteList({ notes, onRemoveNote, onTogglePin, onChangeNoteColor, onEditNote, onAddVideo, onUpdateNote, onLabelsChange }) {
     if (!notes || notes.length === 0) {
         return <div className="note-list empty">No notes to display</div>
     }
@@ -28,6 +28,7 @@ export const NoteList = memo(function NoteList({ notes, onRemoveNote, onTogglePi
                                 onEditNote={onEditNote}
                                 onAddVideo={onAddVideo}
                                 onUpdateNote={onUpdateNote}
+                                onLabelsChange={onLabelsChange}
                             />
                         ))}
                     </div>
@@ -49,6 +50,7 @@ export const NoteList = memo(function NoteList({ notes, onRemoveNote, onTogglePi
                                 onEditNote={onEditNote}
                                 onAddVideo={onAddVideo}
                                 onUpdateNote={onUpdateNote}
+                                onLabelsChange={onLabelsChange}
                             />
                         ))}
                     </div>
