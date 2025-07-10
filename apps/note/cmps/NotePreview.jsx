@@ -62,7 +62,7 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
     function DynamicNoteComponent({ note }) {
         switch (note.type) {
             case 'NoteTxt':
-                return <NoteTxt info={note.info} />
+                return <NoteTxt info={note.info} isPreview={true} />
             case 'NoteImg':
                 return <NoteImg info={note.info} />
             case 'NoteTodos':
