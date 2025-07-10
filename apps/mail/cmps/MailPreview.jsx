@@ -1,15 +1,15 @@
-export function MailPreview({ mail, onUpdate, onRemove, onExpand, isExpanded }) {
+export function MailPreview({ mail, onUpdate, onRemove, onExpand, isExpanded, onNavigateToDetails }) {
     const sentAt = new Date(mail.sentAt).toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
     })
 
+    function getMailSnippet(body) {
+        if (body.length <= 60) return body
+        const lastSpace = body.lastIndexOf(' ', 60)
+        return body.slice(0, lastSpace > 0 ? lastSpace : 60) + '...'
+    }
 
-function getMailSnippet(body) {
-    if (body.length <= 60) return body
-    const lastSpace = body.lastIndexOf(' ', 60)
-    return body.slice(0, lastSpace > 0 ? lastSpace : 60) + '...'
-}
     function onDelete(ev) {
         ev.stopPropagation()
         onRemove(mail.id)
@@ -32,33 +32,41 @@ function getMailSnippet(body) {
         onExpand(mail)
     }
 
-    return (
-        <div className={`mail-preview ${mail.isRead ? 'read' : 'unread'} ${isExpanded ? 'expanded' : ''}`}>
-            <span className={`mail-star ${mail.isStarred ? 'starred' : ''}`} onClick={onToggleStar}>★</span>
+    function onBodyClick(ev) {
+        ev.stopPropagation()
+        onNavigateToDetails(mail.id)
+    }
 
-            <div className="mail-content">
+    return (
+        <div
+            className={`mail-preview ${mail.isRead ? 'read' : 'unread'} ${isExpanded ? 'expanded' : ''}`}
+        >
+            <span
+                className={`mail-star ${mail.isStarred ? 'starred' : ''}`}
+                onClick={onToggleStar}
+                title="Star"
+            >
+                ★
+            </span>
+
+            <div className="mail-content" onClick={onBodyClick}>
                 <span className="mail-from">{mail.from}</span>
                 <span className="mail-subject">{mail.subject}</span>
                 {!isExpanded && (
-    <span className="mail-body">
-        {getMailSnippet(mail.body)}
-    </span>
-)}
-
+                    <span className="mail-body">{getMailSnippet(mail.body)}</span>
+                )}
             </div>
 
             <div className="mail-date">{sentAt}</div>
 
             <div className="mail-actions">
-                <button className="btn-mail-action" onClick={onExpandClick}>
-                <span className="material-symbols-outlined">
-crop_free
-</span>                </button>
-                <button className="btn-mail-action" onClick={onDelete}>
-                <span className="material-symbols-outlined">
-delete
-</span>                </button>
-                <button className="btn-mail-action" onClick={onToggleRead}>
+                <button className="btn-mail-action" onClick={onExpandClick} title="Expand">
+                    <span className="material-symbols-outlined">crop_free</span>
+                </button>
+                <button className="btn-mail-action" onClick={onDelete} title="Delete">
+                    <span className="material-symbols-outlined">delete</span>
+                </button>
+                <button className="btn-mail-action" onClick={onToggleRead} title="Toggle Read">
                     <span className="material-symbols-outlined">
                         {mail.isRead ? 'mark_email_unread' : 'mark_email_read'}
                     </span>

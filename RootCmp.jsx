@@ -9,7 +9,7 @@ import { MailIndex } from './apps/mail/pages/MailIndex.jsx'
 import { NoteIndex } from './apps/note/pages/NoteIndex.jsx'
 
 function AppRoutes() {
-    const location = ReactRouterDOM.useLocation()
+    const location = useLocation()
     const isMailRoute = location.pathname.startsWith('/mail')
 
     return (
@@ -18,7 +18,7 @@ function AppRoutes() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
-                <Route path="/mail" element={<MailIndex />} />
+                <Route path="/mail/*" element={<MailIndex />} />
                 <Route path="/note" element={<NoteIndex />} />
             </Routes>
             <UserMsg />
@@ -33,3 +33,4 @@ export function RootCmp() {
         </Router>
     )
 }
+

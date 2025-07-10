@@ -1,10 +1,13 @@
 const { useState, useEffect } = React
+const { Routes, Route, useParams, useNavigate} = ReactRouterDOM
+
 import { GmailHeader } from '../cmps/GmailHeader.jsx'
 import { mailService } from '../services/mail.service.js'
 import { MailList } from '../cmps/MailList.jsx'
 import { MailCompose } from '../cmps/MailCompose.jsx'
 import { MailFolderList } from '../cmps/MailFolderList.jsx'
 import { MailFilter } from '../cmps/MailFilter.jsx'
+import { MailDetails } from './MailDetails.jsx'
 
 export function MailIndex() {
     const [isComposing, setIsComposing] = useState(false)
@@ -16,15 +19,21 @@ export function MailIndex() {
     const [unreadCount, setUnreadCount] = useState(0)
     const [inboxCount, setInboxCount] = useState(0)
 
+    const { mailId } = useParams()
+    const navigate = useNavigate()
+
+    const isInbox = filterBy === 'inbox' || filterBy === 'all'
+
     useEffect(() => {
         loadMails()
     }, [filterBy, searchTerm])
 
+    useEffect(() => {
+        if (!isInbox && mailId) navigate('/mail')
+    }, [filterBy])
+
     function loadMails() {
-        let status = filterBy
-        if (filterBy === 'all' || filterBy === 'unread') {
-            status = 'inbox'
-        }
+        const status = filterBy === 'all' || filterBy === 'unread' ? 'inbox' : filterBy
 
         mailService.query({ status }).then(allMails => {
             const filtered = allMails.filter(mail => {
@@ -39,38 +48,55 @@ export function MailIndex() {
             })
 
             setMails(filtered)
-
-            const unread = filtered.filter(mail => !mail.isRead)
-            setUnreadCount(unread.length)
+            setUnreadCount(filtered.filter(mail => !mail.isRead).length)
 
             mailService.query({ status: 'inbox' }).then(inboxMails =>
                 setInboxCount(inboxMails.length)
             )
         })
     }
-
     function updateMail(updatedMail) {
         setMails(prevMails => {
             const updatedMails = prevMails.map(mail =>
                 mail.id === updatedMail.id ? updatedMail : mail
             )
-            const unread = updatedMails.filter(mail => !mail.isRead)
-            setUnreadCount(unread.length)
-            return updatedMails
+    
+            const matchesSearch =
+                updatedMail.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                updatedMail.body.toLowerCase().includes(searchTerm.toLowerCase())
+    
+            const shouldInclude = (() => {
+                if (filterBy === 'all') return matchesSearch
+                if (filterBy === 'starred') return updatedMail.isStarred && matchesSearch
+                if (filterBy === 'unread') return !updatedMail.isRead && matchesSearch
+                return matchesSearch
+            })()
+    
+            let newMails
+            if (!shouldInclude) {
+                newMails = updatedMails.filter(mail => mail.id !== updatedMail.id)
+            } else {
+                newMails = updatedMails
+            }
+    
+            const newUnreadCount = newMails.filter(mail => !mail.isRead).length
+            setUnreadCount(newUnreadCount)
+            return newMails
         })
-
+    
         mailService.save(updatedMail)
     }
+    
 
     function removeMail(mailId) {
         mailService.get(mailId).then(mail => {
             if (mail.removedAt) {
-                setMails(prev => prev.filter(mail => mail.id !== mailId))
+                setMails(prev => prev.filter(m => m.id !== mailId))
                 mailService.remove(mailId)
             } else {
-                const updatedMail = { ...mail, removedAt: Date.now() }
-                setMails(prev => prev.filter(mail => mail.id !== mailId))
-                mailService.save(updatedMail)
+                const updated = { ...mail, removedAt: Date.now() }
+                setMails(prev => prev.filter(m => m.id !== mailId))
+                mailService.save(updated)
             }
         })
     }
@@ -78,19 +104,21 @@ export function MailIndex() {
     function addMail(newMail) {
         mailService.save(newMail).then(saved => {
             const matchesFilter = () => {
-                if (filterBy === 'sent') return saved.from === mailService.getLoggedinUser().email
-                if (filterBy === 'inbox' || filterBy === 'all') return saved.to === mailService.getLoggedinUser().email
+                const user = mailService.getLoggedinUser().email
+                if (filterBy === 'sent') return saved.from === user
+                if (filterBy === 'inbox' || filterBy === 'all') return saved.to === user
                 return false
             }
-
-            if (matchesFilter()) {
-                setMails(prev => [saved, ...prev])
-            }
+            if (matchesFilter()) setMails(prev => [saved, ...prev])
         })
     }
 
     function onExpand(mail) {
         setExpandedMailId(prevId => (prevId === mail.id ? null : mail.id))
+    }
+
+    function onNavigateToDetails(mailId) {
+        navigate(`/mail/${mailId}`)
     }
 
     function toggleSidebar() {
@@ -109,13 +137,13 @@ export function MailIndex() {
                 onSearch={val => setSearchTerm(val)}
                 onToggleSidebar={toggleSidebar}
             />
-
+    
             <aside className={`mail-sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
                 <button className="btn-compose" onClick={() => setIsComposing(true)}>
                     <span className="material-symbols-outlined">edit</span>
                     {isSidebarOpen && <span> Compose</span>}
                 </button>
-
+    
                 <MailFolderList
                     filterBy={filterBy}
                     onSetFilter={val => setFilterBy(val)}
@@ -123,7 +151,7 @@ export function MailIndex() {
                     inboxCount={inboxCount}
                 />
             </aside>
-
+    
             <main className="mail-main">
                 <div className="mail-controls">
                     <MailFilter
@@ -132,22 +160,48 @@ export function MailIndex() {
                         unreadCount={unreadCount}
                     />
                 </div>
-
+    
                 {isComposing && (
                     <MailCompose
                         onClose={() => setIsComposing(false)}
                         onSend={addMail}
                     />
                 )}
+    
+                <Routes>
+                <Route
+    path=":mailId"
+    element={
+        <div>
+            <button className="btn-back" onClick={() => navigate('/mail')}>
+                <span className="material-symbols-outlined">arrow_back</span>
+            </button>
+            <MailDetails
+                mail={mails.find(mail => mail.id === mailId)}
+                onUpdate={updateMail}
+            />
+        </div>
+    }
+/>
 
-                <MailList
-                    mails={mails}
-                    onUpdate={updateMail}
-                    onRemove={removeMail}
-                    onExpand={onExpand}
-                    expandedMailId={expandedMailId}
-                />
+
+                    <Route
+                        index
+                        element={
+                            <MailList
+                                mails={mails}
+                                onUpdate={updateMail}
+                                onRemove={removeMail}
+                                onExpand={onExpand}
+                                expandedMailId={expandedMailId}
+                                onNavigateToDetails={onNavigateToDetails}
+                            />
+                        }
+                    />
+                </Routes>
             </main>
         </section>
     )
+    
 }
+

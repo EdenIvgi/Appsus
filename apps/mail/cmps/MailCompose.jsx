@@ -48,7 +48,7 @@ close
                 />
                 <textarea
                     name="body"
-                    placeholder="Body"
+                    placeholder=""
                     value={mail.body}
                     onChange={handleChange}
                 ></textarea>
