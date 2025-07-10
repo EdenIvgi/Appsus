@@ -432,7 +432,7 @@
 }
 
 .btn-pin-corner .material-symbols-outlined {
-    font-size: 16px;
+    font-size: 14px;
     font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
     transform: rotate(0deg);
 }
@@ -516,7 +516,7 @@
 }
 
 .btn-pin .material-icons, .btn-remove .material-icons, .action-btn .material-icons {
-    font-size: 16px;
+    font-size: 14px;
 }
 
 /* Color Picker */
@@ -644,7 +644,6 @@
     width: 100%;
     max-width: 600px;
     max-height: 90vh;
-    overflow-y: auto;
 }
 
 .note-edit-modal-content {
@@ -754,6 +753,9 @@
     justify-content: space-between;
     border-top: 1px solid #e8eaed;
     padding-top: 16px;
+    overflow: visible;
+    position: relative;
+    z-index: 10000;
 }
 
 .note-edit-tools {
@@ -804,6 +806,7 @@
 /* Color picker for modal */
 .color-picker-container-modal {
     position: relative;
+    overflow: visible;
 }
 
 .color-picker-modal-popup {
@@ -817,7 +820,7 @@
     padding: 8px;
     display: flex;
     gap: 6px;
-    z-index: 9999;
+    z-index: 99999;
     white-space: nowrap;
 }
 
@@ -921,9 +924,12 @@
     
     .color-picker-modal-popup {
         left: 0;
+        right: 0;
+        top: 40px;
         transform: none;
         max-width: calc(100vw - 32px);
         flex-wrap: wrap;
+        margin: 0 16px;
     }
     
     .color-btn-modal-popup {
