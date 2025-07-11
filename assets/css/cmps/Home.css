@@ -7,7 +7,92 @@
     font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
 }
 
-.home-header {
+/* Appsus Header - Similar to Gmail Header */
+.appsus-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 74px;
+    display: flex;
+    align-items: center;
+    background-color: #F9FAFE;
+    z-index: 1000;
+    padding: 0 24px;
+    justify-content: space-between;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.appsus-header-left {
+    display: flex;
+    align-items: center;
+    min-width: 200px;
+}
+
+.orbit-icon {
+    cursor: pointer;
+    color: #1a73e8;
+    padding: 8px;
+    margin-right: 8px;
+    transition: all 0.2s ease;
+}
+
+.orbit-icon:hover {
+    background-color: #e8f0fe;
+    border-radius: 50%;
+}
+
+.appsus-title {
+    font-size: 22px;
+    font-weight: 500;
+    color: #5f6368;
+    letter-spacing: -0.3px;
+}
+
+.appsus-header-nav {
+    display: flex;
+    gap: 8px;
+}
+
+.nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #5f6368;
+    font-weight: 500;
+}
+
+.nav-btn:hover {
+    background-color: #e8f0fe;
+    color: #1a73e8;
+}
+
+.nav-btn.current {
+    background-color: #e8f0fe;
+    color: #1a73e8;
+    font-weight: 600;
+}
+
+.nav-btn .material-symbols-outlined {
+    font-size: 20px;
+}
+
+.icon-large {
+    font-size: 24px !important;
+}
+
+/* Main Content - Adjusted for fixed header */
+.home-main {
+    padding-top: 74px;
+}
+
+.home-hero {
     background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
     border-bottom: 1px solid #e0e0e0;
     padding: 5rem 0;
@@ -211,6 +296,18 @@
     box-shadow: 0 8px 24px rgba(26, 115, 232, 0.4);
 }
 
+/* About Page - Basic styles for header consistency */
+.about-page {
+    background: #fafafa;
+    min-height: 100vh;
+    padding: 0;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+}
+
+.about-main {
+    padding-top: 74px;
+}
+
 /* Modal Styles */
 .modal-overlay {
     position: fixed;
@@ -337,6 +434,23 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .appsus-header {
+        padding: 0 16px;
+    }
+    
+    .appsus-header-nav {
+        gap: 4px;
+    }
+    
+    .nav-btn {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+    
+    .nav-btn span:last-child {
+        display: none;
+    }
+    
     .home-title {
         font-size: 2.4rem;
     }
