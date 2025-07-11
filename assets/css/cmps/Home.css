@@ -1,33 +1,380 @@
- /* home */
+/* Home Page - Clean Modern Design with Better Typography */
 
 .home {
-    background-color: var(--bg2);
+    background: #fafafa;
+    min-height: 100vh;
+    padding: 0;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
 }
 
-.home .box-container {
-    padding: 1em 0;
+.home-header {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-bottom: 1px solid #e0e0e0;
+    padding: 5rem 0;
+    text-align: center;
 }
 
-.home .box1 {
-    background-color: var(--color1);
-    min-height: 10em;
+.home-title {
+    font-size: 3.2rem;
+    font-weight: 300;
+    color: #1a73e8;
+    margin: 0 0 0.8rem 0;
+    letter-spacing: -1px;
+    text-shadow: 0 2px 4px rgba(26, 115, 232, 0.1);
 }
 
-.home .box2 {
-    background-color: var(--color2);
-    min-height: 10em;
+.home-subtitle {
+    font-size: 1.3rem;
+    color: #5f6368;
+    margin: 0;
+    font-weight: 400;
+    letter-spacing: 0.2px;
 }
 
- @media (min-width: 750px) {
-    .home .box-container {
-        display: flex;
-        flex-direction: row-reverse;
+.home-content {
+    padding: 4rem 0;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.intro-section {
+    margin-bottom: 5rem;
+}
+
+.intro-card {
+    background: white;
+    border-radius: 12px;
+    padding: 3rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04);
+    text-align: center;
+    border: 1px solid rgba(26, 115, 232, 0.08);
+}
+
+.intro-card h2 {
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: #202124;
+    margin: 0 0 1.5rem 0;
+    letter-spacing: -0.3px;
+}
+
+.intro-card p {
+    color: #5f6368;
+    line-height: 1.7;
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 400;
+}
+
+.btn-link {
+    background: none;
+    border: none;
+    color: #1a73e8;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0;
+    margin-left: 4px;
+    font-size: 1.05rem;
+    transition: color 0.2s ease;
+}
+
+.btn-link:hover {
+    color: #1557b0;
+    text-decoration: underline;
+}
+
+.apps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2.5rem;
+    margin-bottom: 5rem;
+}
+
+.app-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08), 0 4px 24px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    position: relative;
+    overflow: hidden;
+}
+
+.app-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #1a73e8, #4285f4);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.app-card:hover::before {
+    transform: scaleX(1);
+}
+
+.app-card:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 16px 48px rgba(0, 0, 0, 0.08);
+    transform: translateY(-4px);
+}
+
+.app-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem auto;
+    font-size: 28px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease;
+}
+
+.app-card:hover .app-icon {
+    transform: scale(1.1);
+}
+
+.mail-icon {
+    background: linear-gradient(135deg, #ea4335, #d33b2c);
+    color: white;
+}
+
+.notes-icon {
+    background: linear-gradient(135deg, #fbbc04, #f9ab00);
+    color: white;
+}
+
+.app-card h3 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #202124;
+    margin: 0 0 0.8rem 0;
+    letter-spacing: -0.2px;
+}
+
+.app-card p {
+    color: #5f6368;
+    line-height: 1.6;
+    margin: 0 0 2rem 0;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.app-btn {
+    background: #1a73e8;
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+    box-shadow: 0 2px 8px rgba(26, 115, 232, 0.2);
+}
+
+.app-btn:hover {
+    background: #1557b0;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(26, 115, 232, 0.3);
+}
+
+.action-section {
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #1a73e8, #4285f4);
+    color: white;
+    border: none;
+    padding: 1rem 3rem;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+    letter-spacing: 0.3px;
+    box-shadow: 0 4px 16px rgba(26, 115, 232, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(26, 115, 232, 0.4);
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: white;
+    border-radius: 16px;
+    max-width: 520px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 16px 64px rgba(0, 0, 0, 0.24);
+    animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-32px) scale(0.96);
     }
-    .home .box1 {
-        flex: 1
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
-    .home .box2 {
-        width: 30vw;
+}
+
+.modal-close {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.2rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #5f6368;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: #f1f3f4;
+    color: #202124;
+}
+
+.modal-body {
+    padding: 2.5rem;
+}
+
+.modal-body h2 {
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: #202124;
+    margin: 0 0 1rem 0;
+    text-align: center;
+    letter-spacing: -0.3px;
+}
+
+.modal-body p {
+    color: #5f6368;
+    line-height: 1.6;
+    margin: 0 0 2.5rem 0;
+    text-align: center;
+    font-size: 1.05rem;
+}
+
+.modal-apps {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.modal-app-btn {
+    background: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    font-weight: 500;
+    color: #202124;
+}
+
+.modal-app-btn:hover {
+    background: #f1f3f4;
+    border-color: #1a73e8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(26, 115, 232, 0.15);
+}
+
+.modal-app-icon {
+    font-size: 2rem;
+}
+
+.modal-actions {
+    text-align: center;
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .home-title {
+        font-size: 2.4rem;
     }
     
+    .home-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .intro-card {
+        padding: 2rem;
+    }
+    
+    .apps-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .app-card {
+        padding: 2rem;
+    }
+    
+    .modal-apps {
+        grid-template-columns: 1fr;
+    }
+    
+    .container {
+        padding: 0 1rem;
+    }
+    
+    .btn-primary {
+        padding: 0.9rem 2.5rem;
+        font-size: 1rem;
+    }
+}
+
+/* Remove old styles */
+.home .box-container,
+.home .box1,
+.home .box2 {
+    display: none;
 }
