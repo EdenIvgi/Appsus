@@ -7,7 +7,8 @@ export const utilService = {
     getDayName,
     getMonthName,
     loadFromStorage,
-    saveToStorage
+    saveToStorage,
+    animateCSS
 }
 
 function saveToStorage(key, val) {
@@ -57,6 +58,30 @@ function getRandomColor() {
         color += letters[Math.floor(Math.random() * 16)]
     }
     return color
+}
+
+function animateCSS(element, animationName, keepAnimation = true) {
+    const prefix = 'animate__'
+    return new Promise((resolve) => {
+        const animationClasses = [`${prefix}animated`, `${prefix}${animationName}`]
+        
+        // Add animation classes
+        element.classList.add(...animationClasses)
+        
+        // Remove animation classes when animation ends
+        function handleAnimationEnd(event) {
+            event.stopPropagation()
+            element.removeEventListener('animationend', handleAnimationEnd)
+            
+            if (!keepAnimation) {
+                element.classList.remove(...animationClasses)
+            }
+            
+            resolve('Animation ended')
+        }
+        
+        element.addEventListener('animationend', handleAnimationEnd)
+    })
 }
 
 function getDayName(date, locale) {
