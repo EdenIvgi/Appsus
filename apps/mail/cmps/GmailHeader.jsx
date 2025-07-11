@@ -1,3 +1,5 @@
+const { NavLink } = ReactRouterDOM
+
 export function GmailHeader({ searchTerm, onSearch, onToggleSidebar }) {
     return (
         <header className="gmail-header">
@@ -25,6 +27,21 @@ export function GmailHeader({ searchTerm, onSearch, onToggleSidebar }) {
                     />
                 </div>
             </div>
+
+            <nav className="gmail-header-nav">
+                <NavLink to="/" className="nav-link">
+                    <span className="material-symbols-outlined">home</span>
+                    <span>Home</span>
+                </NavLink>
+                <NavLink to="/about" className="nav-link">
+                    <span className="material-symbols-outlined">info</span>
+                    <span>About</span>
+                </NavLink>
+                <NavLink to="/note" className="nav-link">
+                    <span className="material-symbols-outlined">note</span>
+                    <span>Note</span>
+                </NavLink>
+            </nav>
         </header>
     )
 }

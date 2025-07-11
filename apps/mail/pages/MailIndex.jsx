@@ -13,7 +13,7 @@ export function MailIndex() {
     const [isComposing, setIsComposing] = useState(false)
     const [mailToEdit, setMailToEdit] = useState(null)
     const [mails, setMails] = useState([])
-    const [filterBy, setFilterBy] = useState('all')
+    const [filterBy, setFilterBy] = useState('inbox') 
     const [searchTerm, setSearchTerm] = useState('')
     const [sortByDate, setSortByDate] = useState('desc')
     const [expandedMailId, setExpandedMailId] = useState(null)
@@ -30,19 +30,21 @@ export function MailIndex() {
 
     function loadMails() {
         mailService.query().then(allMails => {
+            const userEmail = mailService.getLoggedinUser().email
+
             const filtered = allMails.filter(mail => {
                 const matchesSearch =
                     mail.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     mail.body.toLowerCase().includes(searchTerm.toLowerCase())
 
-                if (filterBy === 'all') return !mail.removedAt && !mail.isDraft && matchesSearch
+                if (filterBy === 'inbox') return mail.to === userEmail && !mail.removedAt && !mail.isDraft && matchesSearch
                 if (filterBy === 'trash') return mail.removedAt && matchesSearch
                 if (filterBy === 'draft') return mail.isDraft && !mail.removedAt && matchesSearch
-                if (filterBy === 'sent') return mail.from === mailService.getLoggedinUser().email && !mail.removedAt && !mail.isDraft && matchesSearch
+                if (filterBy === 'sent') return mail.from === userEmail && !mail.removedAt && !mail.isDraft && matchesSearch
                 if (filterBy === 'starred') return mail.isStarred && !mail.removedAt && matchesSearch
                 if (filterBy === 'unread') return !mail.isRead && !mail.removedAt && !mail.isDraft && matchesSearch
 
-                return matchesSearch
+                return false
             })
 
             const sorted = filtered.sort((a, b) => {
@@ -53,7 +55,7 @@ export function MailIndex() {
             setUnreadCount(sorted.filter(mail => !mail.isRead).length)
 
             mailService.query().then(all => {
-                const inbox = all.filter(mail => mail.to === mailService.getLoggedinUser().email && !mail.removedAt && !mail.isDraft)
+                const inbox = all.filter(mail => mail.to === userEmail && !mail.removedAt && !mail.isDraft)
                 setInboxCount(inbox.length)
             })
         })
@@ -65,17 +67,18 @@ export function MailIndex() {
                 mail.id === updatedMail.id ? updatedMail : mail
             )
 
+            const userEmail = mailService.getLoggedinUser().email
             const matchesSearch =
                 updatedMail.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 updatedMail.body.toLowerCase().includes(searchTerm.toLowerCase())
 
             const shouldInclude = (() => {
-                if (filterBy === 'all') return !updatedMail.removedAt && !updatedMail.isDraft && matchesSearch
+                if (filterBy === 'inbox') return updatedMail.to === userEmail && !updatedMail.removedAt && !updatedMail.isDraft && matchesSearch
                 if (filterBy === 'starred') return updatedMail.isStarred && !updatedMail.removedAt && matchesSearch
                 if (filterBy === 'unread') return !updatedMail.isRead && !updatedMail.removedAt && !updatedMail.isDraft && matchesSearch
                 if (filterBy === 'draft') return updatedMail.isDraft && !updatedMail.removedAt && matchesSearch
-                if (filterBy === 'sent') return updatedMail.from === mailService.getLoggedinUser().email && !updatedMail.removedAt && !updatedMail.isDraft && matchesSearch
-                return matchesSearch
+                if (filterBy === 'sent') return updatedMail.from === userEmail && !updatedMail.removedAt && !updatedMail.isDraft && matchesSearch
+                return false
             })()
 
             const newMails = shouldInclude
@@ -107,10 +110,10 @@ export function MailIndex() {
         if (newMail.isDraft) return
 
         mailService.save(newMail).then(saved => {
+            const user = mailService.getLoggedinUser().email
             const matchesFilter = () => {
-                const user = mailService.getLoggedinUser().email
                 if (filterBy === 'sent') return saved.from === user
-                if (filterBy === 'inbox' || filterBy === 'all') return saved.to === user
+                if (filterBy === 'inbox') return saved.to === user
                 return false
             }
 
