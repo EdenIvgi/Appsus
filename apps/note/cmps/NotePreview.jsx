@@ -2,33 +2,41 @@ import { NoteTxt } from './NoteTxt.jsx'
 import { NoteImg } from './NoteImg.jsx'
 import { NoteTodos } from './NoteTodos.jsx'
 import { NoteVideo } from './NoteVideo.jsx'
+import { LabelPicker } from './LabelPicker.jsx'
+import { LabelDisplay } from './LabelDisplay.jsx'
 import { imageUploadService } from '../../../services/image-upload.service.js'
 
 const { useState, useEffect, useRef, memo } = React
 
-export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor, onEditNote, onAddVideo, onUpdateNote }) {
+export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor, onEditNote, onAddVideo, onUpdateNote, onLabelsChange, onDuplicateNote }) {
     const [showColorPicker, setShowColorPicker] = useState(false)
+    const [showLabelPicker, setShowLabelPicker] = useState(false)
+    const [showMoreMenu, setShowMoreMenu] = useState(false)
     const colorPickerRef = useRef(null)
+    const labelPickerRef = useRef(null)
+    const moreMenuRef = useRef(null)
     const imageInputRef = useRef(null)
     const notePreviewRef = useRef(null)
     const mouseLeaveTimeoutRef = useRef(null)
     
     useEffect(() => {
         function handleClickOutside(event) {
-            // Close color picker if clicking outside the entire note
+            // Close popups if clicking outside the entire note
             if (notePreviewRef.current && !notePreviewRef.current.contains(event.target)) {
                 setShowColorPicker(false)
+                setShowLabelPicker(false)
+                setShowMoreMenu(false)
             }
         }
 
-        if (showColorPicker) {
+        if (showColorPicker || showLabelPicker || showMoreMenu) {
             document.addEventListener('mousedown', handleClickOutside)
         }
 
         return () => {
             document.removeEventListener('mousedown', handleClickOutside)
         }
-    }, [showColorPicker])
+    }, [showColorPicker, showLabelPicker, showMoreMenu])
 
     // Cleanup timeout on unmount
     useEffect(() => {
@@ -54,7 +62,7 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
     function DynamicNoteComponent({ note }) {
         switch (note.type) {
             case 'NoteTxt':
-                return <NoteTxt info={note.info} />
+                return <NoteTxt info={note.info} isPreview={true} />
             case 'NoteImg':
                 return <NoteImg info={note.info} />
             case 'NoteTodos':
@@ -82,9 +90,11 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
     }
 
     function handleNoteMouseLeave() {
-        // Delay closing to allow mouse to move to color picker
+        // Delay closing to allow mouse to move to color picker or label picker
         mouseLeaveTimeoutRef.current = setTimeout(() => {
             setShowColorPicker(false)
+            setShowLabelPicker(false)
+            setShowMoreMenu(false)
         }, 100)
     }
 
@@ -159,10 +169,30 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
         onEditNote(updatedNote)
     }
 
+    function toggleMoreMenu(e) {
+        e.stopPropagation()
+        setShowMoreMenu(!showMoreMenu)
+        setShowColorPicker(false)
+        setShowLabelPicker(false)
+    }
+
+    function handleShowLabelPicker(e) {
+        e.stopPropagation()
+        setShowLabelPicker(true)
+        setShowMoreMenu(false)
+        setShowColorPicker(false)
+    }
+
+    function handleLabelsChange(newLabels) {
+        if (onLabelsChange) {
+            onLabelsChange(note.id, newLabels)
+        }
+    }
+
     return (
         <article 
             ref={notePreviewRef}
-            className={`note-preview ${showColorPicker ? 'color-picker-active' : ''}`}
+            className={`note-preview ${showColorPicker || showLabelPicker ? 'color-picker-active' : ''} ${showMoreMenu ? 'more-menu-active' : ''}`}
             style={{ backgroundColor: (note.style && note.style.backgroundColor) || '#ffffff' }}
             onMouseLeave={handleNoteMouseLeave}
             onMouseEnter={handleNoteMouseEnter}
@@ -181,6 +211,19 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
 
             <div className="note-content" onClick={handleNoteClick}>
                 <DynamicNoteComponent note={note} />
+                
+                {/* Display labels */}
+                {note.labels && note.labels.length > 0 && (
+                    <div className="note-labels">
+                        {note.labels.map(labelId => (
+                            <LabelDisplay 
+                                key={labelId} 
+                                labelId={labelId} 
+                                noteColor={(note.style && note.style.backgroundColor) || '#ffffff'}
+                            />
+                        ))}
+                    </div>
+                )}
             </div>
             
             <div className="note-actions">
@@ -258,16 +301,63 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
                     )}
                 </div>
 
-                <button 
-                    className="action-btn"
-                    onClick={(e) => {
-                        e.stopPropagation()
-                        // Add more options functionality later
-                    }}
-                    title="More"
-                >
-                    <span className="material-symbols-outlined">more_vert</span>
-                </button>
+                {showLabelPicker && (
+                    <div ref={labelPickerRef} className="label-picker-container">
+                        <LabelPicker
+                            selectedLabels={note.labels || []}
+                            onLabelsChange={handleLabelsChange}
+                            onClose={() => setShowLabelPicker(false)}
+                            onMouseEnter={handleNoteMouseEnter}
+                            onMouseLeave={handleNoteMouseLeave}
+                        />
+                    </div>
+                )}
+
+                <div ref={moreMenuRef} className="more-menu-container">
+                    <button 
+                        className="action-btn"
+                        onClick={toggleMoreMenu}
+                        title="More"
+                    >
+                        <span className="material-symbols-outlined">more_vert</span>
+                    </button>
+
+                    {showMoreMenu && (
+                        <div className="more-menu-popup">
+                            <button 
+                                className="more-menu-item"
+                                onClick={handleShowLabelPicker}
+                            >
+                                <span className="material-symbols-outlined">label</span>
+                                Add label
+                            </button>
+                            <button 
+                                className="more-menu-item"
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    setShowMoreMenu(false)
+                                    if (onDuplicateNote) {
+                                        onDuplicateNote(note.id)
+                                    }
+                                }}
+                            >
+                                <span className="material-symbols-outlined">content_copy</span>
+                                Duplicate
+                            </button>
+                            <button 
+                                className="more-menu-item"
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    setShowMoreMenu(false)
+                                    // Add archive functionality later
+                                }}
+                            >
+                                <span className="material-symbols-outlined">archive</span>
+                                Archive
+                            </button>
+                        </div>
+                    )}
+                </div>
                 
                 <button 
                     className="btn-remove"

@@ -1,13 +1,18 @@
 import { imageUploadService } from '../../../services/image-upload.service.js'
 import { NoteVideo } from './NoteVideo.jsx'
 import { NoteTodos } from './NoteTodos.jsx'
+import { LabelPicker } from './LabelPicker.jsx'
 
 const { useState, useEffect, useRef } = React
 
 export function NoteEdit({ note, onSave, onCancel, onChange }) {
     const [noteToEdit, setNoteToEdit] = useState(note)
     const [showColorPicker, setShowColorPicker] = useState(false)
+    const [showLabelPicker, setShowLabelPicker] = useState(false)
+    const [showMoreMenu, setShowMoreMenu] = useState(false)
     const colorPickerRef = useRef(null)
+    const labelPickerRef = useRef(null)
+    const moreMenuRef = useRef(null)
     const imageInputRef = useRef(null)
 
     useEffect(() => {
@@ -28,16 +33,22 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
             if (colorPickerRef.current && !colorPickerRef.current.contains(event.target)) {
                 setShowColorPicker(false)
             }
+            if (labelPickerRef.current && !labelPickerRef.current.contains(event.target)) {
+                setShowLabelPicker(false)
+            }
+            if (moreMenuRef.current && !moreMenuRef.current.contains(event.target)) {
+                setShowMoreMenu(false)
+            }
         }
 
-        if (showColorPicker) {
+        if (showColorPicker || showLabelPicker || showMoreMenu) {
             document.addEventListener('mousedown', handleClickOutside)
         }
 
         return () => {
             document.removeEventListener('mousedown', handleClickOutside)
         }
-    }, [showColorPicker])
+    }, [showColorPicker, showLabelPicker, showMoreMenu])
 
     function handleTxtChange(ev) {
         const { value } = ev.target
@@ -106,6 +117,27 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
 
     function toggleColorPicker() {
         setShowColorPicker(!showColorPicker)
+        setShowLabelPicker(false)
+        setShowMoreMenu(false)
+    }
+
+    function toggleMoreMenu() {
+        setShowMoreMenu(!showMoreMenu)
+        setShowColorPicker(false)
+        setShowLabelPicker(false)
+    }
+
+    function handleShowLabelPicker() {
+        setShowLabelPicker(true)
+        setShowMoreMenu(false)
+        setShowColorPicker(false)
+    }
+
+    function handleLabelsChange(newLabels) {
+        setNoteToEdit({
+            ...noteToEdit,
+            labels: newLabels
+        })
     }
 
     function handleTogglePin() {
@@ -308,9 +340,27 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
                             <button className="tool-btn" title="Archive">
                                 <span className="material-symbols-outlined">archive</span>
                             </button>
-                            <button className="tool-btn" title="More">
-                                <span className="material-symbols-outlined">more_vert</span>
-                            </button>
+                            
+                            <div ref={moreMenuRef} className="more-menu-container">
+                                <button className="tool-btn" onClick={toggleMoreMenu} title="More">
+                                    <span className="material-symbols-outlined">more_vert</span>
+                                </button>
+                                {showMoreMenu && (
+                                    <div className="more-menu-popup">
+                                        <button 
+                                            className="more-menu-item"
+                                            onClick={handleShowLabelPicker}
+                                        >
+                                            <span className="material-symbols-outlined">label</span>
+                                            Add label
+                                        </button>
+                                        <button className="more-menu-item">
+                                            <span className="material-symbols-outlined">archive</span>
+                                            Archive
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                             <button className="tool-btn" title="Undo">
                                 <span className="material-symbols-outlined">undo</span>
                             </button>
@@ -323,6 +373,17 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
                             Close
                         </button>
                     </div>
+
+                    {/* Label Picker */}
+                    {showLabelPicker && (
+                        <div ref={labelPickerRef} className="label-picker-container">
+                            <LabelPicker
+                                selectedLabels={noteToEdit.labels || []}
+                                onLabelsChange={handleLabelsChange}
+                                onClose={() => setShowLabelPicker(false)}
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
 
