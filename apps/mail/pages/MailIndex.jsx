@@ -109,6 +109,8 @@ export function MailIndex() {
     function addMail(newMail) {
         if (newMail.isDraft) return
 
+        if (newMail.isDraft) return
+
         mailService.save(newMail).then(saved => {
             const user = mailService.getLoggedinUser().email
             const matchesFilter = () => {
@@ -116,6 +118,7 @@ export function MailIndex() {
                 if (filterBy === 'inbox') return saved.to === user
                 return false
             }
+
 
             if (matchesFilter()) setMails(prev => [saved, ...prev])
         })
@@ -127,6 +130,11 @@ export function MailIndex() {
 
     function onNavigateToDetails(mailId) {
         navigate(`/mail/${mailId}`)
+    }
+
+    function onEditDraft(draftMail) {
+        setMailToEdit(draftMail)
+        setIsComposing(true)
     }
 
     function onEditDraft(draftMail) {
@@ -183,7 +191,13 @@ export function MailIndex() {
                             setIsComposing(false)
                             setMailToEdit(null)
                         }}
+                        mailToEdit={mailToEdit}
+                        onClose={() => {
+                            setIsComposing(false)
+                            setMailToEdit(null)
+                        }}
                         onSend={addMail}
+                        onSaveDraft={() => setRefreshTrigger(Date.now())}
                         onSaveDraft={() => setRefreshTrigger(Date.now())}
                     />
                 )}
@@ -196,6 +210,7 @@ export function MailIndex() {
                                 <button className="btn-back" onClick={() => navigate('/mail')}>
                                     <span className="material-symbols-outlined">arrow_back</span>
                                 </button>
+                                <MailDetails mails={mails} onUpdate={updateMail} />
                                 <MailDetails mails={mails} onUpdate={updateMail} />
                             </div>
                         }
@@ -211,6 +226,7 @@ export function MailIndex() {
                                 expandedMailId={expandedMailId}
                                 onNavigateToDetails={onNavigateToDetails}
                                 onEditDraft={onEditDraft}
+                                onEditDraft={onEditDraft}
                             />
                         }
                     />
@@ -219,3 +235,4 @@ export function MailIndex() {
         </section>
     )
 }
+
