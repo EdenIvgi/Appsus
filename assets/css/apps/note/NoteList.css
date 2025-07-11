@@ -137,6 +137,30 @@
     letter-spacing: 0.01428571em;
 }
 
+/* Text toggle button for long text expand/collapse */
+.text-toggle-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: #5f6368;
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline;
+}
+
+.text-toggle-btn:hover {
+    color: #1a73e8;
+    text-decoration: underline;
+}
+
+.text-toggle-btn:focus {
+    outline: none;
+}
+
 /* Note Image Styles */
 .note-img h3 {
     margin: 0 0 8px 0;

@@ -62,6 +62,53 @@ const notes = [
         },
         style: { backgroundColor: '#ffffff' },
         labels: ['l102'] // Family label
+    },
+    {
+        id: 'n105',
+        createdAt: 1112226,
+        type: 'NoteTxt',
+        isPinned: false,
+        style: { backgroundColor: '#fff8b9' },
+        info: { 
+            title: 'Travel Journal - Day 1',
+            txt: 'Today was an absolutely incredible day in Tokyo! We started early with a visit to the famous Tsukiji Outer Market where we had the most amazing sushi breakfast. The freshness of the fish was beyond anything I\'ve ever experienced. After that, we walked through the beautiful gardens of the Imperial Palace. The cherry blossoms were in full bloom, creating a magical pink canopy everywhere we looked. We spent hours just sitting under the trees, taking photos, and enjoying the peaceful atmosphere. Later in the afternoon, we explored the bustling Shibuya district and experienced the famous scramble crossing. The energy was infectious! We ended the day with a traditional kaiseki dinner at a small family-run restaurant in Asakusa. Every dish was a work of art. Tomorrow we\'re planning to visit Mount Fuji - can\'t wait!' 
+        },
+        labels: ['l106', 'l102'] // Memories, Family labels
+    },
+    {
+        id: 'n106',
+        createdAt: 1112227,
+        type: 'NoteTxt',
+        isPinned: false,
+        style: { backgroundColor: '#e2f6d3' },
+        info: { 
+            title: 'Project Ideas & Thoughts',
+            txt: 'I\'ve been thinking a lot about our next big project at work. There are so many possibilities we could explore! First, there\'s the idea of creating a mobile app that helps people track their daily habits and build better routines. We could integrate it with wearable devices and use machine learning to provide personalized recommendations. Second, we could develop a platform for local businesses to connect with their community, kind of like a neighborhood social network but focused on commerce and services. Third, there\'s this concept I\'ve been mulling over about a collaborative learning platform where people can teach each other skills through short video tutorials and interactive workshops. The challenge would be creating a good matching algorithm to connect learners with the right instructors based on their learning style, schedule, and goals. Each of these projects would require different technical stacks and team compositions. We should probably do a proper feasibility study and market research before committing to any direction. Maybe we should set up some brainstorming sessions with the whole team next week?' 
+        },
+        labels: ['l103'] // Work label
+    },
+    {
+        id: 'n107',
+        createdAt: 1112228,
+        type: 'NoteTxt',
+        isPinned: true,
+        style: { backgroundColor: '#d3bedb' },
+        info: { 
+            txt: 'Remember to call mom on Sunday!' 
+        },
+        labels: ['l102'] // Family label
+    },
+    {
+        id: 'n108',
+        createdAt: 1112229,
+        type: 'NoteTxt',
+        isPinned: false,
+        style: { backgroundColor: '#afccdc' },
+        info: { 
+            title: 'Book Recommendations',
+            txt: 'Here are some amazing books I discovered this month: "The Midnight Library" by Matt Haig - a philosophical novel about parallel lives and the paths not taken. It really made me think about choices and regrets. "Atomic Habits" by James Clear - practical strategies for building good habits and breaking bad ones. The 1% improvement principle is genius! "The Seven Husbands of Evelyn Hugo" by Taylor Jenkins Reid - absolutely captivating storytelling about a reclusive Hollywood icon. "Project Hail Mary" by Andy Weir - science fiction at its finest, with humor and heart. I couldn\'t put it down! "The Thursday Murder Club" by Richard Osman - a cozy mystery series that\'s both funny and engaging. Perfect for relaxing evenings.' 
+        },
+        labels: ['l106'] // Memories label
     }
 ]
 

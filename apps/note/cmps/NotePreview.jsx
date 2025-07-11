@@ -8,7 +8,7 @@ import { imageUploadService } from '../../../services/image-upload.service.js'
 
 const { useState, useEffect, useRef, memo } = React
 
-export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor, onEditNote, onAddVideo, onUpdateNote, onLabelsChange }) {
+export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor, onEditNote, onAddVideo, onUpdateNote, onLabelsChange, onDuplicateNote }) {
     const [showColorPicker, setShowColorPicker] = useState(false)
     const [showLabelPicker, setShowLabelPicker] = useState(false)
     const [showMoreMenu, setShowMoreMenu] = useState(false)
@@ -62,7 +62,7 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
     function DynamicNoteComponent({ note }) {
         switch (note.type) {
             case 'NoteTxt':
-                return <NoteTxt info={note.info} />
+                return <NoteTxt info={note.info} isPreview={true} />
             case 'NoteImg':
                 return <NoteImg info={note.info} />
             case 'NoteTodos':
@@ -330,6 +330,19 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
                             >
                                 <span className="material-symbols-outlined">label</span>
                                 Add label
+                            </button>
+                            <button 
+                                className="more-menu-item"
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    setShowMoreMenu(false)
+                                    if (onDuplicateNote) {
+                                        onDuplicateNote(note.id)
+                                    }
+                                }}
+                            >
+                                <span className="material-symbols-outlined">content_copy</span>
+                                Duplicate
                             </button>
                             <button 
                                 className="more-menu-item"

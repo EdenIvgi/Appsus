@@ -560,7 +560,8 @@
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.32);
 }
 
-.fab .material-icons {
+.fab .material-icons,
+.fab .material-symbols-outlined {
     color: white;
     font-size: 24px;
 }
