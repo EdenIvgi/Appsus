@@ -1,6 +1,5 @@
-// MailIndex.jsx
 const { useState, useEffect } = React
-const { Routes, Route, useParams, useNavigate } = ReactRouterDOM
+const { Routes, Route, useNavigate } = ReactRouterDOM
 
 import { GmailHeader } from '../cmps/GmailHeader.jsx'
 import { mailService } from '../services/mail.service.js'
@@ -12,40 +11,37 @@ import { MailDetails } from './MailDetails.jsx'
 
 export function MailIndex() {
     const [isComposing, setIsComposing] = useState(false)
+    const [mailToEdit, setMailToEdit] = useState(null)
     const [mails, setMails] = useState([])
     const [filterBy, setFilterBy] = useState('all')
     const [searchTerm, setSearchTerm] = useState('')
-    const [sortByDate, setSortByDate] = useState('desc') // New sort state
+    const [sortByDate, setSortByDate] = useState('desc')
     const [expandedMailId, setExpandedMailId] = useState(null)
     const [isSidebarOpen, setIsSidebarOpen] = useState(true)
     const [unreadCount, setUnreadCount] = useState(0)
     const [inboxCount, setInboxCount] = useState(0)
+    const [refreshTrigger, setRefreshTrigger] = useState(Date.now())
 
-    const { mailId } = useParams()
     const navigate = useNavigate()
-
-    const isInbox = filterBy === 'inbox' || filterBy === 'all'
 
     useEffect(() => {
         loadMails()
-    }, [filterBy, searchTerm, sortByDate])
-
-    useEffect(() => {
-        if (!isInbox && mailId) navigate('/mail')
-    }, [filterBy])
+    }, [filterBy, searchTerm, sortByDate, refreshTrigger])
 
     function loadMails() {
-        const status = filterBy === 'all' || filterBy === 'unread' ? 'inbox' : filterBy
-
-        mailService.query({ status }).then(allMails => {
+        mailService.query().then(allMails => {
             const filtered = allMails.filter(mail => {
                 const matchesSearch =
                     mail.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     mail.body.toLowerCase().includes(searchTerm.toLowerCase())
 
-                if (filterBy === 'all') return matchesSearch
-                if (filterBy === 'starred') return mail.isStarred && matchesSearch
-                if (filterBy === 'unread') return !mail.isRead && matchesSearch
+                if (filterBy === 'all') return !mail.removedAt && !mail.isDraft && matchesSearch
+                if (filterBy === 'trash') return mail.removedAt && matchesSearch
+                if (filterBy === 'draft') return mail.isDraft && !mail.removedAt && matchesSearch
+                if (filterBy === 'sent') return mail.from === mailService.getLoggedinUser().email && !mail.removedAt && !mail.isDraft && matchesSearch
+                if (filterBy === 'starred') return mail.isStarred && !mail.removedAt && matchesSearch
+                if (filterBy === 'unread') return !mail.isRead && !mail.removedAt && !mail.isDraft && matchesSearch
+
                 return matchesSearch
             })
 
@@ -56,9 +52,10 @@ export function MailIndex() {
             setMails(sorted)
             setUnreadCount(sorted.filter(mail => !mail.isRead).length)
 
-            mailService.query({ status: 'inbox' }).then(inboxMails =>
-                setInboxCount(inboxMails.length)
-            )
+            mailService.query().then(all => {
+                const inbox = all.filter(mail => mail.to === mailService.getLoggedinUser().email && !mail.removedAt && !mail.isDraft)
+                setInboxCount(inbox.length)
+            })
         })
     }
 
@@ -73,9 +70,11 @@ export function MailIndex() {
                 updatedMail.body.toLowerCase().includes(searchTerm.toLowerCase())
 
             const shouldInclude = (() => {
-                if (filterBy === 'all') return matchesSearch
-                if (filterBy === 'starred') return updatedMail.isStarred && matchesSearch
-                if (filterBy === 'unread') return !updatedMail.isRead && matchesSearch
+                if (filterBy === 'all') return !updatedMail.removedAt && !updatedMail.isDraft && matchesSearch
+                if (filterBy === 'starred') return updatedMail.isStarred && !updatedMail.removedAt && matchesSearch
+                if (filterBy === 'unread') return !updatedMail.isRead && !updatedMail.removedAt && !updatedMail.isDraft && matchesSearch
+                if (filterBy === 'draft') return updatedMail.isDraft && !updatedMail.removedAt && matchesSearch
+                if (filterBy === 'sent') return updatedMail.from === mailService.getLoggedinUser().email && !updatedMail.removedAt && !updatedMail.isDraft && matchesSearch
                 return matchesSearch
             })()
 
@@ -105,6 +104,8 @@ export function MailIndex() {
     }
 
     function addMail(newMail) {
+        if (newMail.isDraft) return
+
         mailService.save(newMail).then(saved => {
             const matchesFilter = () => {
                 const user = mailService.getLoggedinUser().email
@@ -112,6 +113,7 @@ export function MailIndex() {
                 if (filterBy === 'inbox' || filterBy === 'all') return saved.to === user
                 return false
             }
+
             if (matchesFilter()) setMails(prev => [saved, ...prev])
         })
     }
@@ -124,6 +126,11 @@ export function MailIndex() {
         navigate(`/mail/${mailId}`)
     }
 
+    function onEditDraft(draftMail) {
+        setMailToEdit(draftMail)
+        setIsComposing(true)
+    }
+
     function toggleSidebar() {
         setIsSidebarOpen(prev => !prev)
     }
@@ -133,8 +140,6 @@ export function MailIndex() {
         setSearchTerm(term)
         setSortByDate(sort)
     }
-
-    const selectedMail = mails.find(mail => mail.id === mailId)
 
     return (
         <section className={`mail-index ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
@@ -170,8 +175,13 @@ export function MailIndex() {
 
                 {isComposing && (
                     <MailCompose
-                        onClose={() => setIsComposing(false)}
+                        mailToEdit={mailToEdit}
+                        onClose={() => {
+                            setIsComposing(false)
+                            setMailToEdit(null)
+                        }}
                         onSend={addMail}
+                        onSaveDraft={() => setRefreshTrigger(Date.now())}
                     />
                 )}
 
@@ -183,9 +193,7 @@ export function MailIndex() {
                                 <button className="btn-back" onClick={() => navigate('/mail')}>
                                     <span className="material-symbols-outlined">arrow_back</span>
                                 </button>
-                                {selectedMail
-                                    ? <MailDetails mail={selectedMail} onUpdate={updateMail} />
-                                    : <div className="mail-details loading">Loading mail...</div>}
+                                <MailDetails mails={mails} onUpdate={updateMail} />
                             </div>
                         }
                     />
@@ -199,6 +207,7 @@ export function MailIndex() {
                                 onExpand={onExpand}
                                 expandedMailId={expandedMailId}
                                 onNavigateToDetails={onNavigateToDetails}
+                                onEditDraft={onEditDraft}
                             />
                         }
                     />

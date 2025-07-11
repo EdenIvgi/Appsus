@@ -1,11 +1,33 @@
-const { useState } = React
+const { useEffect, useRef, useState } = React
+import { mailService } from '../services/mail.service.js'
 
-export function MailCompose({ onClose, onSend }) {
-    const [mail, setMail] = useState({
-        to: '',
-        subject: '',
-        body: '',
-    })
+export function MailCompose({ onClose, onSend, onSaveDraft, mailToEdit }) {
+    const [mail, setMail] = useState(() => mailToEdit || mailService.getEmptyMail())
+    const lastSavedMailRef = useRef(mail)
+
+    useEffect(() => {
+        setMail(mailToEdit || mailService.getEmptyMail())
+    }, [mailToEdit])
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            const hasChanged = JSON.stringify(mail) !== JSON.stringify(lastSavedMailRef.current)
+            if (hasChanged) {
+                const toSave = {
+                    ...mail,
+                    isDraft: true,
+                    sentAt: null,
+                }
+                mailService.save(toSave).then(savedMail => {
+                    setMail(savedMail)
+                    lastSavedMailRef.current = savedMail
+                    if (typeof onSaveDraft === 'function') onSaveDraft()
+                })
+            }
+        }, 5000)
+
+        return () => clearInterval(intervalId)
+    }, [mail])
 
     function handleChange({ target }) {
         const { name, value } = target
@@ -15,7 +37,17 @@ export function MailCompose({ onClose, onSend }) {
     function onFormSubmit(ev) {
         ev.preventDefault()
         if (!mail.to || !mail.subject) return
-        onSend(mail)
+
+        if (mail.id) mailService.remove(mail.id)
+
+        const sentMail = {
+            ...mail,
+            id: null,
+            isDraft: false,
+            sentAt: Date.now(),
+        }
+
+        if (typeof onSend === 'function') onSend(sentMail)
         onClose()
     }
 
@@ -24,9 +56,8 @@ export function MailCompose({ onClose, onSend }) {
             <header className="compose-header">
                 <span>New Message</span>
                 <button onClick={onClose} className="btn-close">
-                <span class="material-symbols-outlined">
-close
-</span>                </button>
+                    <span className="material-symbols-outlined">close</span>
+                </button>
             </header>
 
             <form onSubmit={onFormSubmit} className="compose-form">
@@ -36,7 +67,6 @@ close
                     placeholder="To"
                     value={mail.to}
                     onChange={handleChange}
-                    required
                 />
                 <input
                     type="text"
@@ -44,7 +74,6 @@ close
                     placeholder="Subject"
                     value={mail.subject}
                     onChange={handleChange}
-                    required
                 />
                 <textarea
                     name="body"
@@ -54,9 +83,7 @@ close
                 ></textarea>
 
                 <footer className="compose-actions">
-                    <button type="submit" className="btn-send">
-                        Send
-                    </button>
+                    <button type="submit" className="btn-send">Send</button>
                 </footer>
             </form>
         </section>

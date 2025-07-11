@@ -24,8 +24,8 @@ export function MailFolderList({ filterBy, onSetFilter, isSidebarOpen, inboxCoun
     return (
         <nav className="sidebar-nav">
             {folders.map(folder => {
-                const isSelected = filterBy === folder.label.toLowerCase() || 
-                    (folder.label === 'Inbox' && filterBy === 'all')
+                const folderKey = folder.label.toLowerCase()
+                const isSelected = filterBy === folderKey
                 return (
                     <div
                         key={folder.label}
@@ -38,7 +38,7 @@ export function MailFolderList({ filterBy, onSetFilter, isSidebarOpen, inboxCoun
                         {isSidebarOpen && (
                             <span className="label-wrapper">
                                 <span className="folder-label">{folder.label}</span>
-                                {folder.label === 'Inbox' && (
+                                {folderKey === 'inbox' && (
                                     <span className="inbox-counter">{inboxCount}</span>
                                 )}
                             </span>
@@ -49,4 +49,3 @@ export function MailFolderList({ filterBy, onSetFilter, isSidebarOpen, inboxCoun
         </nav>
     )
 }
-

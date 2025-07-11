@@ -1,4 +1,4 @@
-export function MailPreview({ mail, onUpdate, onRemove, onExpand, isExpanded, onNavigateToDetails }) {
+export function MailPreview({ mail, onUpdate, onRemove, onExpand, isExpanded, onNavigateToDetails, onEditDraft }) {
     const sentAt = new Date(mail.sentAt).toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
@@ -34,7 +34,11 @@ export function MailPreview({ mail, onUpdate, onRemove, onExpand, isExpanded, on
 
     function onBodyClick(ev) {
         ev.stopPropagation()
-        onNavigateToDetails(mail.id)
+        if (mail.isDraft && typeof onEditDraft === 'function') {
+            onEditDraft(mail)
+        } else {
+            onNavigateToDetails(mail.id)
+        }
     }
 
     return (
