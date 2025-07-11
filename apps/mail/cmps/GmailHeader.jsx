@@ -2,10 +2,14 @@ export function GmailHeader({ searchTerm, onSearch, onToggleSidebar }) {
     return (
         <header className="gmail-header">
             <div className="gmail-header-left">
-                <span className="material-symbols-outlined menu-icon icon-large" onClick={onToggleSidebar}>
+                <span
+                    className="material-symbols-outlined menu-icon icon-large"
+                    onClick={onToggleSidebar}
+                    title="Toggle sidebar"
+                >
                     menu
                 </span>
-                <img className="gmail-logo" src="assets/img/gmail-logo.png" />
+                <img className="gmail-logo" src="assets/img/gmail-logo.png" alt="Gmail logo" />
                 <span className="gmail-title">Gmail</span>
             </div>
 
@@ -17,7 +21,7 @@ export function GmailHeader({ searchTerm, onSearch, onToggleSidebar }) {
                         type="text"
                         placeholder="Search mail"
                         value={searchTerm}
-                        onChange={(e) => onSearch(e.target.value)}
+                        onChange={e => onSearch(e.target.value)}
                     />
                 </div>
             </div>

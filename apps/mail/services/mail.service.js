@@ -15,58 +15,12 @@ export const mailService = {
     remove,
     save,
     getEmptyMail,
-    getDefaultFilter,
-    getFilterFromSearchParams,
-    createMail,
-    getLoggedinUser
+    getLoggedinUser,
+    createMail
 }
 
-function query(filterBy = {}) {
+function query() {
     return storageService.query(MAIL_KEY)
-        .then(mails => {
-            if (filterBy.txt) {
-                const regExp = new RegExp(filterBy.txt, 'i')
-                mails = mails.filter(mail =>
-                    regExp.test(mail.subject) || regExp.test(mail.body)
-                )
-            }
-
-            if (filterBy.status) {
-                if (filterBy.status === 'inbox') {
-                    mails = mails.filter(mail =>
-                        mail.to === loggedinUser.email &&
-                        !mail.removedAt &&
-                        !mail.isDraft
-                    )
-                } else if (filterBy.status === 'sent') {
-                    mails = mails.filter(mail =>
-                        mail.from === loggedinUser.email &&
-                        !mail.removedAt
-                    )
-                } else if (filterBy.status === 'trash') {
-                    mails = mails.filter(mail => mail.removedAt)
-                } else if (filterBy.status === 'draft') {
-                    mails = mails.filter(mail =>
-                        mail.isDraft && !mail.removedAt
-                    )
-                }
-            }
-
-            if (filterBy.isRead !== undefined) {
-                mails = mails.filter(mail =>
-                    mail.isRead === filterBy.isRead &&
-                    !mail.removedAt
-                )
-            }
-
-            if (filterBy.isStarred) {
-                mails = mails.filter(mail =>
-                    mail.isStarred && !mail.removedAt
-                )
-            }
-
-            return mails
-        })
 }
 
 function get(mailId) {
@@ -100,32 +54,22 @@ function getEmptyMail() {
     }
 }
 
-function getDefaultFilter() {
-    return { txt: '', status: 'inbox' }
-}
-
-function getFilterFromSearchParams(searchParams) {
-    const txt = searchParams.get('txt') || ''
-    const status = searchParams.get('status') || 'inbox'
-    return { txt, status }
-}
-
 function getLoggedinUser() {
     return loggedinUser
 }
 
-function createMail({ to, subject, body }) {
+function createMail({ to, subject, body, isDraft = false }) {
     return {
         id: utilService.makeId(),
         from: loggedinUser.email,
         to,
         subject,
         body,
-        sentAt: Date.now(),
+        sentAt: isDraft ? null : Date.now(),
         isRead: false,
         isStarred: false,
         removedAt: null,
-        isDraft: false
+        isDraft
     }
 }
 
@@ -170,7 +114,6 @@ function _createMails() {
             isStarred: true,
             isDraft: false
         }
-
     ]
 
     utilService.saveToStorage(MAIL_KEY, demoMails)

@@ -1,6 +1,6 @@
 import { MailPreview } from './MailPreview.jsx'
 
-export function MailList({ mails, onUpdate, onRemove, onExpand, expandedMailId, onNavigateToDetails }) {
+export function MailList({ mails, onUpdate, onRemove, onExpand, expandedMailId, onNavigateToDetails, onEditDraft }) {
     return (
         <section className="mail-list">
             {mails.map(mail => (
@@ -12,6 +12,7 @@ export function MailList({ mails, onUpdate, onRemove, onExpand, expandedMailId, 
                     onExpand={onExpand}
                     isExpanded={expandedMailId === mail.id}
                     onNavigateToDetails={onNavigateToDetails}
+                    onEditDraft={onEditDraft} 
                 />
             ))}
         </section>

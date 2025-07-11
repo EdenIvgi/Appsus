@@ -1,27 +1,12 @@
-const { useParams, useNavigate } = ReactRouterDOM
-const { useEffect, useState } = React
+const { useParams } = ReactRouterDOM
+const { useEffect } = React
 
-import { mailService } from '../services/mail.service.js'
-
-export function MailDetails({ mail: mailFromProps, onUpdate }) {
+export function MailDetails({ mails, onUpdate }) {
     const { mailId } = useParams()
-    const navigate = useNavigate()
-    const [mail, setMail] = useState(mailFromProps || null)
+    const mail = mails.find(mail => mail.id === mailId || mail.id === +mailId)
 
     useEffect(() => {
-        // אם אין מייל – נטען אותו מהשירות
-        if (!mailFromProps && mailId) {
-            mailService.get(mailId)
-                .then(setMail)
-                .catch(err => {
-                    console.log('Failed to load mail:', err)
-                    setMail(null)
-                })
-        }
-    }, [mailFromProps, mailId])
-
-    useEffect(() => {
-        if (mail && !mail.isRead) {
+        if (mail && !mail.isRead && !mail.isDraft) {
             const updated = { ...mail, isRead: true }
             onUpdate(updated)
         }
@@ -33,6 +18,7 @@ export function MailDetails({ mail: mailFromProps, onUpdate }) {
         <div className="mail-details">
             <header className="mail-details-header">
                 <h2 className="mail-subject">{mail.subject}</h2>
+                {mail.isDraft && <span className="draft-label">[DRAFT]</span>}
             </header>
 
             <section className="mail-meta">
@@ -46,5 +32,3 @@ export function MailDetails({ mail: mailFromProps, onUpdate }) {
         </div>
     )
 }
-
-

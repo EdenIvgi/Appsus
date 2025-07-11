@@ -1,4 +1,3 @@
-// MailFilter.jsx
 const { useState, useEffect } = React
 
 export function MailFilter({ filterBy, onSetFilter, unreadCount, sortByDate }) {
@@ -20,13 +19,13 @@ export function MailFilter({ filterBy, onSetFilter, unreadCount, sortByDate }) {
     return (
         <div className="mail-filters">
             <button
-                className={`filter-btn ${filterBy === 'all' ? 'active' : ''}`}
-                onClick={() => onSetFilter('all', searchTerm, sortByDate)}
+                className={`filter-btn ${filterBy === 'inbox' ? 'active' : ''}`}
+                onClick={() => onSetFilter('inbox', searchTerm, sortByDate)}
             >
-                All
+                Inbox
             </button>
 
-            {(filterBy !== 'sent' && filterBy !== 'draft') && (
+            {filterBy !== 'sent' && filterBy !== 'draft' && (
                 <button
                     className={`filter-btn ${filterBy === 'unread' ? 'active' : ''}`}
                     onClick={() => onSetFilter('unread', searchTerm, sortByDate)}
@@ -34,15 +33,13 @@ export function MailFilter({ filterBy, onSetFilter, unreadCount, sortByDate }) {
                     Unread ({unreadCount})
                 </button>
             )}
-<button className="filter-btn date-sort-btn" onClick={toggleSortDirection}>
-    Date
-    <span className="material-symbols-outlined date-arrow-icon">
-        {sortByDate === 'desc' ? 'arrow_downward' : 'arrow_upward'}
-    </span>
-</button>
 
+            <button className="filter-btn date-sort-btn" onClick={toggleSortDirection}>
+                Date
+                <span className="material-symbols-outlined date-arrow-icon">
+                    {sortByDate === 'desc' ? 'arrow_downward' : 'arrow_upward'}
+                </span>
+            </button>
         </div>
     )
 }
-
-
