@@ -622,18 +622,281 @@
     padding: 0 2rem;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
+/* Progressive Mobile Navigation - Always All 3 Icons Visible */
+
+/* Large Mobile - 481px to 600px */
+@media (max-width: 600px) and (min-width: 481px) {
+    .appsus-title {
+        display: none !important;
+    }
+    
     .appsus-header {
-        padding: 0 16px;
+        padding: 0 12px;
+        justify-content: space-between;
+    }
+    
+    .appsus-header-nav {
+        gap: 6px;
+        margin-left: auto;
+    }
+    
+    .nav-btn {
+        padding: 8px 10px;
+        min-width: 42px;
+        height: 42px;
+        border-radius: 50%;
+    }
+    
+    .nav-btn .material-symbols-outlined {
+        font-size: 18px;
+    }
+    
+    .nav-btn span:last-child {
+        display: none !important;
+    }
+}
+
+/* Medium Mobile - 401px to 480px */
+@media (max-width: 480px) and (min-width: 401px) {
+    .appsus-title {
+        display: none !important;
+    }
+    
+    .appsus-header {
+        padding: 0 8px;
+        justify-content: space-between;
+    }
+    
+    .appsus-header-left {
+        flex: 0 0 auto;
+        min-width: 50px;
+    }
+    
+    .orbit-icon {
+        font-size: 20px !important;
+        padding: 6px;
+        margin-right: 0;
     }
     
     .appsus-header-nav {
         gap: 4px;
+        flex-shrink: 0;
+        margin-left: auto;
     }
     
     .nav-btn {
-        padding: 6px 12px;
+        padding: 6px;
+        min-width: 38px;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .nav-btn .material-symbols-outlined {
+        font-size: 16px;
+    }
+    
+    .nav-btn span:last-child {
+        display: none !important;
+    }
+}
+
+/* Critical Mobile - 376px to 400px */
+@media (max-width: 400px) and (min-width: 376px) {
+    .appsus-title {
+        display: none !important;
+    }
+    
+    .appsus-header {
+        padding: 0 6px;
+        justify-content: space-between;
+    }
+    
+    .appsus-header-left {
+        flex: 0 0 auto;
+        min-width: 45px;
+    }
+    
+    .orbit-icon {
+        font-size: 18px !important;
+        padding: 5px;
+        margin-right: 0;
+    }
+    
+    .appsus-header-nav {
+        gap: 3px;
+        flex-shrink: 0;
+        margin-left: auto;
+    }
+    
+    .nav-btn {
+        padding: 5px;
+        min-width: 36px;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .nav-btn .material-symbols-outlined {
+        font-size: 15px;
+    }
+    
+    .nav-btn span:last-child {
+        display: none !important;
+    }
+}
+
+/* Small Mobile - 321px to 375px */
+@media (max-width: 375px) and (min-width: 321px) {
+    .appsus-title {
+        display: none !important;
+    }
+    
+    .appsus-header {
+        padding: 0 6px;
+        justify-content: space-between;
+    }
+    
+    .appsus-header-left {
+        flex: 0 0 auto;
+        min-width: 40px;
+    }
+    
+    .orbit-icon {
+        font-size: 18px !important;
+        padding: 4px;
+        margin-right: 0;
+    }
+    
+    .appsus-header-nav {
+        gap: 2px;
+        flex-shrink: 0;
+        margin-left: auto;
+    }
+    
+    .nav-btn {
+        padding: 4px;
+        min-width: 34px;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .nav-btn .material-symbols-outlined {
+        font-size: 15px;
+    }
+    
+    .nav-btn span:last-child {
+        display: none !important;
+    }
+}
+
+/* Extra Small Mobile - ≤320px */
+@media (max-width: 320px) {
+    .appsus-title {
+        display: none !important;
+    }
+    
+    .appsus-header {
+        padding: 0 4px;
+        justify-content: space-between;
+    }
+    
+    .appsus-header-left {
+        flex: 0 0 auto;
+        min-width: 32px;
+    }
+    
+    .orbit-icon {
+        font-size: 16px !important;
+        padding: 2px;
+        margin-right: 0;
+    }
+    
+    .appsus-header-nav {
+        gap: 1px;
+        flex-shrink: 0;
+        margin-left: auto;
+    }
+    
+    .nav-btn {
+        padding: 2px;
+        min-width: 30px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .nav-btn .material-symbols-outlined {
+        font-size: 14px;
+    }
+    
+    .nav-btn span:last-child {
+        display: none !important;
+    }
+}
+
+/* Common mobile content styles */
+@media (max-width: 600px) {
+    .home-title {
+        font-size: 2.2rem;
+    }
+    
+    .home-subtitle {
+        font-size: 1rem;
+    }
+    
+    .intro-card {
+        padding: 1.5rem;
+    }
+    
+    .apps-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .app-card {
+        padding: 1.5rem;
+    }
+    
+    .modal-apps {
+        grid-template-columns: 1fr;
+    }
+    
+    .container {
+        padding: 0 0.5rem;
+    }
+    
+    .btn-primary {
+        padding: 0.8rem 2rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Tablet */
+@media (min-width: 601px) and (max-width: 768px) {
+    .appsus-header {
+        padding: 0 12px;
+    }
+    
+    .appsus-header-nav {
+        gap: 8px;
+    }
+    
+    .nav-btn {
+        padding: 8px 16px;
         font-size: 0.9rem;
     }
     
