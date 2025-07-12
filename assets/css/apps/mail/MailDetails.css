@@ -1,9 +1,9 @@
 .mail-details {
     max-width: 800px;
-    margin:  1rem auto ;
+    margin: 1rem auto;
     color: #202124;
+    padding: 0 1rem;
 }
-
 
 .mail-meta {
     display: flex;
@@ -16,7 +16,6 @@
 .mail-meta p {
     margin: 2px 0;
 }
-
 
 .mail-details .btn-back {
     background: none;
@@ -42,5 +41,27 @@
 }
 
 .btn-back:hover {
-    background-color: rgba(60, 64, 67, 0.1); 
+    background-color: rgba(60, 64, 67, 0.1);
+}
+
+@media (max-width: 600px) {
+    .mail-details {
+        max-width: 100%;
+        margin: 0;
+        padding: 1rem 1rem;
+    }
+
+    .mail-meta {
+        font-size: 0.85rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .mail-details .btn-back {
+        font-size: 0.95rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .btn-back {
+        padding: 6px;
+    }
 }

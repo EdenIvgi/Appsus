@@ -20,7 +20,8 @@
 
 .gmail-header-search {
     flex: 0 0 600px;
-    margin-right: 4.5rem;}
+    margin-right: 4.5rem;
+}
 
 .gmail-header-search .search-wrapper {
     background-color: #eceef6;
@@ -31,7 +32,7 @@
     align-items: center;
     max-width: 600px;
     width: 100%;
-    transition:  0.3s ease;
+    transition: 0.3s ease;
 }
 
 .menu-icon {
@@ -113,4 +114,41 @@
 
 .nav-link.active .material-symbols-outlined {
     color: #1a73e8;
+}
+
+/* 📱 Mobile responsiveness */
+@media (max-width: 700px) {
+    .gmail-header {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 8px;
+    }
+
+    .gmail-header-left {
+        width: 100%;
+        justify-content: flex-start;
+        margin-bottom: 8px;
+    }
+
+    .gmail-header-search {
+        flex: 1 1 100%;
+        margin: 0;
+    }
+
+    .gmail-header-search .search-wrapper {
+        max-width: 100%;
+    }
+
+    .gmail-header-nav {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin: 0.5rem 0 0;
+    }
+
+    .nav-link {
+        font-size: 13px;
+        padding: 0.3em 0.6em;
+    }
 }

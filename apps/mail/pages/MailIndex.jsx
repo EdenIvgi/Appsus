@@ -191,7 +191,7 @@ export function MailIndex() {
                             setIsComposing(false)
                             setMailToEdit(null)
                         }}
-                        mailToEdit={mailToEdit}
+                      mailToEdit={mailToEdit}
                         onClose={() => {
                             setIsComposing(false)
                             setMailToEdit(null)
