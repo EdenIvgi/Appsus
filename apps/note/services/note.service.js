@@ -129,23 +129,44 @@ export const noteService = {
     saveLabel,
     removeLabel,
     getLabelById,
-    getNotesWithLabel
+    getNotesWithLabel,
+    // Helper methods for label names
+    getLabelIdByName,
+    getLabelNameById
 }
 
 function query(filterBy = {}) {
     return storageService.query(STORAGE_KEY)
         .then(notes => {
-            if (filterBy.txt) {
-                notes = notes.filter(note => _searchInNote(note, filterBy.txt))
+            // Handle labelName filtering asynchronously
+            if (filterBy.labelName) {
+                return getLabelIdByName(filterBy.labelName)
+                    .then(labelId => {
+                        if (labelId) {
+                            notes = notes.filter(note => note.labels && note.labels.includes(labelId))
+                        }
+                        return _applyOtherFilters(notes, filterBy)
+                    })
             }
-            if (filterBy.type) {
-                notes = notes.filter(note => note.type === filterBy.type)
-            }
-            if (filterBy.isPinned !== undefined) {
-                notes = notes.filter(note => note.isPinned === filterBy.isPinned)
-            }
-            return notes
+            
+            return _applyOtherFilters(notes, filterBy)
         })
+}
+
+function _applyOtherFilters(notes, filterBy) {
+    if (filterBy.txt) {
+        notes = notes.filter(note => _searchInNote(note, filterBy.txt))
+    }
+    if (filterBy.type) {
+        notes = notes.filter(note => note.type === filterBy.type)
+    }
+    if (filterBy.label) {
+        notes = notes.filter(note => note.labels && note.labels.includes(filterBy.label))
+    }
+    if (filterBy.isPinned !== undefined) {
+        notes = notes.filter(note => note.isPinned === filterBy.isPinned)
+    }
+    return notes
 }
 
 function _searchInNote(note, searchTerm) {
@@ -233,10 +254,12 @@ function getEmptyNote(type = 'NoteTxt') {
 }
 
 function getFilterFromParams(searchParams) {
+    const isPinnedParam = searchParams.get('isPinned')
     return {
         txt: searchParams.get('txt') || '',
         type: searchParams.get('type') || '',
-        isPinned: searchParams.get('isPinned') === 'true'
+        labelName: searchParams.get('label') || null,
+        isPinned: isPinnedParam ? isPinnedParam === 'true' : undefined
     }
 }
 
@@ -244,6 +267,7 @@ function getDefaultFilter() {
     return {
         txt: '',
         type: '',
+        labelName: null,
         isPinned: undefined
     }
 }
@@ -289,6 +313,22 @@ function removeLabel(labelId) {
 function getNotesWithLabel(labelId) {
     return storageService.query(STORAGE_KEY)
         .then(notes => notes.filter(note => note.labels && note.labels.includes(labelId)))
+}
+
+function getLabelIdByName(labelName) {
+    return storageService.query(LABELS_STORAGE_KEY)
+        .then(labels => {
+            const label = labels.find(l => l.name.toLowerCase() === labelName.toLowerCase())
+            return label ? label.id : null
+        })
+}
+
+function getLabelNameById(labelId) {
+    return storageService.query(LABELS_STORAGE_KEY)
+        .then(labels => {
+            const label = labels.find(l => l.id === labelId)
+            return label ? label.name : null
+        })
 }
 
 function _createLabels() {

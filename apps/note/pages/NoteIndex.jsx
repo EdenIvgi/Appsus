@@ -1,5 +1,5 @@
 const { useState, useEffect, useRef, useCallback, useMemo } = React
-const { NavLink } = ReactRouterDOM
+const { NavLink, useLocation, useNavigate } = ReactRouterDOM
 
 import { noteService } from '../services/note.service.js'
 import { imageUploadService } from '../../../services/image-upload.service.js'
@@ -11,15 +11,25 @@ import { LabelList } from '../cmps/LabelList.jsx'
 import { LabelEditor } from '../cmps/LabelEditor.jsx'
 
 export function NoteIndex() {
+    const location = useLocation()
+    const navigate = useNavigate()
+    
+    // Initialize filter from URL query parameters
     const [notes, setNotes] = useState([])
-    const [filterBy, setFilterBy] = useState(noteService.getDefaultFilter())
+    const [filterBy, setFilterBy] = useState(() => {
+        const searchParams = new URLSearchParams(location.search)
+        return noteService.getFilterFromParams(searchParams)
+    })
     const [isCreating, setIsCreating] = useState(false)
     const [editingNote, setEditingNote] = useState(null)
     const [currentEditNote, setCurrentEditNote] = useState(null)
     const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-    const [searchTerm, setSearchTerm] = useState('')
-    const [activeTypeFilter, setActiveTypeFilter] = useState('all')
-    const [activeLabelFilter, setActiveLabelFilter] = useState(null)
+    
+    // Derive state from filterBy instead of separate state variables
+    const searchTerm = filterBy.txt || ''
+    const activeTypeFilter = filterBy.type || 'all'
+    const activeLabelFilter = filterBy.labelName || null
+    
     const [showVideoUrlInput, setShowVideoUrlInput] = useState(false)
     const [showLabelEditor, setShowLabelEditor] = useState(false)
     const [showInputMoreMenu, setShowInputMoreMenu] = useState(false)
@@ -28,6 +38,30 @@ export function NoteIndex() {
     const sidebarRef = useRef(null)
     const imageInputRef = useRef(null)
     const inputMoreMenuRef = useRef(null)
+
+    // Update URL when filter changes
+    useEffect(() => {
+        const searchParams = new URLSearchParams()
+        
+        if (filterBy.txt) searchParams.set('txt', filterBy.txt)
+        if (filterBy.type && filterBy.type !== 'all') searchParams.set('type', filterBy.type)
+        if (filterBy.labelName) searchParams.set('label', filterBy.labelName)
+        if (filterBy.isPinned !== undefined) searchParams.set('isPinned', filterBy.isPinned.toString())
+        
+        const newSearch = searchParams.toString()
+        const currentSearch = location.search.substring(1)
+        
+        if (newSearch !== currentSearch) {
+            navigate(`/note${newSearch ? '?' + newSearch : ''}`, { replace: true })
+        }
+    }, [filterBy, navigate, location.search])
+
+    // Update filter when URL changes (back/forward navigation)
+    useEffect(() => {
+        const searchParams = new URLSearchParams(location.search)
+        const newFilter = noteService.getFilterFromParams(searchParams)
+        setFilterBy(newFilter)
+    }, [location.search])
 
     useEffect(() => {
         loadNotes()
@@ -69,12 +103,17 @@ export function NoteIndex() {
     }, [isCreating, editingNote, currentEditNote, isSidebarOpen, showInputMoreMenu])
 
     function loadNotes() {
-        noteService.query()
+        noteService.query(filterBy)
             .then(notes => {
                 setNotes(notes)
             })
             .catch(err => console.error('Error loading notes:', err))
     }
+
+    // Update loadNotes when filterBy changes
+    useEffect(() => {
+        loadNotes()
+    }, [filterBy])
 
     // Memoize filtered and sorted notes for better performance
     const filteredNotes = useMemo(() => {
@@ -82,28 +121,8 @@ export function NoteIndex() {
         
         let filtered = [...notes]
         
-        // Apply search filter
-        if (searchTerm) {
-            const searchTermLower = searchTerm.toLowerCase()
-            filtered = filtered.filter(note => {
-                const searchableText = [
-                    note.info.txt || '',
-                    note.info.title || '',
-                    ...(note.info.todos && note.info.todos.map ? note.info.todos.map(todo => todo.txt) : [])
-                ].join(' ').toLowerCase()
-                return searchableText.includes(searchTermLower)
-            })
-        }
-        
-        // Apply type filter
-        if (activeTypeFilter && activeTypeFilter !== 'all') {
-            filtered = filtered.filter(note => note.type === activeTypeFilter)
-        }
-        
-        // Apply label filter
-        if (activeLabelFilter) {
-            filtered = filtered.filter(note => note.labels && note.labels.includes(activeLabelFilter))
-        }
+        // Note: Search, type, and label filtering is now handled at the service level
+        // Only client-side sorting is done here
         
         // Sort: pinned notes first, then by creation date (newest first)
         return filtered.sort((a, b) => {
@@ -111,7 +130,7 @@ export function NoteIndex() {
             if (!a.isPinned && b.isPinned) return 1
             return (b.createdAt || 0) - (a.createdAt || 0)
         })
-    }, [notes, searchTerm, activeTypeFilter, activeLabelFilter])
+    }, [notes])
 
     const onCreateNote = useCallback(() => {
         console.log('⚡ REGULAR CREATE NOTE CLICKED - Creating text note')
@@ -307,32 +326,30 @@ export function NoteIndex() {
 
     const onSearchChange = useCallback((event) => {
         const term = event.target.value
-        setSearchTerm(term)
-        // No need to reload notes - filtering happens client-side
+        setFilterBy(prev => ({ ...prev, txt: term }))
     }, [])
 
     const onTypeFilterChange = useCallback((type) => {
-        setActiveTypeFilter(type)
-        // No need to reload notes - filtering happens client-side
+        setFilterBy(prev => ({ 
+            ...prev, 
+            type: type === 'all' ? '' : type 
+        }))
     }, [])
 
     const onClearSearch = useCallback(() => {
-        setSearchTerm('')
-        setActiveTypeFilter('all')
-        setActiveLabelFilter(null)
-        // No need to reload notes - filtering happens client-side
+        setFilterBy(noteService.getDefaultFilter())
     }, [])
 
-    const onLabelFilter = useCallback((labelId) => {
+    const onLabelFilter = useCallback((labelName) => {
         // Toggle label filter - if same label clicked, clear filter
-        if (activeLabelFilter === labelId) {
-            setActiveLabelFilter(null)
+        if (activeLabelFilter === labelName) {
+            setFilterBy(prev => ({ ...prev, labelName: null }))
         } else {
-            setActiveLabelFilter(labelId)
+            setFilterBy(prev => ({ 
+                ...prev, 
+                labelName: labelName
+            }))
         }
-        // Clear other filters when selecting a label
-        setSearchTerm('')
-        setActiveTypeFilter('all')
     }, [activeLabelFilter])
 
     const onCreateImageNote = useCallback(() => {

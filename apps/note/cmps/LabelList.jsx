@@ -21,9 +21,9 @@ export function LabelList({ onLabelFilter, activeLabelFilter }) {
         return null
     }
 
-    function handleLabelClick(labelId) {
+    function handleLabelClick(labelName) {
         if (onLabelFilter) {
-            onLabelFilter(labelId)
+            onLabelFilter(labelName)
         }
     }
 
@@ -32,8 +32,8 @@ export function LabelList({ onLabelFilter, activeLabelFilter }) {
             {labels.map(label => (
                 <div 
                     key={label.id} 
-                    className={`sidebar-label-item nav-item ${activeLabelFilter === label.id ? 'active' : ''}`}
-                    onClick={() => handleLabelClick(label.id)}
+                    className={`sidebar-label-item nav-item ${activeLabelFilter === label.name ? 'active' : ''}`}
+                    onClick={() => handleLabelClick(label.name)}
                 >
                     <span className="material-symbols-outlined label-icon">label</span>
                     <span className="nav-text">{label.name}</span>
