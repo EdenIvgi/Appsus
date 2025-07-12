@@ -236,6 +236,11 @@
     color: white;
 }
 
+.books-icon {
+    background: linear-gradient(135deg, #34a853, #137333);
+    color: white;
+}
+
 .app-card h3 {
     font-size: 1.4rem;
     font-weight: 600;
@@ -390,7 +395,7 @@
 
 .modal-apps {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 1rem;
     margin-bottom: 2.5rem;
 }

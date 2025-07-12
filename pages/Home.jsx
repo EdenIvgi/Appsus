@@ -33,7 +33,6 @@ export function Home() {
 
     function navigateToMail() {
         navigate('/mail')
-        // Scroll to top after navigation
         setTimeout(() => {
             window.scrollTo({ top: 0, behavior: 'smooth' })
         }, 100)
@@ -41,7 +40,6 @@ export function Home() {
 
     function navigateToNotes() {
         navigate('/note')
-        // Scroll to top after navigation
         setTimeout(() => {
             window.scrollTo({ top: 0, behavior: 'smooth' })
         }, 100)
@@ -49,7 +47,13 @@ export function Home() {
 
     function navigateToAbout() {
         navigate('/about')
-        // Scroll to top after navigation
+        setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+        }, 100)
+    }
+
+    function navigateToBooks() {
+        navigate('/book')
         setTimeout(() => {
             window.scrollTo({ top: 0, behavior: 'smooth' })
         }, 100)
@@ -95,7 +99,7 @@ export function Home() {
                             <div className="intro-card">
                                 <h2>What is Appsus?</h2>
                                 <LongTxt 
-                                    txt="Appsus is a clean, modern productivity suite that brings together email management and note-taking in one seamless workspace. Built with simplicity in mind, it helps you stay organized and focused on what matters most. Whether you're managing your inbox or capturing important thoughts, Appsus provides the tools you need without the clutter."
+                                    txt="Appsus is a clean, modern productivity suite that brings together email management, note-taking, and book management in one seamless workspace. Built with simplicity in mind, it helps you stay organized and focused on what matters most. Whether you're managing your inbox, capturing important thoughts, or organizing your book collection, Appsus provides the tools you need without the clutter."
                                     length={120}
                                 />
                             </div>
@@ -118,6 +122,15 @@ export function Home() {
                                 <h3>Notes</h3>
                                 <p>Capture and organize your thoughts with rich text and media support.</p>
                                 <button className="app-btn" onClick={navigateToNotes}>Open Notes</button>
+                            </div>
+
+                            <div className="app-card">
+                                <div className="app-icon books-icon">
+                                    <span>📚</span>
+                                </div>
+                                <h3>Books</h3>
+                                <p>Manage your book collection with pricing, reviews, and sales tracking.</p>
+                                <button className="app-btn" onClick={navigateToBooks}>Open Books</button>
                             </div>
                         </div>
 
@@ -142,6 +155,10 @@ export function Home() {
                         <button className="modal-app-btn notes-btn" onClick={navigateToNotes}>
                             <span className="modal-app-icon">📝</span>
                             <span>Start with Notes</span>
+                        </button>
+                        <button className="modal-app-btn books-btn" onClick={navigateToBooks}>
+                            <span className="modal-app-icon">📚</span>
+                            <span>Start with Books</span>
                         </button>
                     </div>
                     <div className="modal-actions">
