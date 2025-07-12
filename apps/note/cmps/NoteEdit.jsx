@@ -210,6 +210,56 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
         event.target.value = ''
     }
 
+    function handleAddVideo() {
+        // Convert to video note or add video URL
+        const updatedNote = {
+            ...noteToEdit,
+            type: 'NoteVideo',
+            info: {
+                ...noteToEdit.info,
+                url: noteToEdit.info.url || ''
+            }
+        }
+        setNoteToEdit(updatedNote)
+    }
+
+    function handleConvertToList() {
+        // Convert to todo note
+        const updatedNote = {
+            ...noteToEdit,
+            type: 'NoteTodos',
+            info: {
+                ...noteToEdit.info,
+                todos: noteToEdit.info.txt ? 
+                    noteToEdit.info.txt.split('\n').filter(line => line.trim()).map(line => ({
+                        txt: line.trim(),
+                        doneAt: null
+                    })) : 
+                    [{ txt: '', doneAt: null }]
+            }
+        }
+        setNoteToEdit(updatedNote)
+    }
+
+    function handleArchive() {
+        // Archive note and close
+        handleSave()
+        // The parent will handle the archive action
+    }
+
+    function handleTrash() {
+        // Trash note and close
+        handleSave()
+        // The parent will handle the trash action
+    }
+
+    function handleDuplicate() {
+        // Duplicate note and close
+        handleSave()
+        // The parent will handle the duplicate action
+        setShowMoreMenu(false)
+    }
+
     // Format last edited time (you can enhance this with actual timestamp)
     const formatEditTime = () => {
         const now = new Date()
@@ -337,8 +387,19 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
                             <button className="tool-btn" onClick={handleAddImage} title="Add image">
                                 <span className="material-symbols-outlined">image</span>
                             </button>
-                            <button className="tool-btn" title="Archive">
+                            <button className="tool-btn" onClick={handleAddVideo} title="Add video">
+                                <span className="material-symbols-outlined">videocam</span>
+                            </button>
+                            {noteToEdit.type !== 'NoteTodos' && (
+                                <button className="tool-btn" onClick={handleConvertToList} title="Convert to list">
+                                    <span className="material-symbols-outlined">checklist</span>
+                                </button>
+                            )}
+                            <button className="tool-btn" onClick={handleArchive} title="Archive">
                                 <span className="material-symbols-outlined">archive</span>
+                            </button>
+                            <button className="tool-btn" onClick={handleTrash} title="Move to trash">
+                                <span className="material-symbols-outlined">delete</span>
                             </button>
                             
                             <div ref={moreMenuRef} className="more-menu-container">
@@ -354,19 +415,17 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
                                             <span className="material-symbols-outlined">label</span>
                                             Add label
                                         </button>
-                                        <button className="more-menu-item">
-                                            <span className="material-symbols-outlined">archive</span>
-                                            Archive
+                                        <button 
+                                            className="more-menu-item"
+                                            onClick={handleDuplicate}
+                                        >
+                                            <span className="material-symbols-outlined">content_copy</span>
+                                            Duplicate
                                         </button>
                                     </div>
                                 )}
                             </div>
-                            <button className="tool-btn" title="Undo">
-                                <span className="material-symbols-outlined">undo</span>
-                            </button>
-                            <button className="tool-btn" title="Redo">
-                                <span className="material-symbols-outlined">redo</span>
-                            </button>
+
                         </div>
                         
                         <button className="btn-close" onClick={handleSave}>

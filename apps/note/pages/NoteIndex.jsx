@@ -656,10 +656,6 @@ export function NoteIndex() {
                             <span className="material-symbols-outlined nav-icon">lightbulb</span>
                             <span className="nav-text">All Notes</span>
                         </div>
-                        <div className="nav-item">
-                            <span className="material-symbols-outlined nav-icon">notifications</span>
-                            <span className="nav-text">Reminders</span>
-                        </div>
                     </div>
 
                     {/* Type Filtering */}
@@ -730,20 +726,7 @@ export function NoteIndex() {
                         <span className="nav-text">Trash</span>
                     </div>
                     
-                    <div className="nav-divider"></div>
-                    
-                    <div className="nav-item">
-                        <span className="material-symbols-outlined nav-icon">settings</span>
-                        <span className="nav-text">Settings</span>
-                    </div>
-                    <div className="nav-item">
-                        <span className="material-symbols-outlined nav-icon">feedback</span>
-                        <span className="nav-text">Send app feedback</span>
-                    </div>
-                    <div className="nav-item">
-                        <span className="material-symbols-outlined nav-icon">help</span>
-                        <span className="nav-text">Help</span>
-                    </div>
+
                 </nav>
             </aside>
             
@@ -783,9 +766,7 @@ export function NoteIndex() {
                                 >
                                     <span className="material-symbols-outlined">check_box</span>
                                 </button>
-                                <button className="input-action-btn" title="New note with drawing">
-                                    <span className="material-symbols-outlined">brush</span>
-                                </button>
+
                                 <div ref={inputMoreMenuRef} className="more-menu-container">
                                     <button 
                                         className="input-action-btn" 
@@ -806,16 +787,6 @@ export function NoteIndex() {
                                             >
                                                 <span className="material-symbols-outlined">edit</span>
                                                 Edit labels
-                                            </button>
-                                            <button 
-                                                className="more-menu-item"
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    setShowInputMoreMenu(false)
-                                                }}
-                                            >
-                                                <span className="material-symbols-outlined">archive</span>
-                                                Archive
                                             </button>
                                         </div>
                                     )}
