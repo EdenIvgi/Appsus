@@ -166,8 +166,8 @@ export function Home() {
                             Continue
                         </button>
                     </div>
-                </div>
+        </div>
             </Modal>
-        </section>
+    </section>
     )
 }

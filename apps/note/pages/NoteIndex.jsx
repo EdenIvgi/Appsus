@@ -609,9 +609,6 @@ export function NoteIndex() {
                     >
                         <span className="material-symbols-outlined">lightbulb</span>
                     </div>
-                    <div className="icon-nav-item">
-                        <span className="material-symbols-outlined">notifications</span>
-                    </div>
                     <div 
                         className={`icon-nav-item ${activeStatusFilter === 'archived' ? 'active' : ''}`}
                         onClick={() => onStatusFilterChange('archived')}
