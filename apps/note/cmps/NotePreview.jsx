@@ -6,7 +6,7 @@ import { LabelPicker } from './LabelPicker.jsx'
 import { LabelDisplay } from './LabelDisplay.jsx'
 import { imageUploadService } from '../../../services/image-upload.service.js'
 
-const { useState, useEffect, useRef, memo } = React
+const { useState, useEffect, useRef, memo, useMemo, useCallback } = React
 
 export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor, onEditNote, onAddVideo, onUpdateNote, onLabelsChange, onDuplicateNote, onRestoreNote, onArchiveNote, onTrashNote, onPermanentDeleteNote, currentStatus }) {
     const [showColorPicker, setShowColorPicker] = useState(false)
@@ -49,7 +49,7 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
 
 
     
-    function handleTodoUpdate(todoInfo) {
+    const handleTodoUpdate = useCallback((todoInfo) => {
         if (onUpdateNote) {
             const updatedNote = {
                 ...note,
@@ -57,9 +57,10 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
             }
             onUpdateNote(updatedNote)
         }
-    }
+    }, [note, onUpdateNote])
 
-    function DynamicNoteComponent({ note }) {
+    // Memoize the note content to prevent re-rendering on state changes
+    const noteContent = useMemo(() => {
         switch (note.type) {
             case 'NoteTxt':
                 return <NoteTxt info={note.info} isPreview={true} />
@@ -72,42 +73,44 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
             default:
                 return <div>Unknown note type</div>
         }
-    }
+    }, [note.type, note.info, currentStatus, handleTodoUpdate])
 
-    function onColorChange(colorValue) {
+    const onColorChange = useCallback((colorValue) => {
         const actualColor = colorValue === 'default' ? '#ffffff' : colorValue
         onChangeNoteColor(note.id, actualColor)
         setShowColorPicker(false)
-    }
+    }, [note.id, onChangeNoteColor])
 
-    function handleNoteClick() {
+    const handleNoteClick = useCallback(() => {
         // Only allow editing for active notes
         if (currentStatus === 'active') {
             onEditNote(note)
         }
-    }
+    }, [currentStatus, note, onEditNote])
 
-    function toggleColorPicker(e) {
+    const toggleColorPicker = useCallback((e) => {
         e.stopPropagation()
-        setShowColorPicker(!showColorPicker)
-    }
+        setShowColorPicker(prev => !prev)
+        setShowLabelPicker(false)
+        setShowMoreMenu(false)
+    }, [])
 
-    function handleNoteMouseLeave() {
+    const handleNoteMouseLeave = useCallback(() => {
         // Delay closing to allow mouse to move to color picker or label picker
         mouseLeaveTimeoutRef.current = setTimeout(() => {
             setShowColorPicker(false)
             setShowLabelPicker(false)
             setShowMoreMenu(false)
         }, 100)
-    }
+    }, [])
 
-    function handleNoteMouseEnter() {
+    const handleNoteMouseEnter = useCallback(() => {
         // Cancel any pending close when mouse re-enters
         if (mouseLeaveTimeoutRef.current) {
             clearTimeout(mouseLeaveTimeoutRef.current)
             mouseLeaveTimeoutRef.current = null
         }
-    }
+    }, [])
 
     function handleAddImage(e) {
         e.stopPropagation()
@@ -172,25 +175,25 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
         onEditNote(updatedNote)
     }
 
-    function toggleMoreMenu(e) {
+    const toggleMoreMenu = useCallback((e) => {
         e.stopPropagation()
-        setShowMoreMenu(!showMoreMenu)
+        setShowMoreMenu(prev => !prev)
         setShowColorPicker(false)
         setShowLabelPicker(false)
-    }
+    }, [])
 
-    function handleShowLabelPicker(e) {
+    const handleShowLabelPicker = useCallback((e) => {
         e.stopPropagation()
         setShowLabelPicker(true)
         setShowMoreMenu(false)
         setShowColorPicker(false)
-    }
+    }, [])
 
-    function handleLabelsChange(newLabels) {
+    const handleLabelsChange = useCallback((newLabels) => {
         if (onLabelsChange) {
             onLabelsChange(note.id, newLabels)
         }
-    }
+    }, [note.id, onLabelsChange])
 
     return (
         <article 
@@ -215,7 +218,7 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
             )}
 
             <div className="note-content" onClick={handleNoteClick}>
-                <DynamicNoteComponent note={note} />
+                {noteContent}
                 
                 {/* Display labels */}
                 {note.labels && note.labels.length > 0 && (
