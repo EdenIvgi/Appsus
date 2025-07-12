@@ -669,6 +669,20 @@ export function NoteIndex() {
                             <span className="material-symbols-outlined nav-icon">lightbulb</span>
                             <span className="nav-text">All Notes</span>
                         </div>
+                        <div 
+                            className={`nav-item ${activeStatusFilter === 'archived' ? 'active' : ''}`}
+                            onClick={() => onStatusFilterChange('archived')}
+                        >
+                            <span className="material-symbols-outlined nav-icon">archive</span>
+                            <span className="nav-text">Archive</span>
+                        </div>
+                        <div 
+                            className={`nav-item ${activeStatusFilter === 'trashed' ? 'active' : ''}`}
+                            onClick={() => onStatusFilterChange('trashed')}
+                        >
+                            <span className="material-symbols-outlined nav-icon">delete</span>
+                            <span className="nav-text">Trash</span>
+                        </div>
                     </div>
 
                     {/* Type Filtering */}
@@ -724,22 +738,6 @@ export function NoteIndex() {
                         />
                     </div>
                     
-                    <div 
-                        className={`nav-item ${activeStatusFilter === 'archived' ? 'active' : ''}`}
-                        onClick={() => onStatusFilterChange('archived')}
-                    >
-                        <span className="material-symbols-outlined nav-icon">archive</span>
-                        <span className="nav-text">Archive</span>
-                    </div>
-                    <div 
-                        className={`nav-item ${activeStatusFilter === 'trashed' ? 'active' : ''}`}
-                        onClick={() => onStatusFilterChange('trashed')}
-                    >
-                        <span className="material-symbols-outlined nav-icon">delete</span>
-                        <span className="nav-text">Trash</span>
-                    </div>
-                    
-
                 </nav>
             </aside>
             
