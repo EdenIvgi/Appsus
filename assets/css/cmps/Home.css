@@ -641,18 +641,14 @@
     }
     
     .nav-btn {
-        padding: 8px 10px;
-        min-width: 42px;
-        height: 42px;
-        border-radius: 50%;
+        padding: 8px 12px;
+        min-width: auto;
+        height: auto;
+        border-radius: 24px;
     }
     
     .nav-btn .material-symbols-outlined {
-        font-size: 18px;
-    }
-    
-    .nav-btn span:last-child {
-        display: none !important;
+        font-size: 20px;
     }
 }
 
@@ -685,22 +681,18 @@
     }
     
     .nav-btn {
-        padding: 6px;
-        min-width: 38px;
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
+        padding: 6px 10px;
+        min-width: auto;
+        width: auto;
+        height: auto;
+        border-radius: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
     }
     
     .nav-btn .material-symbols-outlined {
-        font-size: 16px;
-    }
-    
-    .nav-btn span:last-child {
-        display: none !important;
+        font-size: 20px;
     }
 }
 
@@ -733,22 +725,18 @@
     }
     
     .nav-btn {
-        padding: 5px;
-        min-width: 36px;
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
+        padding: 5px 8px;
+        min-width: auto;
+        width: auto;
+        height: auto;
+        border-radius: 18px;
         display: flex;
         align-items: center;
         justify-content: center;
     }
     
     .nav-btn .material-symbols-outlined {
-        font-size: 15px;
-    }
-    
-    .nav-btn span:last-child {
-        display: none !important;
+        font-size: 20px;
     }
 }
 
@@ -781,22 +769,18 @@
     }
     
     .nav-btn {
-        padding: 4px;
-        min-width: 34px;
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
+        padding: 4px 6px;
+        min-width: auto;
+        width: auto;
+        height: auto;
+        border-radius: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
     }
     
     .nav-btn .material-symbols-outlined {
-        font-size: 15px;
-    }
-    
-    .nav-btn span:last-child {
-        display: none !important;
+        font-size: 20px;
     }
 }
 
@@ -829,22 +813,18 @@
     }
     
     .nav-btn {
-        padding: 2px;
-        min-width: 30px;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
+        padding: 2px 4px;
+        min-width: auto;
+        width: auto;
+        height: auto;
+        border-radius: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
     }
     
     .nav-btn .material-symbols-outlined {
-        font-size: 14px;
-    }
-    
-    .nav-btn span:last-child {
-        display: none !important;
+        font-size: 20px;
     }
 }
 
@@ -900,9 +880,11 @@
         font-size: 0.9rem;
     }
     
-    .nav-btn span:last-child {
-        display: none;
+    .nav-btn .material-symbols-outlined {
+        font-size: 24px;
     }
+    
+
     
     .home-title {
         font-size: 2.4rem;
