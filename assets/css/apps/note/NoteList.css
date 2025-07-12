@@ -1363,3 +1363,8 @@
     text-overflow: ellipsis;
     font-family: 'Roboto', sans-serif;
 }
+
+/* Active note actions wrapper */
+.active-note-actions {
+    display: contents;
+}

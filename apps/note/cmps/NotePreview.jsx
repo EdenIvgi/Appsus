@@ -8,7 +8,7 @@ import { imageUploadService } from '../../../services/image-upload.service.js'
 
 const { useState, useEffect, useRef, memo } = React
 
-export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor, onEditNote, onAddVideo, onUpdateNote, onLabelsChange, onDuplicateNote }) {
+export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTogglePin, onChangeNoteColor, onEditNote, onAddVideo, onUpdateNote, onLabelsChange, onDuplicateNote, onRestoreNote, onArchiveNote, onTrashNote, onPermanentDeleteNote, currentStatus }) {
     const [showColorPicker, setShowColorPicker] = useState(false)
     const [showLabelPicker, setShowLabelPicker] = useState(false)
     const [showMoreMenu, setShowMoreMenu] = useState(false)
@@ -66,7 +66,7 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
             case 'NoteImg':
                 return <NoteImg info={note.info} />
             case 'NoteTodos':
-                return <NoteTodos info={note.info} onUpdate={handleTodoUpdate} isEditable={false} />
+                return <NoteTodos info={note.info} onUpdate={currentStatus === 'active' ? handleTodoUpdate : null} isEditable={false} />
             case 'NoteVideo':
                 return <NoteVideo info={note.info} />
             default:
@@ -81,7 +81,10 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
     }
 
     function handleNoteClick() {
-        onEditNote(note)
+        // Only allow editing for active notes
+        if (currentStatus === 'active') {
+            onEditNote(note)
+        }
     }
 
     function toggleColorPicker(e) {
@@ -197,17 +200,19 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
             onMouseLeave={handleNoteMouseLeave}
             onMouseEnter={handleNoteMouseEnter}
         >
-            {/* Pin button in top-right corner */}
-            <button 
-                className={`btn-pin-corner ${note.isPinned ? 'pinned' : ''}`}
-                onClick={(e) => {
-                    e.stopPropagation()
-                    onTogglePin(note.id)
-                }}
-                title={note.isPinned ? 'Unpin note' : 'Pin note'}
-            >
-                <span className="material-symbols-outlined">push_pin</span>
-            </button>
+            {/* Pin button in top-right corner - only for active notes */}
+            {currentStatus === 'active' && (
+                <button 
+                    className={`btn-pin-corner ${note.isPinned ? 'pinned' : ''}`}
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        onTogglePin(note.id)
+                    }}
+                    title={note.isPinned ? 'Unpin note' : 'Pin note'}
+                >
+                    <span className="material-symbols-outlined">push_pin</span>
+                </button>
+            )}
 
             <div className="note-content" onClick={handleNoteClick}>
                 <DynamicNoteComponent note={note} />
@@ -227,148 +232,175 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
             </div>
             
             <div className="note-actions">
-
-                <button 
-                    className="action-btn"
-                    onClick={handleAddImage}
-                    title="Add image"
-                >
-                    <span className="material-symbols-outlined">image</span>
-                </button>
-
-                <button 
-                    className="action-btn"
-                    onClick={(e) => {
-                        e.stopPropagation()
-                        onAddVideo()
-                    }}
-                    title="Add video"
-                >
-                    <span className="material-symbols-outlined">videocam</span>
-                </button>
-
-                {/* Only show list button for non-todo notes */}
-                {note.type !== 'NoteTodos' && (
-                    <button 
-                        className="action-btn"
-                        onClick={handleConvertToList}
-                        title="Convert to list"
-                    >
-                        <span className="material-symbols-outlined">checklist</span>
-                    </button>
-                )}
-
-                <button 
-                    className="action-btn"
-                    onClick={(e) => {
-                        e.stopPropagation()
-                        // Add archive functionality later
-                    }}
-                    title="Archive"
-                >
-                    <span className="material-symbols-outlined">archive</span>
-                </button>
-
-                <div ref={colorPickerRef} className="color-picker-container">
-                    <button 
-                        className="action-btn"
-                        onClick={toggleColorPicker}
-                        title="Background options"
-                    >
-                        <span className="material-symbols-outlined">palette</span>
-                    </button>
-
-                    {showColorPicker && (
-                        <div 
-                            className="color-picker-popup"
-                            onMouseEnter={handleNoteMouseEnter}
-                            onMouseLeave={handleNoteMouseLeave}
+                {/* Only show action buttons for active notes */}
+                {currentStatus === 'active' && (
+                    <div className="active-note-actions">
+                        <button 
+                            className="action-btn"
+                            onClick={handleAddImage}
+                            title="Add image"
                         >
-                            {colors.map(colorObj => (
-                                <button
-                                    key={colorObj.value}
-                                    type="button"
-                                    className={`color-btn-popup ${colorObj.value === 'default' ? 'default-color' : ''}`}
-                                    style={{ backgroundColor: colorObj.value === 'default' ? '#ffffff' : colorObj.value }}
-                                    onClick={(e) => {
-                                        e.stopPropagation()
-                                        onColorChange(colorObj.value)
-                                    }}
-                                    title={colorObj.name}
-                                />
-                            ))}
-                        </div>
-                    )}
-                </div>
+                            <span className="material-symbols-outlined">image</span>
+                        </button>
 
-                {showLabelPicker && (
-                    <div ref={labelPickerRef} className="label-picker-container">
-                        <LabelPicker
-                            selectedLabels={note.labels || []}
-                            onLabelsChange={handleLabelsChange}
-                            onClose={() => setShowLabelPicker(false)}
-                            onMouseEnter={handleNoteMouseEnter}
-                            onMouseLeave={handleNoteMouseLeave}
-                        />
+                        <button 
+                            className="action-btn"
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                onAddVideo()
+                            }}
+                            title="Add video"
+                        >
+                            <span className="material-symbols-outlined">videocam</span>
+                        </button>
+
+                        {/* Only show list button for non-todo notes */}
+                        {note.type !== 'NoteTodos' && (
+                            <button 
+                                className="action-btn"
+                                onClick={handleConvertToList}
+                                title="Convert to list"
+                            >
+                                <span className="material-symbols-outlined">checklist</span>
+                            </button>
+                        )}
+
+                        <button 
+                            className="action-btn"
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                if (onArchiveNote) {
+                                    onArchiveNote(note.id)
+                                }
+                            }}
+                            title="Archive"
+                        >
+                            <span className="material-symbols-outlined">archive</span>
+                        </button>
+
+                        <button 
+                            className="action-btn"
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                if (onTrashNote) {
+                                    onTrashNote(note.id)
+                                }
+                            }}
+                            title="Move to trash"
+                        >
+                            <span className="material-symbols-outlined">delete</span>
+                        </button>
+
+                        <div ref={colorPickerRef} className="color-picker-container">
+                            <button 
+                                className="action-btn"
+                                onClick={toggleColorPicker}
+                                title="Background options"
+                            >
+                                <span className="material-symbols-outlined">palette</span>
+                            </button>
+
+                            {showColorPicker && (
+                                <div 
+                                    className="color-picker-popup"
+                                    onMouseEnter={handleNoteMouseEnter}
+                                    onMouseLeave={handleNoteMouseLeave}
+                                >
+                                    {colors.map(colorObj => (
+                                        <button
+                                            key={colorObj.value}
+                                            type="button"
+                                            className={`color-btn-popup ${colorObj.value === 'default' ? 'default-color' : ''}`}
+                                            style={{ backgroundColor: colorObj.value === 'default' ? '#ffffff' : colorObj.value }}
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                onColorChange(colorObj.value)
+                                            }}
+                                            title={colorObj.name}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {showLabelPicker && (
+                            <div ref={labelPickerRef} className="label-picker-container">
+                                <LabelPicker
+                                    selectedLabels={note.labels || []}
+                                    onLabelsChange={handleLabelsChange}
+                                    onClose={() => setShowLabelPicker(false)}
+                                    onMouseEnter={handleNoteMouseEnter}
+                                    onMouseLeave={handleNoteMouseLeave}
+                                />
+                            </div>
+                        )}
+
+                        <div ref={moreMenuRef} className="more-menu-container">
+                            <button 
+                                className="action-btn"
+                                onClick={toggleMoreMenu}
+                                title="More"
+                            >
+                                <span className="material-symbols-outlined">more_vert</span>
+                            </button>
+
+                            {showMoreMenu && (
+                                <div className="more-menu-popup">
+                                    <button 
+                                        className="more-menu-item"
+                                        onClick={handleShowLabelPicker}
+                                    >
+                                        <span className="material-symbols-outlined">label</span>
+                                        Add label
+                                    </button>
+                                    <button 
+                                        className="more-menu-item"
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            setShowMoreMenu(false)
+                                            if (onDuplicateNote) {
+                                                onDuplicateNote(note.id)
+                                            }
+                                        }}
+                                    >
+                                        <span className="material-symbols-outlined">content_copy</span>
+                                        Duplicate
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 )}
-
-                <div ref={moreMenuRef} className="more-menu-container">
+                
+                {/* Show restore button for archived/trashed notes */}
+                {currentStatus === 'archived' || currentStatus === 'trashed' ? (
                     <button 
                         className="action-btn"
-                        onClick={toggleMoreMenu}
-                        title="More"
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            onRestoreNote(note.id)
+                        }}
+                        title="Restore note"
                     >
-                        <span className="material-symbols-outlined">more_vert</span>
+                        <span className="material-symbols-outlined">restore</span>
                     </button>
-
-                    {showMoreMenu && (
-                        <div className="more-menu-popup">
-                            <button 
-                                className="more-menu-item"
-                                onClick={handleShowLabelPicker}
-                            >
-                                <span className="material-symbols-outlined">label</span>
-                                Add label
-                            </button>
-                            <button 
-                                className="more-menu-item"
-                                onClick={(e) => {
-                                    e.stopPropagation()
-                                    setShowMoreMenu(false)
-                                    if (onDuplicateNote) {
-                                        onDuplicateNote(note.id)
-                                    }
-                                }}
-                            >
-                                <span className="material-symbols-outlined">content_copy</span>
-                                Duplicate
-                            </button>
-                            <button 
-                                className="more-menu-item"
-                                onClick={(e) => {
-                                    e.stopPropagation()
-                                    setShowMoreMenu(false)
-                                    // Add archive functionality later
-                                }}
-                            >
-                                <span className="material-symbols-outlined">archive</span>
-                                Archive
-                            </button>
-                        </div>
-                    )}
-                </div>
+                ) : null}
                 
-                <button 
-                    className="btn-remove"
-                    onClick={(e) => {
-                        e.stopPropagation()
-                        onRemoveNote(note.id)
-                    }}
-                    title="Delete note"
-                >
-                    <span className="material-symbols-outlined">delete</span>
-                </button>
+                {/* Only show delete button in trash view */}
+                {currentStatus === 'trashed' && (
+                    <button 
+                        className="btn-remove"
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            if (onPermanentDeleteNote) {
+                                onPermanentDeleteNote(note.id)
+                            }
+                        }}
+                        title="Delete permanently"
+                    >
+                        <span className="material-symbols-outlined">delete_forever</span>
+                    </button>
+                )}
             </div>
 
             {/* Hidden file input for image uploads */}

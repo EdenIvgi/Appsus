@@ -124,6 +124,11 @@ export const noteService = {
     getEmptyNote,
     getFilterFromParams,
     getDefaultFilter,
+    // Status management
+    archiveNote,
+    trashNote,
+    restoreNote,
+    permanentlyDeleteNote,
     // Label methods
     getLabels,
     saveLabel,
@@ -154,6 +159,11 @@ function query(filterBy = {}) {
 }
 
 function _applyOtherFilters(notes, filterBy) {
+    // Always filter by status first
+    if (filterBy.status) {
+        notes = notes.filter(note => (note.status || 'active') === filterBy.status)
+    }
+    
     if (filterBy.txt) {
         notes = notes.filter(note => _searchInNote(note, filterBy.txt))
     }
@@ -226,13 +236,48 @@ function remove(noteId) {
     return storageService.remove(STORAGE_KEY, noteId)
 }
 
+function archiveNote(noteId) {
+    return storageService.get(STORAGE_KEY, noteId)
+        .then(note => {
+            if (note) {
+                const updatedNote = { ...note, status: 'archived' }
+                return storageService.put(STORAGE_KEY, updatedNote)
+            }
+        })
+}
+
+function trashNote(noteId) {
+    return storageService.get(STORAGE_KEY, noteId)
+        .then(note => {
+            if (note) {
+                const updatedNote = { ...note, status: 'trashed' }
+                return storageService.put(STORAGE_KEY, updatedNote)
+            }
+        })
+}
+
+function restoreNote(noteId) {
+    return storageService.get(STORAGE_KEY, noteId)
+        .then(note => {
+            if (note) {
+                const updatedNote = { ...note, status: 'active' }
+                return storageService.put(STORAGE_KEY, updatedNote)
+            }
+        })
+}
+
+function permanentlyDeleteNote(noteId) {
+    return storageService.remove(STORAGE_KEY, noteId)
+}
+
 function getEmptyNote(type = 'NoteTxt') {
     const emptyNote = {
         type,
         isPinned: false,
         style: { backgroundColor: '#ffffff' },
         info: {},
-        labels: []
+        labels: [],
+        status: 'active' // active, archived, trashed
     }
 
     switch (type) {
@@ -259,7 +304,8 @@ function getFilterFromParams(searchParams) {
         txt: searchParams.get('txt') || '',
         type: searchParams.get('type') || '',
         labelName: searchParams.get('label') || null,
-        isPinned: isPinnedParam ? isPinnedParam === 'true' : undefined
+        isPinned: isPinnedParam ? isPinnedParam === 'true' : undefined,
+        status: searchParams.get('status') || 'active'
     }
 }
 
@@ -268,7 +314,8 @@ function getDefaultFilter() {
         txt: '',
         type: '',
         labelName: null,
-        isPinned: undefined
+        isPinned: undefined,
+        status: 'active'
     }
 }
 
@@ -359,6 +406,10 @@ function _createNotes() {
         notesFromStorage.forEach(note => {
             if (!note.labels) {
                 note.labels = []
+                shouldSave = true
+            }
+            if (!note.status) {
+                note.status = 'active'
                 shouldSave = true
             }
         })

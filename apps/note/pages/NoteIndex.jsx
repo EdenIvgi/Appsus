@@ -29,6 +29,7 @@ export function NoteIndex() {
     const searchTerm = filterBy.txt || ''
     const activeTypeFilter = filterBy.type || 'all'
     const activeLabelFilter = filterBy.labelName || null
+    const activeStatusFilter = filterBy.status || 'active'
     
     const [showVideoUrlInput, setShowVideoUrlInput] = useState(false)
     const [showLabelEditor, setShowLabelEditor] = useState(false)
@@ -47,6 +48,7 @@ export function NoteIndex() {
         if (filterBy.type && filterBy.type !== 'all') searchParams.set('type', filterBy.type)
         if (filterBy.labelName) searchParams.set('label', filterBy.labelName)
         if (filterBy.isPinned !== undefined) searchParams.set('isPinned', filterBy.isPinned.toString())
+        if (filterBy.status && filterBy.status !== 'active') searchParams.set('status', filterBy.status)
         
         const newSearch = searchParams.toString()
         const currentSearch = location.search.substring(1)
@@ -208,20 +210,47 @@ export function NoteIndex() {
     }, [])
 
     const onRemoveNote = useCallback((noteId) => {
+        const noteToRemove = notes.find(note => note.id === noteId)
+        if (!noteToRemove) return
+        
+        const currentStatus = noteToRemove.status || 'active'
+        
         // Update state immediately for instant UI response
         setNotes(prevNotes => prevNotes.filter(note => note.id !== noteId))
         
-        // Remove from storage in background
-        noteService.remove(noteId)
-            .then(() => {
-                showSuccessMsg('Note removed successfully!')
-            })
-            .catch(err => {
-                console.error('Error removing note:', err)
-                // On error, reload notes to ensure consistency
-                loadNotes()
-            })
-    }, [])
+        // Handle different removal stages
+        if (currentStatus === 'active') {
+            // First removal: archive the note
+            noteService.archiveNote(noteId)
+                .then(() => {
+                    showSuccessMsg('Note archived!')
+                })
+                .catch(err => {
+                    console.error('Error archiving note:', err)
+                    loadNotes()
+                })
+        } else if (currentStatus === 'archived') {
+            // Second removal: move to trash
+            noteService.trashNote(noteId)
+                .then(() => {
+                    showSuccessMsg('Note moved to trash!')
+                })
+                .catch(err => {
+                    console.error('Error trashing note:', err)
+                    loadNotes()
+                })
+        } else if (currentStatus === 'trashed') {
+            // Third removal: permanently delete
+            noteService.permanentlyDeleteNote(noteId)
+                .then(() => {
+                    showSuccessMsg('Note permanently deleted!')
+                })
+                .catch(err => {
+                    console.error('Error permanently deleting note:', err)
+                    loadNotes()
+                })
+        }
+    }, [notes])
 
     const onTogglePin = useCallback((noteId) => {
         setNotes(prevNotes => {
@@ -339,6 +368,88 @@ export function NoteIndex() {
     const onClearSearch = useCallback(() => {
         setFilterBy(noteService.getDefaultFilter())
     }, [])
+
+    const onStatusFilterChange = useCallback((status) => {
+        setFilterBy(prev => ({ 
+            ...prev, 
+            status: status,
+            txt: '', // Clear search when changing status
+            type: '', // Clear type filter when changing status
+            labelName: null // Clear label filter when changing status
+        }))
+    }, [])
+
+    const onRestoreNote = useCallback((noteId) => {
+        const noteToRestore = notes.find(note => note.id === noteId)
+        if (!noteToRestore) return
+        
+        // Update state immediately for instant UI response
+        setNotes(prevNotes => prevNotes.filter(note => note.id !== noteId))
+        
+        // Restore note to active status
+        noteService.restoreNote(noteId)
+            .then(() => {
+                showSuccessMsg('Note restored!')
+            })
+            .catch(err => {
+                console.error('Error restoring note:', err)
+                loadNotes()
+            })
+    }, [notes])
+
+    const onArchiveNote = useCallback((noteId) => {
+        const noteToArchive = notes.find(note => note.id === noteId)
+        if (!noteToArchive) return
+        
+        // Update state immediately for instant UI response
+        setNotes(prevNotes => prevNotes.filter(note => note.id !== noteId))
+        
+        // Archive note
+        noteService.archiveNote(noteId)
+            .then(() => {
+                showSuccessMsg('Note archived!')
+            })
+            .catch(err => {
+                console.error('Error archiving note:', err)
+                loadNotes()
+            })
+    }, [notes])
+
+    const onTrashNote = useCallback((noteId) => {
+        const noteToTrash = notes.find(note => note.id === noteId)
+        if (!noteToTrash) return
+        
+        // Update state immediately for instant UI response
+        setNotes(prevNotes => prevNotes.filter(note => note.id !== noteId))
+        
+        // Move note to trash
+        noteService.trashNote(noteId)
+            .then(() => {
+                showSuccessMsg('Note moved to trash!')
+            })
+            .catch(err => {
+                console.error('Error moving note to trash:', err)
+                loadNotes()
+            })
+    }, [notes])
+
+    const onPermanentDeleteNote = useCallback((noteId) => {
+        const noteToDelete = notes.find(note => note.id === noteId)
+        if (!noteToDelete) return
+        
+        // Update state immediately for instant UI response
+        setNotes(prevNotes => prevNotes.filter(note => note.id !== noteId))
+        
+        // Permanently delete note
+        noteService.permanentlyDeleteNote(noteId)
+            .then(() => {
+                showSuccessMsg('Note permanently deleted!')
+            })
+            .catch(err => {
+                console.error('Error permanently deleting note:', err)
+                loadNotes()
+            })
+    }, [notes])
 
     const onLabelFilter = useCallback((labelName) => {
         // Toggle label filter - if same label clicked, clear filter
@@ -479,16 +590,25 @@ export function NoteIndex() {
             <aside className="note-icon-sidebar">
                 <div className="icon-spacer"></div>
                 <nav className="icon-nav">
-                    <div className="icon-nav-item active">
+                    <div 
+                        className={`icon-nav-item ${activeStatusFilter === 'active' ? 'active' : ''}`}
+                        onClick={() => onStatusFilterChange('active')}
+                    >
                         <span className="material-symbols-outlined">lightbulb</span>
                     </div>
                     <div className="icon-nav-item">
                         <span className="material-symbols-outlined">notifications</span>
                     </div>
-                    <div className="icon-nav-item">
+                    <div 
+                        className={`icon-nav-item ${activeStatusFilter === 'archived' ? 'active' : ''}`}
+                        onClick={() => onStatusFilterChange('archived')}
+                    >
                         <span className="material-symbols-outlined">archive</span>
                     </div>
-                    <div className="icon-nav-item">
+                    <div 
+                        className={`icon-nav-item ${activeStatusFilter === 'trashed' ? 'active' : ''}`}
+                        onClick={() => onStatusFilterChange('trashed')}
+                    >
                         <span className="material-symbols-outlined">delete</span>
                     </div>
                 </nav>
@@ -530,8 +650,8 @@ export function NoteIndex() {
                     <div className="nav-section">
                         <div className="section-title">NOTES</div>
                         <div 
-                            className={`nav-item ${activeTypeFilter === 'all' ? 'active' : ''}`}
-                            onClick={() => onTypeFilterChange('all')}
+                            className={`nav-item ${activeStatusFilter === 'active' && activeTypeFilter === 'all' ? 'active' : ''}`}
+                            onClick={() => onStatusFilterChange('active')}
                         >
                             <span className="material-symbols-outlined nav-icon">lightbulb</span>
                             <span className="nav-text">All Notes</span>
@@ -595,11 +715,17 @@ export function NoteIndex() {
                         />
                     </div>
                     
-                    <div className="nav-item">
+                    <div 
+                        className={`nav-item ${activeStatusFilter === 'archived' ? 'active' : ''}`}
+                        onClick={() => onStatusFilterChange('archived')}
+                    >
                         <span className="material-symbols-outlined nav-icon">archive</span>
                         <span className="nav-text">Archive</span>
                     </div>
-                    <div className="nav-item">
+                    <div 
+                        className={`nav-item ${activeStatusFilter === 'trashed' ? 'active' : ''}`}
+                        onClick={() => onStatusFilterChange('trashed')}
+                    >
                         <span className="material-symbols-outlined nav-icon">delete</span>
                         <span className="nav-text">Trash</span>
                     </div>
@@ -740,6 +866,11 @@ export function NoteIndex() {
                         onUpdateNote={onUpdateNote}
                         onLabelsChange={onLabelsChange}
                         onDuplicateNote={onDuplicateNote}
+                        onRestoreNote={onRestoreNote}
+                        onArchiveNote={onArchiveNote}
+                        onTrashNote={onTrashNote}
+                        onPermanentDeleteNote={onPermanentDeleteNote}
+                        currentStatus={activeStatusFilter}
                     />
                 )}
             </main>

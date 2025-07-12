@@ -2,7 +2,7 @@ import { NotePreview } from './NotePreview.jsx'
 
 const { memo } = React
 
-export const NoteList = memo(function NoteList({ notes, onRemoveNote, onTogglePin, onChangeNoteColor, onEditNote, onAddVideo, onUpdateNote, onLabelsChange, onDuplicateNote }) {
+export const NoteList = memo(function NoteList({ notes, onRemoveNote, onTogglePin, onChangeNoteColor, onEditNote, onAddVideo, onUpdateNote, onLabelsChange, onDuplicateNote, onRestoreNote, onArchiveNote, onTrashNote, onPermanentDeleteNote, currentStatus }) {
     if (!notes || notes.length === 0) {
         return <div className="note-list empty">No notes to display</div>
     }
@@ -30,6 +30,11 @@ export const NoteList = memo(function NoteList({ notes, onRemoveNote, onTogglePi
                                 onUpdateNote={onUpdateNote}
                                 onLabelsChange={onLabelsChange}
                                 onDuplicateNote={onDuplicateNote}
+                                onRestoreNote={onRestoreNote}
+                                onArchiveNote={onArchiveNote}
+                                onTrashNote={onTrashNote}
+                                onPermanentDeleteNote={onPermanentDeleteNote}
+                                currentStatus={currentStatus}
                             />
                         ))}
                     </div>
@@ -53,6 +58,11 @@ export const NoteList = memo(function NoteList({ notes, onRemoveNote, onTogglePi
                                 onUpdateNote={onUpdateNote}
                                 onLabelsChange={onLabelsChange}
                                 onDuplicateNote={onDuplicateNote}
+                                onRestoreNote={onRestoreNote}
+                                onArchiveNote={onArchiveNote}
+                                onTrashNote={onTrashNote}
+                                onPermanentDeleteNote={onPermanentDeleteNote}
+                                currentStatus={currentStatus}
                             />
                         ))}
                     </div>
