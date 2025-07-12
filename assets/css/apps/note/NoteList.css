@@ -844,8 +844,8 @@
 .color-picker-modal-popup {
     position: absolute;
     top: 40px;
-    left: 50%;
-    transform: translateX(-50%);
+    left: -16px;
+    transform: none;
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
@@ -860,8 +860,8 @@
     content: '';
     position: absolute;
     top: -8px;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 24px;
+    transform: none;
     width: 0;
     height: 0;
     border-left: 8px solid transparent;
@@ -955,13 +955,17 @@
     }
     
     .color-picker-modal-popup {
-        left: 0;
-        right: 0;
         top: 40px;
+        left: -16px;
         transform: none;
         max-width: calc(100vw - 32px);
-        flex-wrap: wrap;
-        margin: 0 16px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    
+    .color-picker-modal-popup::-webkit-scrollbar {
+        display: none;
     }
     
     .color-btn-modal-popup {
