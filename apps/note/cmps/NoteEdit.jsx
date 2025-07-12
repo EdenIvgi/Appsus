@@ -5,7 +5,7 @@ import { LabelPicker } from './LabelPicker.jsx'
 
 const { useState, useEffect, useRef } = React
 
-export function NoteEdit({ note, onSave, onCancel, onChange }) {
+export function NoteEdit({ note, onSave, onCancel, onChange, onArchiveNote, onTrashNote, onDuplicateNote }) {
     const [noteToEdit, setNoteToEdit] = useState(note)
     const [showColorPicker, setShowColorPicker] = useState(false)
     const [showLabelPicker, setShowLabelPicker] = useState(false)
@@ -231,21 +231,36 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
     }
 
     function handleArchive() {
-        // Archive note and close
-        handleSave()
-        // The parent will handle the archive action
+        if (noteToEdit.id && onArchiveNote) {
+            onArchiveNote(noteToEdit.id)
+            onCancel()
+        } else if (onArchiveNote) {
+            onSave({...noteToEdit, _archiveAfterSave: true})
+        } else {
+            handleSave()
+        }
     }
 
     function handleTrash() {
-        // Trash note and close
-        handleSave()
-        // The parent will handle the trash action
+        if (noteToEdit.id && onTrashNote) {
+            onTrashNote(noteToEdit.id)
+            onCancel()
+        } else if (onTrashNote) {
+            onSave({...noteToEdit, _trashAfterSave: true})
+        } else {
+            handleSave()
+        }
     }
 
     function handleDuplicate() {
-        // Duplicate note and close
-        handleSave()
-        // The parent will handle the duplicate action
+        if (noteToEdit.id && onDuplicateNote) {
+            // For existing notes, duplicate directly
+            onDuplicateNote(noteToEdit.id)
+            onCancel() // Close the editor
+        } else {
+            // For new notes, save first
+            handleSave()
+        }
         setShowMoreMenu(false)
     }
 

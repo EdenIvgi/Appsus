@@ -140,39 +140,110 @@ export function NoteIndex() {
         setIsCreating(true)
     }, [])
 
+    const onArchiveNote = useCallback((noteId) => {
+        const noteToArchive = notes.find(note => note.id === noteId)
+        if (!noteToArchive) return
+        
+        // Update state immediately for instant UI response
+        setNotes(prevNotes => prevNotes.filter(note => note.id !== noteId))
+        
+        // Archive note
+        noteService.archiveNote(noteId)
+            .then(() => {
+                showSuccessMsg('Note archived!')
+            })
+            .catch(err => {
+                console.error('Error archiving note:', err)
+                loadNotes()
+            })
+    }, [notes])
+
+    const onTrashNote = useCallback((noteId) => {
+        const noteToTrash = notes.find(note => note.id === noteId)
+        if (!noteToTrash) return
+        
+        // Update state immediately for instant UI response
+        setNotes(prevNotes => prevNotes.filter(note => note.id !== noteId))
+        
+        // Move note to trash
+        noteService.trashNote(noteId)
+            .then(() => {
+                showSuccessMsg('Note moved to trash!')
+            })
+            .catch(err => {
+                console.error('Error moving note to trash:', err)
+                loadNotes()
+            })
+    }, [notes])
+
     const onSaveNote = useCallback((noteToSave) => {
-        if (noteToSave.type === 'NoteImg' && noteToSave.info.url) {
+        // Check for special action flags
+        const shouldArchiveAfterSave = noteToSave._archiveAfterSave
+        const shouldTrashAfterSave = noteToSave._trashAfterSave
+        
+        // Remove the flags from the note before saving
+        const cleanNote = {...noteToSave}
+        delete cleanNote._archiveAfterSave
+        delete cleanNote._trashAfterSave
+        
+        if (cleanNote.type === 'NoteImg' && cleanNote.info.url) {
         }
-        else if (noteToSave.type === 'NoteVideo' && noteToSave.info.url) {
+        else if (cleanNote.type === 'NoteVideo' && cleanNote.info.url) {
         }
-        else if (noteToSave.type === 'NoteTodos') {
+        else if (cleanNote.type === 'NoteTodos') {
         }
-        else if (!noteToSave.info.txt || !noteToSave.info.txt.trim()) {
+        else if (!cleanNote.info.txt || !cleanNote.info.txt.trim()) {
             setIsCreating(false)
             setEditingNote(null)
             setCurrentEditNote(null)
             return
         }
 
-        const isNewNote = !noteToSave.id
+        const isNewNote = !cleanNote.id
 
-        noteService.save(noteToSave)
+        noteService.save(cleanNote)
             .then(savedNote => {
-                if (isNewNote) {
-                    setNotes(prevNotes => [savedNote, ...prevNotes])
-                    showSuccessMsg('Note added successfully!')
-                } else {
-                    setNotes(prevNotes => 
-                        prevNotes.map(note => 
-                            note.id === savedNote.id ? savedNote : note
+                // Only add to active notes state if not going to be archived/trashed immediately
+                if (!shouldArchiveAfterSave && !shouldTrashAfterSave) {
+                    if (isNewNote) {
+                        setNotes(prevNotes => [savedNote, ...prevNotes])
+                        showSuccessMsg('Note added successfully!')
+                    } else {
+                        setNotes(prevNotes => 
+                            prevNotes.map(note => 
+                                note.id === savedNote.id ? savedNote : note
+                            )
                         )
-                    )
-                    showSuccessMsg('Note saved successfully!')
+                        showSuccessMsg('Note saved successfully!')
+                    }
                 }
                 
                 setIsCreating(false)
                 setEditingNote(null)
                 setCurrentEditNote(null)
+                
+                // Perform the action after saving
+                if (shouldArchiveAfterSave) {
+                    // Archive the note directly using the saved note object
+                    noteService.archiveNote(savedNote.id)
+                        .then(() => {
+                            showSuccessMsg('Note archived!')
+                        })
+                        .catch(err => {
+                            console.error('Error archiving note:', err)
+                            loadNotes()
+                        })
+                } else if (shouldTrashAfterSave) {
+                    // Trash the note directly using the saved note object
+                    noteService.trashNote(savedNote.id)
+                        .then(() => {
+                            showSuccessMsg('Note moved to trash!')
+                        })
+                        .catch(err => {
+                            console.error('Error trashing note:', err)
+                            loadNotes()
+                        })
+                }
             })
             .catch(err => console.error('Error saving note:', err))
     }, [])
@@ -376,42 +447,6 @@ export function NoteIndex() {
             })
             .catch(err => {
                 console.error('Error restoring note:', err)
-                loadNotes()
-            })
-    }, [notes])
-
-    const onArchiveNote = useCallback((noteId) => {
-        const noteToArchive = notes.find(note => note.id === noteId)
-        if (!noteToArchive) return
-        
-        // Update state immediately for instant UI response
-        setNotes(prevNotes => prevNotes.filter(note => note.id !== noteId))
-        
-        // Archive note
-        noteService.archiveNote(noteId)
-            .then(() => {
-                showSuccessMsg('Note archived!')
-            })
-            .catch(err => {
-                console.error('Error archiving note:', err)
-                loadNotes()
-            })
-    }, [notes])
-
-    const onTrashNote = useCallback((noteId) => {
-        const noteToTrash = notes.find(note => note.id === noteId)
-        if (!noteToTrash) return
-        
-        // Update state immediately for instant UI response
-        setNotes(prevNotes => prevNotes.filter(note => note.id !== noteId))
-        
-        // Move note to trash
-        noteService.trashNote(noteId)
-            .then(() => {
-                showSuccessMsg('Note moved to trash!')
-            })
-            .catch(err => {
-                console.error('Error moving note to trash:', err)
                 loadNotes()
             })
     }, [notes])
@@ -781,6 +816,9 @@ export function NoteIndex() {
                             onSave={onSaveNote}
                             onCancel={onCancelEdit}
                             onChange={onNoteChange}
+                            onArchiveNote={onArchiveNote}
+                            onTrashNote={onTrashNote}
+                            onDuplicateNote={onDuplicateNote}
                         />
                     </div>
                 )}
