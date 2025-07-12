@@ -16,9 +16,6 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
     const imageInputRef = useRef(null)
 
     useEffect(() => {
-        console.log('🎨 NOTE EDIT COMPONENT - Received note:', note)
-        console.log('📋 Note type:', note && note.type)
-        console.log('📝 Note info:', note && note.info)
         setNoteToEdit(note)
     }, [note])
 
@@ -72,14 +69,7 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
             return
         }
         
-        // For todo notes, always save (like Google Keep does)
         if (noteToEdit.type === 'NoteTodos') {
-            console.log('💾 SAVING TODO NOTE:', noteToEdit)
-            console.log('📋 Todo info:', noteToEdit.info)
-            console.log('📝 Title:', noteToEdit.info.title)
-            console.log('✅ Todos:', noteToEdit.info.todos)
-            
-            // Ensure there's always at least an empty structure
             let todoToSave = { ...noteToEdit }
             if (!todoToSave.info.todos) {
                 todoToSave.info.todos = []
@@ -88,7 +78,6 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
                 todoToSave.info.title = ''
             }
             
-            console.log('✅ Saving todo note with structure:', todoToSave)
             onSave(todoToSave)
             return
         }
@@ -275,18 +264,17 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
                 >
                     {/* Header with pin button */}
                     <div className="note-edit-header">
-                        {/* Only show title input for non-todo notes */}
-                        {noteToEdit.type !== 'NoteTodos' && (
-                            <input
-                                className="note-title-input"
-                                placeholder="Title"
-                                value={noteToEdit.info.title || ''}
-                                onChange={(e) => setNoteToEdit({
-                                    ...noteToEdit,
-                                    info: { ...noteToEdit.info, title: e.target.value }
-                                })}
-                            />
-                        )}
+                                            {noteToEdit.type !== 'NoteTodos' && (
+                        <input
+                            className="note-title-input"
+                            placeholder="Title"
+                            value={noteToEdit.info.title || ''}
+                            onChange={(e) => setNoteToEdit({
+                                ...noteToEdit,
+                                info: { ...noteToEdit.info, title: e.target.value }
+                            })}
+                        />
+                    )}
                         <button 
                             className={`btn-pin-modal ${noteToEdit.isPinned ? 'pinned' : ''}`}
                             onClick={handleTogglePin}
@@ -342,7 +330,6 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
                         </div>
                     )}
                     
-                    {/* Only show textarea for non-todo notes */}
                     {noteToEdit.type !== 'NoteTodos' && (
                         <textarea
                             className="note-edit-textarea"
@@ -446,7 +433,6 @@ export function NoteEdit({ note, onSave, onCancel, onChange }) {
                 </div>
             </div>
 
-            {/* Hidden file input for image uploads */}
             <input
                 ref={imageInputRef}
                 type="file"

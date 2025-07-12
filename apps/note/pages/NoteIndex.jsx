@@ -135,50 +135,33 @@ export function NoteIndex() {
     }, [notes])
 
     const onCreateNote = useCallback(() => {
-        console.log('⚡ REGULAR CREATE NOTE CLICKED - Creating text note')
         const emptyNote = noteService.getEmptyNote()
-        console.log('📝 Created empty note:', emptyNote)
         setCurrentEditNote(emptyNote)
         setIsCreating(true)
-        console.log('✅ Set creating to true and current edit note')
     }, [])
 
     const onSaveNote = useCallback((noteToSave) => {
-        console.log('💾 NoteIndex SAVING NOTE:', noteToSave)
-        
-        // For image notes, save even without text if there's a URL
         if (noteToSave.type === 'NoteImg' && noteToSave.info.url) {
-            // Allow saving
         }
-        // For video notes, save even without text if there's a URL
         else if (noteToSave.type === 'NoteVideo' && noteToSave.info.url) {
-            // Allow saving
         }
-        // For todo notes, always allow saving (they're handled in NoteEdit)
         else if (noteToSave.type === 'NoteTodos') {
-            console.log('✅ Todo note - allowing save')
-            // Allow saving
         }
-        // For text notes, require text content
         else if (!noteToSave.info.txt || !noteToSave.info.txt.trim()) {
-            console.log('❌ Text note has no content - canceling')
             setIsCreating(false)
             setEditingNote(null)
             setCurrentEditNote(null)
             return
         }
 
-        // Store the new note flag before the service call
         const isNewNote = !noteToSave.id
 
         noteService.save(noteToSave)
             .then(savedNote => {
                 if (isNewNote) {
-                    // Add new note to the beginning of the list
                     setNotes(prevNotes => [savedNote, ...prevNotes])
                     showSuccessMsg('Note added successfully!')
                 } else {
-                    // Update existing note
                     setNotes(prevNotes => 
                         prevNotes.map(note => 
                             note.id === savedNote.id ? savedNote : note
@@ -474,12 +457,9 @@ export function NoteIndex() {
     }, [])
 
     const onCreateTodoNote = useCallback(() => {
-        console.log('🔥 TODO BUTTON CLICKED - Creating new todo note')
         const newTodoNote = noteService.getEmptyNote('NoteTodos')
-        console.log('📝 Created empty todo note:', newTodoNote)
         setCurrentEditNote(newTodoNote)
         setIsCreating(true)
-        console.log('✅ Set creating to true and current edit note')
     }, [])
 
     const onVideoUrlSave = useCallback((videoData) => {
@@ -506,7 +486,6 @@ export function NoteIndex() {
 
     const onCloseLabelEditor = useCallback(() => {
         setShowLabelEditor(false)
-        // Trigger a refresh of the label list
         setLabelRefreshTrigger(prev => prev + 1)
     }, [])
 
@@ -537,7 +516,6 @@ export function NoteIndex() {
                 alert('Error uploading image: ' + error)
             })
 
-        // Reset the input
         event.target.value = ''
     }, [])
 
@@ -846,12 +824,10 @@ export function NoteIndex() {
                 )}
             </main>
 
-            {/* Floating Action Button */}
             <button className="fab" onClick={onCreateNote}>
                 <span className="material-symbols-outlined">add</span>
             </button>
 
-            {/* Video URL Input Modal */}
             {showVideoUrlInput && (
                 <VideoUrlInput 
                     onSave={onVideoUrlSave}
@@ -859,14 +835,12 @@ export function NoteIndex() {
                 />
             )}
 
-            {/* Label Editor Modal */}
             {showLabelEditor && (
                 <LabelEditor 
                     onClose={onCloseLabelEditor}
                 />
             )}
 
-            {/* Hidden file input for image uploads */}
             <input
                 ref={imageInputRef}
                 type="file"

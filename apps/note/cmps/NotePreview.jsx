@@ -406,7 +406,6 @@ export const NotePreview = memo(function NotePreview({ note, onRemoveNote, onTog
                 )}
             </div>
 
-            {/* Hidden file input for image uploads */}
             <input
                 ref={imageInputRef}
                 type="file"
