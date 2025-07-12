@@ -7,7 +7,6 @@
     font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
 }
 
-/* Appsus Header - Similar to Gmail Header */
 .appsus-header {
     position: fixed;
     top: 0;
@@ -301,7 +300,7 @@
     box-shadow: 0 8px 24px rgba(26, 115, 232, 0.4);
 }
 
-/* About Page - Basic styles for header consistency */
+/* About Page - Enhanced styles */
 .about-page {
     background: #fafafa;
     min-height: 100vh;
@@ -311,6 +310,192 @@
 
 .about-main {
     padding-top: 74px;
+}
+
+.about-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.about-content h1 {
+    font-size: 2.8rem;
+    font-weight: 600;
+    color: #202124;
+    text-align: center;
+    margin-bottom: 2rem;
+    letter-spacing: -0.5px;
+}
+
+.about-content h2 {
+    font-size: 2rem;
+    font-weight: 500;
+    color: #1a73e8;
+    margin: 3rem 0 1.5rem 0;
+    text-align: center;
+    letter-spacing: -0.3px;
+}
+
+.about-intro {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.about-intro p {
+    font-size: 1.25rem;
+    line-height: 1.7;
+    color: #5f6368;
+    margin: 0 auto;
+    max-width: 800px;
+}
+
+.about-intro strong {
+    color: #1a73e8;
+    font-weight: 600;
+}
+
+.about-apps {
+    margin-bottom: 3rem;
+}
+
+.app-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.app-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.app-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, #1a73e8, #4285f4);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.app-card:hover::before {
+    opacity: 1;
+}
+
+.app-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.app-icon {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #1a73e8, #4285f4);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.app-card:hover .app-icon {
+    transform: scale(1.1);
+}
+
+.app-icon .material-symbols-outlined {
+    font-size: 32px;
+    color: white;
+}
+
+.app-card h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #202124;
+    margin-bottom: 1rem;
+    letter-spacing: -0.2px;
+}
+
+.app-card p {
+    color: #5f6368;
+    line-height: 1.6;
+    margin: 0;
+    font-size: 1rem;
+}
+
+.app-card p strong {
+    color: #1a73e8;
+    font-weight: 600;
+}
+
+.about-mission,
+.about-tech {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.about-mission p,
+.about-tech p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #5f6368;
+    margin: 0 auto;
+    max-width: 800px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .about-content {
+        padding: 1rem;
+    }
+    
+    .about-content h1 {
+        font-size: 2.2rem;
+    }
+    
+    .about-content h2 {
+        font-size: 1.6rem;
+    }
+    
+    .about-intro p {
+        font-size: 1.1rem;
+    }
+    
+    .app-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .app-card {
+        padding: 1.5rem;
+    }
+    
+    .app-icon {
+        width: 56px;
+        height: 56px;
+    }
+    
+    .app-icon .material-symbols-outlined {
+        font-size: 28px;
+    }
+    
+    .app-card h3 {
+        font-size: 1.3rem;
+    }
+    
+    .about-mission p,
+    .about-tech p {
+        font-size: 1rem;
+    }
 }
 
 /* Modal Styles */
