@@ -46,6 +46,7 @@
 .sidebar-nav {
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 .nav-item {
@@ -60,6 +61,7 @@
     min-height: 36px;
     transition: background-color 0.2s ease;
     cursor: pointer;
+    max-width:85% ;
 }
 
 .nav-item:hover {

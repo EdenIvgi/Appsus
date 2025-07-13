@@ -3,6 +3,8 @@ const { Routes, Route, useNavigate } = ReactRouterDOM
 
 import { GmailHeader } from '../cmps/GmailHeader.jsx'
 import { mailService } from '../services/mail.service.js'
+import { noteService } from '../../note/services/note.service.js'
+import { eventBusService } from '../services/event-bus.service.js'
 import { MailList } from '../cmps/MailList.jsx'
 import { MailCompose } from '../cmps/MailCompose.jsx'
 import { MailFolderList } from '../cmps/MailFolderList.jsx'
@@ -13,7 +15,7 @@ export function MailIndex() {
     const [isComposing, setIsComposing] = useState(false)
     const [mailToEdit, setMailToEdit] = useState(null)
     const [mails, setMails] = useState([])
-    const [filterBy, setFilterBy] = useState('inbox') 
+    const [filterBy, setFilterBy] = useState('inbox')
     const [searchTerm, setSearchTerm] = useState('')
     const [sortByDate, setSortByDate] = useState('desc')
     const [expandedMailId, setExpandedMailId] = useState(null)
@@ -31,7 +33,6 @@ export function MailIndex() {
     function loadMails() {
         mailService.query().then(allMails => {
             const userEmail = mailService.getLoggedinUser().email
-
             const filtered = allMails.filter(mail => {
                 const matchesSearch =
                     mail.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -43,7 +44,6 @@ export function MailIndex() {
                 if (filterBy === 'sent') return mail.from === userEmail && !mail.removedAt && !mail.isDraft && matchesSearch
                 if (filterBy === 'starred') return mail.isStarred && !mail.removedAt && matchesSearch
                 if (filterBy === 'unread') return !mail.isRead && !mail.removedAt && !mail.isDraft && matchesSearch
-
                 return false
             })
 
@@ -54,10 +54,8 @@ export function MailIndex() {
             setMails(sorted)
             setUnreadCount(sorted.filter(mail => !mail.isRead).length)
 
-            mailService.query().then(all => {
-                const inbox = all.filter(mail => mail.to === userEmail && !mail.removedAt && !mail.isDraft)
-                setInboxCount(inbox.length)
-            })
+            const inbox = allMails.filter(mail => mail.to === userEmail && !mail.removedAt && !mail.isDraft)
+            setInboxCount(inbox.length)
         })
     }
 
@@ -85,8 +83,7 @@ export function MailIndex() {
                 ? updatedMails
                 : updatedMails.filter(mail => mail.id !== updatedMail.id)
 
-            const newUnreadCount = newMails.filter(mail => !mail.isRead).length
-            setUnreadCount(newUnreadCount)
+            setUnreadCount(newMails.filter(mail => !mail.isRead).length)
             return newMails
         })
 
@@ -109,8 +106,6 @@ export function MailIndex() {
     function addMail(newMail) {
         if (newMail.isDraft) return
 
-        if (newMail.isDraft) return
-
         mailService.save(newMail).then(saved => {
             const user = mailService.getLoggedinUser().email
             const matchesFilter = () => {
@@ -118,7 +113,6 @@ export function MailIndex() {
                 if (filterBy === 'inbox') return saved.to === user
                 return false
             }
-
 
             if (matchesFilter()) setMails(prev => [saved, ...prev])
         })
@@ -137,11 +131,6 @@ export function MailIndex() {
         setIsComposing(true)
     }
 
-    function onEditDraft(draftMail) {
-        setMailToEdit(draftMail)
-        setIsComposing(true)
-    }
-
     function toggleSidebar() {
         setIsSidebarOpen(prev => !prev)
     }
@@ -150,6 +139,25 @@ export function MailIndex() {
         setFilterBy(newFilter)
         setSearchTerm(term)
         setSortByDate(sort)
+    }
+
+    function handleSaveAsNote(mail) {
+        const note = noteService.getEmptyNote('NoteTxt')
+        note.info.txt = `Subject: ${mail.subject}\n\n${mail.body}`
+        noteService.save(note)
+            .then(() => {
+                eventBusService.emit('show-user-msg', {
+                    txt: 'Note saved from mail',
+                    type: 'success'
+                })
+            })
+            .catch(err => {
+                console.error('Failed to save note from mail:', err)
+                eventBusService.emit('show-user-msg', {
+                    txt: 'Failed to save note',
+                    type: 'error'
+                })
+            })
     }
 
     return (
@@ -191,13 +199,7 @@ export function MailIndex() {
                             setIsComposing(false)
                             setMailToEdit(null)
                         }}
-                      mailToEdit={mailToEdit}
-                        onClose={() => {
-                            setIsComposing(false)
-                            setMailToEdit(null)
-                        }}
                         onSend={addMail}
-                        onSaveDraft={() => setRefreshTrigger(Date.now())}
                         onSaveDraft={() => setRefreshTrigger(Date.now())}
                     />
                 )}
@@ -210,7 +212,6 @@ export function MailIndex() {
                                 <button className="btn-back" onClick={() => navigate('/mail')}>
                                     <span className="material-symbols-outlined">arrow_back</span>
                                 </button>
-                                <MailDetails mails={mails} onUpdate={updateMail} />
                                 <MailDetails mails={mails} onUpdate={updateMail} />
                             </div>
                         }
@@ -226,7 +227,7 @@ export function MailIndex() {
                                 expandedMailId={expandedMailId}
                                 onNavigateToDetails={onNavigateToDetails}
                                 onEditDraft={onEditDraft}
-                                onEditDraft={onEditDraft}
+                                onSaveAsNote={handleSaveAsNote}
                             />
                         }
                     />
@@ -235,4 +236,3 @@ export function MailIndex() {
         </section>
     )
 }
-

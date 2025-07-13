@@ -1,4 +1,4 @@
-export function MailPreview({ mail, onUpdate, onRemove, onExpand, isExpanded, onNavigateToDetails, onEditDraft }) {
+export function MailPreview({ mail, onUpdate, onRemove, onExpand, isExpanded, onNavigateToDetails, onEditDraft, onSaveAsNote }) {
     const sentAt = new Date(mail.sentAt).toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
@@ -41,10 +41,13 @@ export function MailPreview({ mail, onUpdate, onRemove, onExpand, isExpanded, on
         }
     }
 
+function handleSaveAsNote(ev) {
+    ev.stopPropagation()
+    if (typeof onSaveAsNote === 'function') onSaveAsNote(mail)
+}
+
     return (
-        <div
-            className={`mail-preview ${mail.isRead ? 'read' : 'unread'} ${isExpanded ? 'expanded' : ''}`}
-        >
+        <div className={`mail-preview ${mail.isRead ? 'read' : 'unread'} ${isExpanded ? 'expanded' : ''}`}>
             <span
                 className={`mail-star ${mail.isStarred ? 'starred' : ''}`}
                 onClick={onToggleStar}
@@ -75,6 +78,10 @@ export function MailPreview({ mail, onUpdate, onRemove, onExpand, isExpanded, on
                         {mail.isRead ? 'mark_email_unread' : 'mark_email_read'}
                     </span>
                 </button>
+          <button className="btn-mail-action" onClick={handleSaveAsNote} title="Save as Note">
+    <span className="material-symbols-outlined">note_add</span>
+</button>
+
             </div>
 
             {isExpanded && (
