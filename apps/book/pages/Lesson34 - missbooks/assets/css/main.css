@@ -51,6 +51,13 @@ body {
 .app-header h1 {
     color: var(--primary-color);
     margin: 0;
+    display: inline-block;
+}
+
+.app-header .header-left h1 {
+    margin: 0;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .app-header nav button {
@@ -168,4 +175,55 @@ button {
 
 button:hover {
     opacity: 0.9;
+}
+
+/* Header Layout */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap;
+}
+
+.header-left h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+/* Appsus Logo Button in Header */
+.appsus-logo-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    vertical-align: middle;
+}
+
+.appsus-logo-btn .material-symbols-outlined {
+    font-size: 20px;
+    color: white;
+    line-height: 1;
+}
+
+.appsus-logo-btn:hover {
+    transform: translateY(-1px) scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.appsus-logo-btn span {
+    color: white;
+    font-weight: 600;
 } 
