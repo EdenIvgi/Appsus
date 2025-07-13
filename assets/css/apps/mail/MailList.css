@@ -9,9 +9,9 @@
 .mail-preview {
     display: flex;
     align-items: center;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1.4px solid #eeecec;
     cursor: pointer;
-    transition: background-color 0.2s ease, box-shadow 0.2s ease, border-top-color 0.2s ease;
+    transition: 0.2s ease;
     position: relative;
     padding: 8px 20px;
     overflow: hidden;
@@ -27,7 +27,7 @@
 
 
 .mail-preview.unread {
-    background-color:  #f6f8fd;
+    background-color: #f2f5fc;
 }
 
 .mail-star {
@@ -54,11 +54,11 @@
     overflow: hidden;
     white-space: nowrap;
     gap: 6px;
-    padding-right: 80px;
+    padding-right: 90px;
 }
 
 .mail-from {
-    min-width: 250px;
+    min-width: 200px;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -94,13 +94,11 @@
 .mail-actions {
     display: flex;
     align-items: center;
-    gap: 6px;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s ease;
     position: absolute;
     right: 12px;
-    font-size: 1px !important;
 }
 
 .mail-preview:hover .mail-actions {
