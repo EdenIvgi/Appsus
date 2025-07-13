@@ -15,13 +15,13 @@ export function BookIndex() {
             <AppHeader />
             <main>
                 <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/about" element={<AboutUs />} />
-                    <Route path="/list" element={<BookList />} />
-                    <Route path="/:bookId" element={<BookDetails />} />
-                    <Route path="/edit" element={<BookEdit />} />
-                    <Route path="/edit/:bookId" element={<BookEdit />} />
-                    <Route path="/add/google" element={<BookAdd />} />
+                    <Route index element={<HomePage />} />
+                    <Route path="about" element={<AboutUs />} />
+                    <Route path="list" element={<BookList />} />
+                    <Route path=":bookId" element={<BookDetails />} />
+                    <Route path="edit" element={<BookEdit />} />
+                    <Route path="edit/:bookId" element={<BookEdit />} />
+                    <Route path="add/google" element={<BookAdd />} />
                 </Routes>
             </main>
             <UserMsg />
