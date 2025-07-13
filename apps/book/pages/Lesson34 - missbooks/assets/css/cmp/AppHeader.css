@@ -1,0 +1,70 @@
+.app-header {
+    background: #fff;
+    padding: 1rem 2rem;
+    margin-bottom: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.app-header h1 {
+    color: var(--primary-color);
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.app-header nav {
+    display: flex;
+    gap: 12px;
+}
+
+.app-header nav a {
+    text-decoration: none;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: white;
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    min-width: 80px;
+    text-align: center;
+    display: inline-block;
+}
+
+.app-header nav a:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg, #5a6268, #495057);
+}
+
+.app-header nav a.active {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+.app-header nav a.active:hover {
+    background: linear-gradient(135deg, #0056b3, #004085);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .app-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .app-header nav {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .app-header nav a {
+        min-width: 70px;
+        padding: 8px 16px;
+    }
+} 

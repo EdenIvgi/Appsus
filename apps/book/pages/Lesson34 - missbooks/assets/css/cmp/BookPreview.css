@@ -1,0 +1,26 @@
+.book-preview {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.book-preview:hover {
+    transform: translateY(-5px);
+}
+
+.book-preview img {
+    max-width: 150px;
+    height: auto;
+    margin-bottom: 1rem;
+}
+
+.book-preview .actions {
+    margin-top: 1rem;
+}
+
+.book-preview .actions button {
+    margin: 0 5px;
+} 
