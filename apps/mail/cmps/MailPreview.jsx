@@ -57,7 +57,7 @@ function handleSaveAsNote(ev) {
             </span>
 
             <div className="mail-content" onClick={onBodyClick}>
-                <span className="mail-from">{mail.from}</span>
+<span className="mail-from">{mail.from.split('@')[0]}</span>
                 <span className="mail-subject">{mail.subject}</span>
                 {!isExpanded && (
                     <span className="mail-body">{getMailSnippet(mail.body)}</span>
