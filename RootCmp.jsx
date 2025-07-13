@@ -13,16 +13,17 @@ import { BookIndex } from './apps/book/pages/BookIndex.jsx'
 function AppRoutes() {
     const location = useLocation()
     const isMailRoute = location.pathname.startsWith('/mail')
+    const isBookRoute = location.pathname.startsWith('/book')
 
     return (
         <section className="root-cmp">
-            {!isMailRoute && <AppHeader />}
+            {!isMailRoute && !isBookRoute && <AppHeader />}
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/mail/*" element={<MailIndex />} />
                 <Route path="/note" element={<NoteIndex />} />
-                <Route path="/book" element={<BookIndex />} />
+                <Route path="/book/*" element={<BookIndex />} />
 
             </Routes>
             <UserMsg />
