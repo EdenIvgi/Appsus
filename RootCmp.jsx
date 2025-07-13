@@ -7,6 +7,8 @@ import { About } from './pages/About.jsx'
 import { Home } from './pages/Home.jsx'
 import { MailIndex } from './apps/mail/pages/MailIndex.jsx'
 import { NoteIndex } from './apps/note/pages/NoteIndex.jsx'
+import { BookIndex } from './apps/book/pages/BookIndex.jsx'
+
 
 function AppRoutes() {
     const location = useLocation()
@@ -20,6 +22,8 @@ function AppRoutes() {
                 <Route path="/about" element={<About />} />
                 <Route path="/mail/*" element={<MailIndex />} />
                 <Route path="/note" element={<NoteIndex />} />
+                <Route path="/book" element={<BookIndex />} />
+
             </Routes>
             <UserMsg />
         </section>
